@@ -1,0 +1,8 @@
+name: crystalline_wrokspace # used by melos
+publish_to: none
+
+environment:
+  sdk: ">=2.19.2 <3.0.0"
+  
+dev_dependencies:
+  melos: ^3.0.1

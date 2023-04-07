@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: crystalline
+dependency_overrides:
+  crystalline:
+    path: ../crystalline

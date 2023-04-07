@@ -1,0 +1,8 @@
+name: crystalline_project
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+packages:
+  - packages/**
