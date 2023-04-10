@@ -1,0 +1,21 @@
+name: riverpod_crystalline
+description: Simple way to define state in your flutter application.
+version: 0.0.1
+homepage: https://github.com/easazade/crystalline
+
+environment:
+  sdk: ">=2.19.2 <3.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  crystalline: ^0.0.1
+  equatable: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^4.0.0+1
+
+flutter:
