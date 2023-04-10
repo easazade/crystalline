@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crystalline/src/data.dart';
+import 'package:flutter_crystalline/src/store.dart';
 
 class StoreConsumer<T extends BaseStore> extends StatefulWidget {
   final T store;
