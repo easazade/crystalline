@@ -71,13 +71,11 @@ abstract class Store<T extends BaseStore> extends BaseStore with EquatableMixin 
   Widget consume({
     required StoreWidgetBuilder<T> builder,
     final void Function(BuildContext context, T store)? listener,
-  }) {
-    return StoreConsumer(
+  }) => StoreConsumer(
       listener: listener,
       store: this as T,
       builder: builder,
     );
-  }
 
   Widget consumeWhen({
     required StoreWidgetBuilder<T> onAvailable,
@@ -90,8 +88,7 @@ abstract class Store<T extends BaseStore> extends BaseStore with EquatableMixin 
     StoreWidgetBuilder<T>? onUpdate,
     StoreWidgetBuilder<T>? onError,
     StoreWidgetBuilder<T>? orElse,
-  }) {
-    return StoreConsumer(
+  }) => StoreConsumer(
       store: this as T,
       listener: listener,
       builder: (context, store) {
@@ -110,7 +107,6 @@ abstract class Store<T extends BaseStore> extends BaseStore with EquatableMixin 
         );
       },
     );
-  }
 
   @override
   String toString() => '$runtimeType : operation: $_operation - error: $_error';

@@ -10,8 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  crystalline:
-    path: ../crystalline
+  crystalline: ^0.0.1
   equatable: ^2.0.5
 
 dev_dependencies:
