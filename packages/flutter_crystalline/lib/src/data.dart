@@ -19,8 +19,6 @@ enum Operation {
   factory Operation.fromId(int id) => values.firstWhere((e) => e.id == id);
 }
 
-abstract class ReadOnlyData<T> implements ReadableData<T>, BuildableData<T> {}
-
 abstract class ReadableData<T> {
   T get value;
 
@@ -47,8 +45,10 @@ abstract class ReadableData<T> {
   bool valueEqualsTo(T? another);
 }
 
-abstract class BuildableData<T> {
-  Widget build(final DataWidgetBuilder<T> builder);
+class BuildableData<T> extends Data<T> implements ReadableData<T>, EditableData<T> {
+  BuildableData({super.value, super.error, super.operation});
+
+  Widget build(final DataWidgetBuilder<T> builder) => DataBuilder<T>(data: this, builder: builder);
 
   Widget buildWhen({
     required DataWidgetBuilder<T> onAvailable,
@@ -60,15 +60,27 @@ abstract class BuildableData<T> {
     DataWidgetBuilder<T>? onUpdate,
     DataWidgetBuilder<T>? onError,
     DataWidgetBuilder<T>? orElse,
-  });
+  }) =>
+      WhenDataBuilder<T>(
+        data: this,
+        onAvailable: onAvailable,
+        onNotAvailable: onNotAvailable,
+        onLoading: onLoading,
+        onCreate: onCreate,
+        onDelete: onDelete,
+        onFetch: onFetch,
+        onUpdate: onUpdate,
+        onError: onError,
+        orElse: orElse,
+      );
 }
 
 abstract class EditableData<T> {
-  void setValue(T? value);
+  void set value(T? value);
 
-  void setOperation(Operation operation);
+  void set operation(Operation operation);
 
-  void setError(DataError? error);
+  void set error(DataError? error);
 }
 
 class DataError {
@@ -84,10 +96,17 @@ class DataError {
   }
 }
 
-class Data<T> with EquatableMixin implements ReadOnlyData<T>, EditableData<T> {
+class Data<T> implements ReadableData<T>, EditableData<T> {
   T? _value;
   DataError? _error;
-  Operation _operation = Operation.none;
+  Operation _operation;
+
+  // Data._(this._value, this._error, this._operation);
+
+  Data({T? value, DataError? error, Operation operation = Operation.none})
+      : _value = value,
+        _error = error,
+        _operation = operation;
 
   @override
   T get value {
@@ -137,12 +156,7 @@ class Data<T> with EquatableMixin implements ReadOnlyData<T>, EditableData<T> {
   bool get isUpdating => _operation == Operation.update;
 
   @override
-  bool get isLoading =>
-      _operation == Operation.loading ||
-      isUpdating ||
-      isFetching ||
-      isDeleting ||
-      isCreating;
+  bool get isLoading => _operation == Operation.loading || isUpdating || isFetching || isDeleting || isCreating;
 
   @override
   bool valueEqualsTo(T? otherValue) {
@@ -156,62 +170,32 @@ class Data<T> with EquatableMixin implements ReadOnlyData<T>, EditableData<T> {
   }
 
   @override
-  void setError(DataError? error) {
-    _error = error;
+  void set error(DataError? error) => _error = error;
+
+  @override
+  void set operation(Operation operation) => _operation = operation;
+
+  @override
+  set value(T? value) => _value = value;
+
+  /// returns a new instance of data object which is copy of this object.
+  Data<T> copy() => Data<T>(value: _value, error: _error, operation: _operation);
+
+  @override
+  String toString() => '$runtimeType - operation: $_operation - error: $_error - value : $_value';
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Data<T>) return false;
+
+    return other.runtimeType == runtimeType &&
+        _error == other._error &&
+        _value == other._value &&
+        _operation == other._operation;
   }
-
-  @override
-  void setOperation(Operation operation) {
-    _operation = operation;
-  }
-
-  @override
-  void setValue(value) {
-    _value = value;
-  }
-
-  @override
-  Widget build(final DataWidgetBuilder<T> builder) {
-    return DataBuilder<T>(data: this, builder: builder);
-  }
-
-  @override
-  Widget buildWhen({
-    required DataWidgetBuilder<T> onAvailable,
-    DataWidgetBuilder<T>? onNotAvailable,
-    DataWidgetBuilder<T>? onLoading,
-    DataWidgetBuilder<T>? onCreate,
-    DataWidgetBuilder<T>? onDelete,
-    DataWidgetBuilder<T>? onFetch,
-    DataWidgetBuilder<T>? onUpdate,
-    DataWidgetBuilder<T>? onError,
-    DataWidgetBuilder<T>? orElse,
-  }) {
-    return WhenDataBuilder<T>(
-      data: this,
-      onAvailable: onAvailable,
-      onNotAvailable: onNotAvailable,
-      onLoading: onLoading,
-      onCreate: onCreate,
-      onDelete: onDelete,
-      onFetch: onFetch,
-      onUpdate: onUpdate,
-      onError: onError,
-      orElse: orElse,
-    );
-  }
-
-  @override
-  String toString() =>
-      '$runtimeType - operation: $_operation - error: $_error - value : $_value';
-
-  @override
-  List<Object?> get props => [_value, _operation, _error];
 }
 
-abstract class Store<T extends BaseStore> extends BaseStore
-    with EquatableMixin
-    implements ReadableData<T> {
+abstract class Store<T extends BaseStore> extends BaseStore with EquatableMixin implements ReadableData<T> {
   DataError? _error;
   Operation _operation = Operation.none;
 

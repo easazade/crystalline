@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/src/data.dart';
 
 typedef DataWidgetBuilder<T> = Widget Function(
-    BuildContext context, ReadableData<T> data);
+  BuildContext context,
+  ReadableData<T> data,
+);
 typedef StoreWidgetBuilder<T> = Widget Function(BuildContext context, T store);
 
 class DataBuilder<T> extends StatelessWidget {
