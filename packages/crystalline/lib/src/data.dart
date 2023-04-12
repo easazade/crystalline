@@ -49,6 +49,14 @@ abstract class EditableData<T> {
   void set error(DataError? error);
 }
 
+abstract class ListenableData<T> {
+  void addListener(void Function() listener);
+
+  void removeListener(void Function() listener);
+
+  bool get hasListeners;
+}
+
 class DataError {
   const DataError(this.message, this.exception);
 
@@ -57,15 +65,15 @@ class DataError {
   final Exception exception;
 
   @override
-  String toString() {
-    return '${super.toString()}\n$message\n';
-  }
+  String toString() => '${super.toString()}\n$message\n';
 }
 
-class Data<T> implements ReadableData<T>, EditableData<T> {
+class Data<T> implements ReadableData<T>, EditableData<T>, ListenableData<T> {
   T? _value;
   DataError? _error;
   Operation _operation;
+
+  final List<void Function()> _listeners = [];
 
   // Data._(this._value, this._error, this._operation);
 
@@ -122,7 +130,12 @@ class Data<T> implements ReadableData<T>, EditableData<T> {
   bool get isUpdating => _operation == Operation.update;
 
   @override
-  bool get isLoading => _operation == Operation.loading || isUpdating || isFetching || isDeleting || isCreating;
+  bool get isLoading =>
+      _operation == Operation.loading ||
+      isUpdating ||
+      isFetching ||
+      isDeleting ||
+      isCreating;
 
   @override
   bool valueEqualsTo(T? otherValue) {
@@ -136,19 +149,36 @@ class Data<T> implements ReadableData<T>, EditableData<T> {
   }
 
   @override
-  void set error(DataError? error) => _error = error;
+  void set error(DataError? error) {
+    _error = error;
+    if (_listeners.isNotEmpty) {
+      _listeners.forEach((listener) => listener());
+    }
+  }
 
   @override
-  void set operation(Operation operation) => _operation = operation;
+  void set operation(Operation operation) {
+    _operation = operation;
+    if (_listeners.isNotEmpty) {
+      _listeners.forEach((listener) => listener());
+    }
+  }
 
   @override
-  set value(T? value) => _value = value;
+  set value(T? value) {
+    _value = value;
+    if (_listeners.isNotEmpty) {
+      _listeners.forEach((listener) => listener());
+    }
+  }
 
   /// returns a new instance of data object which is copy of this object.
-  Data<T> copy() => Data<T>(value: _value, error: _error, operation: _operation);
+  Data<T> copy() =>
+      Data<T>(value: _value, error: _error, operation: _operation);
 
   @override
-  String toString() => '$runtimeType - operation: $_operation - error: $_error - value : $_value';
+  String toString() =>
+      '$runtimeType - operation: $_operation - error: $_error - value : $_value';
 
   @override
   bool operator ==(Object other) {
@@ -159,4 +189,17 @@ class Data<T> implements ReadableData<T>, EditableData<T> {
         _value == other._value &&
         _operation == other._operation;
   }
+
+  @override
+  void addListener(void Function() listener) {
+    _listeners.add(listener);
+  }
+
+  @override
+  void removeListener(void Function() listener) {
+    _listeners.remove(listener);
+  }
+
+  @override
+  bool get hasListeners => _listeners.isNotEmpty;
 }

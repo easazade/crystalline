@@ -1,11 +1,16 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_crystalline/src/builders.dart';
+import 'package:flutter_crystalline/src/when_builders.dart';
 
-class BuildableData<T> extends Data<T> implements ReadableData<T>, EditableData<T> {
+class BuildableData<T> extends Data<T> {
   BuildableData({super.value, super.error, super.operation});
 
-  Widget build(final DataWidgetBuilder<T> builder) => DataBuilder<T>(data: this, builder: builder);
+  Widget build({
+    required final DataWidgetBuilder<T> builder,
+    bool listen = false,
+  }) =>
+      DataBuilder<T>(data: this, builder: builder, listen: listen);
 
   Widget buildWhen({
     required DataWidgetBuilder<T> onAvailable,
@@ -17,6 +22,7 @@ class BuildableData<T> extends Data<T> implements ReadableData<T>, EditableData<
     DataWidgetBuilder<T>? onUpdate,
     DataWidgetBuilder<T>? onError,
     DataWidgetBuilder<T>? orElse,
+    bool listen = false,
   }) =>
       WhenDataBuilder<T>(
         data: this,
@@ -29,5 +35,10 @@ class BuildableData<T> extends Data<T> implements ReadableData<T>, EditableData<
         onUpdate: onUpdate,
         onError: onError,
         orElse: orElse,
+        listen: listen,
       );
 }
+
+class ChangeNotifierData<T> extends BuildableData<T>
+    with ChangeNotifier
+    implements ChangeNotifier {}

@@ -3,144 +3,79 @@ import 'package:flutter/material.dart';
 
 typedef DataWidgetBuilder<T> = Widget Function(
   BuildContext context,
-  ReadableData<T> data,
+  Data<T> data,
 );
-
-typedef StoreWidgetBuilder<T> = Widget Function(BuildContext context, T store);
 
 class DataBuilder<T> extends StatelessWidget {
   const DataBuilder({
     Key? key,
     required this.data,
     required this.builder,
+    this.listen = false,
   }) : super(key: key);
 
-  final ReadableData<T> data;
+  final Data<T> data;
+  final bool listen;
 
-  final Widget Function(BuildContext context, ReadableData<T> data) builder;
+  final Widget Function(BuildContext context, Data<T> data) builder;
 
   @override
   Widget build(BuildContext context) {
+    if (listen) {
+      return _DataRebuilder<T>(data: data, builder: builder);
+    }
     return builder(context, data);
   }
 }
 
-class WhenDataBuilder<T> extends StatelessWidget {
-  const WhenDataBuilder({
+class _DataRebuilder<T> extends StatefulWidget {
+  final Data<T> data;
+  // final T Function(BuildContext context)? lazyStore;
+  final void Function(BuildContext context, Data<T> data)? listener;
+  final Widget Function(BuildContext context, Data<T> data) builder;
+
+  const _DataRebuilder({
     Key? key,
     required this.data,
-    required this.onAvailable,
-    this.onNotAvailable,
-    this.onLoading,
-    this.onUpdate,
-    this.onCreate,
-    this.onDelete,
-    this.onFetch,
-    this.onError,
-    this.orElse,
+    required this.builder,
+    this.listener,
   }) : super(key: key);
 
-  final ReadableData<T> data;
-
-  final DataWidgetBuilder<T> onAvailable;
-  final DataWidgetBuilder<T>? onNotAvailable;
-
-  final DataWidgetBuilder<T>? onLoading;
-  final DataWidgetBuilder<T>? onCreate;
-  final DataWidgetBuilder<T>? onDelete;
-  final DataWidgetBuilder<T>? onFetch;
-  final DataWidgetBuilder<T>? onUpdate;
-
-  final DataWidgetBuilder<T>? onError;
-  final DataWidgetBuilder<T>? orElse;
-
   @override
-  Widget build(BuildContext context) {
-    if (data.isCreating && onCreate != null) {
-      return onCreate!(context, data);
-    }
-    if (data.isDeleting && onDelete != null) {
-      return onDelete!(context, data);
-    }
-    if (data.isFetching && onFetch != null) {
-      return onFetch!(context, data);
-    }
-    if (data.isUpdating && onUpdate != null) {
-      return onUpdate!(context, data);
-    }
-    if (data.isLoading && onLoading != null) {
-      return onLoading!(context, data);
-    }
-    if (data.hasError && onError != null) {
-      return onError!(context, data);
-    }
-    if (data.isAvailable) {
-      return onAvailable(context, data);
-    }
-    if (data.isNotAvailable && onNotAvailable != null) {
-      return onNotAvailable!(context, data);
-    }
-    return (orElse != null) ? orElse!(context, data) : Container();
-  }
+  State<_DataRebuilder<T>> createState() => _DataRebuilderState<T>();
 }
 
-class WhenStoreBuilder<T> extends StatelessWidget {
-  const WhenStoreBuilder({
-    Key? key,
-    required this.readableData,
-    required this.value,
-    required this.onAvailable,
-    this.onNotAvailable,
-    this.onLoading,
-    this.onUpdate,
-    this.onCreate,
-    this.onDelete,
-    this.onFetch,
-    this.onError,
-    this.orElse,
-  }) : super(key: key);
+class _DataRebuilderState<T> extends State<_DataRebuilder<T>> {
+  late Data<T> _data;
 
-  final T value;
-  final ReadableData<T> readableData;
+  late void Function() _listener = () => setState(() {});
 
-  final StoreWidgetBuilder<T> onAvailable;
-  final StoreWidgetBuilder<T>? onNotAvailable;
+  @override
+  void initState() {
+    _data = widget.data;
+    _data.addListener(_listener);
+    super.initState();
+  }
 
-  final StoreWidgetBuilder<T>? onLoading;
-  final StoreWidgetBuilder<T>? onCreate;
-  final StoreWidgetBuilder<T>? onDelete;
-  final StoreWidgetBuilder<T>? onFetch;
-  final StoreWidgetBuilder<T>? onUpdate;
-
-  final StoreWidgetBuilder<T>? onError;
-  final StoreWidgetBuilder<T>? orElse;
+  @override
+  void didUpdateWidget(covariant _DataRebuilder<T> oldWidget) {
+    if (oldWidget.data != widget.data) {
+      _data = widget.data;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (readableData.isCreating && onCreate != null) {
-      return onCreate!(context, value);
-    }
-    if (readableData.isDeleting && onDelete != null) {
-      return onDelete!(context, value);
-    }
-    if (readableData.isFetching && onFetch != null) {
-      return onFetch!(context, value);
-    }
-    if (readableData.isUpdating && onUpdate != null) {
-      return onUpdate!(context, value);
-    }
-    if (readableData.isLoading && onLoading != null) {
-      return onLoading!(context, value);
-    }
-    if (readableData.hasError && onError != null) {
-      return onError!(context, value);
-    }
-    if (readableData.isAvailable) {
-      return onAvailable(context, value);
-    }
-    if (readableData.isNotAvailable && onNotAvailable != null) {
-      return onNotAvailable!(context, value);
-    }
-    return (orElse != null) ? orElse!(context, value) : Container();
+    // TODO: no listener is being passed here. classes that use this class
+    // TODO: is this the right place to call listener?
+    widget.listener?.call(context, _data);
+    return widget.builder(context, _data);
+  }
+
+  @override
+  void dispose() {
+    _data.removeListener(_listener);
+    super.dispose();
   }
 }
