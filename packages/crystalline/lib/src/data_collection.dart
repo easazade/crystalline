@@ -29,8 +29,4 @@ abstract class DataCollection extends Data<List<Data<Object?>>> {
 
     return super.isLoading;
   }
-
-  void onRequiredItemsUpdate() {
-    // by default it does nothing
-  }
 }
