@@ -128,6 +128,15 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            WhenDataBuilder(
+              listen: true,
+              data: homeStore,
+              onAvailable: (context, _) => Text('home store available'),
+              onLoading: (context, _) => Text(
+                'on of required data in Home Store'
+                ' has null value aka not available',
+              ),
+            ),
           ],
         ),
       ),

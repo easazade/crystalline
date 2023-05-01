@@ -12,17 +12,25 @@ abstract class DataCollection extends Data<List<Data<Object?>>> {
   bool get isAvailable {
     if (requiredItems != null && requiredItems!.isNotEmpty) {
       return requiredItems!.where((data) => data.isNotAvailable).isEmpty;
-    } else {
-      return items.where((data) => data.isNotAvailable).isEmpty;
     }
+
+    return true;
   }
 
   @override
   bool get isLoading {
     if (requiredItems != null && requiredItems!.isNotEmpty) {
-      return requiredItems!.where((data) => data.isLoading).isNotEmpty;
+      final isIt = requiredItems!
+          .where((data) => data.isLoading && data.isNotAvailable)
+          .isNotEmpty;
+
+      return isIt;
     }
 
     return super.isLoading;
+  }
+
+  void onRequiredItemsUpdate() {
+    // by default it does nothing
   }
 }
