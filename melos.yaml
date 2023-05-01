@@ -6,6 +6,7 @@ command:
 
 packages:
   - packages/**
+  - example
 
 scripts:
   analyze:
