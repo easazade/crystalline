@@ -1,6 +1,6 @@
 import 'package:crystalline/src/data.dart';
 
-abstract class DataCollection extends Data<List<Data<Object?>>> {
+abstract class CollectionData extends Data<List<Data<Object?>>> {
   List<Data<Object?>> get items;
 
   List<Data<Object?>>? get requiredItems => null;
