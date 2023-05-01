@@ -75,8 +75,6 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ListenableData<T> {
 
   final List<void Function()> _listeners = [];
 
-  // Data._(this._value, this._error, this._operation);
-
   Data({T? value, DataError? error, Operation operation = Operation.none})
       : _value = value,
         _error = error,
@@ -143,9 +141,9 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ListenableData<T> {
       return _value == otherValue;
     } else if (otherValue == null && isNotAvailable) {
       return true;
-    } else {
-      return false;
     }
+
+    return false;
   }
 
   @override
