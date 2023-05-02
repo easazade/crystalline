@@ -38,5 +38,5 @@ class HomeStore extends ChangeNotifierData {
   List<Data<Object?>> get items => [title, number];
 
   @override
-  List<Data<Object?>>? get requiredItems => [title, number];
+  List<Data<Object?>> get requiredItems => [title, number];
 }
