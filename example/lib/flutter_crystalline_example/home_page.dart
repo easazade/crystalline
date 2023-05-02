@@ -128,6 +128,20 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            DataBuilder(
+              data: homeStore,
+              listen: true,
+              builder: (context, _) {
+                print('home store being rebuilt');
+                if (homeStore.isLoading) {
+                  return Text(
+                    'on of required data in Home Store'
+                    ' has null value aka not available',
+                  );
+                }
+                return Text('home store available');
+              },
+            ),
             WhenDataBuilder(
               listen: true,
               data: homeStore,

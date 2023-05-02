@@ -136,7 +136,9 @@ class _WhenDataRebuilderState<T> extends State<_WhenDataRebuilder<T>> {
   @override
   void didUpdateWidget(covariant _WhenDataRebuilder<T> oldWidget) {
     if (oldWidget.data != widget.data) {
+      oldWidget.data.removeListener(_listener);
       data = widget.data;
+      data.addListener(_listener);
     }
     super.didUpdateWidget(oldWidget);
   }
