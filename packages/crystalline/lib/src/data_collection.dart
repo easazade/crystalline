@@ -29,4 +29,20 @@ abstract class CollectionData extends Data<List<Data<Object?>>> {
 
     return super.isLoading;
   }
+
+  @override
+  void addListener(void Function() listener) {
+    requiredItems?.forEach((item) {
+      print('adding listener');
+      item.addListener(listener);
+    });
+  }
+
+  @override
+  void removeListener(void Function() listener) {
+    requiredItems?.forEach((item) {
+      print('removing listener');
+      item.removeListener(listener);
+    });
+  }
 }
