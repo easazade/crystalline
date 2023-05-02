@@ -30,15 +30,12 @@ class DataBuilder<T> extends StatelessWidget {
 
 class _DataRebuilder<T> extends StatefulWidget {
   final Data<T> data;
-  // final T Function(BuildContext context)? lazyStore;
-  final void Function(BuildContext context, Data<T> data)? observer;
   final Widget Function(BuildContext context, Data<T> data) builder;
 
   const _DataRebuilder({
     Key? key,
     required this.data,
     required this.builder,
-    this.observer,
   }) : super(key: key);
 
   @override
@@ -67,9 +64,6 @@ class _DataRebuilderState<T> extends State<_DataRebuilder<T>> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: no observer is being passed here. classes that use this class
-    // TODO: is this the right place to call observer?
-    widget.observer?.call(context, _data);
     return widget.builder(context, _data);
   }
 
