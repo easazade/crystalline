@@ -101,7 +101,7 @@ class _WhenDataRebuilder<T> extends StatefulWidget {
 
   final Data<T> data;
   // final T Function(BuildContext context)? lazyStore;
-  // final void Function(BuildContext context, Data<T> data)? listener;
+  // final void Function(BuildContext context, Data<T> data)? observer;
 
   final DataWidgetBuilder<T> onAvailable;
   final DataWidgetBuilder<T>? onNotAvailable;
@@ -124,21 +124,21 @@ class _WhenDataRebuilder<T> extends StatefulWidget {
 class _WhenDataRebuilderState<T> extends State<_WhenDataRebuilder<T>> {
   late Data<T> data;
 
-  late void Function() _listener = () => setState(() {});
+  late void Function() _observer = () => setState(() {});
 
   @override
   void initState() {
     data = widget.data;
-    data.addListener(_listener);
+    data.addObserver(_observer);
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant _WhenDataRebuilder<T> oldWidget) {
     if (oldWidget.data != widget.data) {
-      oldWidget.data.removeListener(_listener);
+      oldWidget.data.removeObserver(_observer);
       data = widget.data;
-      data.addListener(_listener);
+      data.addObserver(_observer);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -176,7 +176,7 @@ class _WhenDataRebuilderState<T> extends State<_WhenDataRebuilder<T>> {
 
   @override
   void dispose() {
-    data.removeListener(_listener);
+    data.removeObserver(_observer);
     super.dispose();
   }
 }

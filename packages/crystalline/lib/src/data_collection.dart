@@ -31,18 +31,16 @@ abstract class CollectionData extends Data<List<Data<Object?>>> {
   }
 
   @override
-  void addListener(void Function() listener) {
+  void addObserver(void Function() observer) {
     requiredItems?.forEach((item) {
-      print('adding listener');
-      item.addListener(listener);
+      item.addObserver(observer);
     });
   }
 
   @override
-  void removeListener(void Function() listener) {
+  void removeObserver(void Function() observer) {
     requiredItems?.forEach((item) {
-      print('removing listener');
-      item.removeListener(listener);
+      item.removeObserver(observer);
     });
   }
 }

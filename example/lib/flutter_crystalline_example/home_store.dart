@@ -10,24 +10,24 @@ class HomeStore extends ChangeNotifierData {
 
   Future changeTitle() async {
     title.operation = Operation.loading;
-    // notifyListeners();
+    notifyListeners();
 
     await Future.delayed(const Duration(seconds: 1));
     title.value = (title.value == 'THIS TITLE') ? 'THAT TITLE' : 'THIS TITLE';
     title.operation = Operation.none;
-    // notifyListeners();
+    notifyListeners();
   }
 
   Future changeNumber() async {
     final newValue = ++number.value;
     number.value = null;
     number.operation = Operation.update;
-    // notifyListeners();
+    notifyListeners();
 
     await Future.delayed(const Duration(seconds: 1));
     number.value = newValue;
     number.operation = Operation.none;
-    // notifyListeners();
+    notifyListeners();
   }
 
   @override

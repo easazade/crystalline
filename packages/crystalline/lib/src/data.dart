@@ -50,11 +50,11 @@ abstract class EditableData<T> {
 }
 
 abstract class ListenableData<T> {
-  void addListener(void Function() listener);
+  void addObserver(void Function() observer);
 
-  void removeListener(void Function() listener);
+  void removeObserver(void Function() observer);
 
-  bool get hasListeners;
+  bool get hasObservers;
 }
 
 class DataError {
@@ -73,7 +73,7 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ListenableData<T> {
   DataError? _error;
   Operation _operation;
 
-  final List<void Function()> _listeners = [];
+  final List<void Function()> _observers = [];
 
   Data({T? value, DataError? error, Operation operation = Operation.none})
       : _value = value,
@@ -149,24 +149,24 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ListenableData<T> {
   @override
   void set error(DataError? error) {
     _error = error;
-    if (_listeners.isNotEmpty) {
-      _listeners.forEach((listener) => listener());
+    if (_observers.isNotEmpty) {
+      _observers.forEach((observer) => observer());
     }
   }
 
   @override
   void set operation(Operation operation) {
     _operation = operation;
-    if (_listeners.isNotEmpty) {
-      _listeners.forEach((listener) => listener());
+    if (_observers.isNotEmpty) {
+      _observers.forEach((observer) => observer());
     }
   }
 
   @override
   set value(T? value) {
     _value = value;
-    if (_listeners.isNotEmpty) {
-      _listeners.forEach((listener) => listener());
+    if (_observers.isNotEmpty) {
+      _observers.forEach((observer) => observer());
     }
   }
 
@@ -189,15 +189,15 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ListenableData<T> {
   }
 
   @override
-  void addListener(void Function() listener) {
-    _listeners.add(listener);
+  void addObserver(void Function() observer) {
+    _observers.add(observer);
   }
 
   @override
-  void removeListener(void Function() listener) {
-    _listeners.remove(listener);
+  void removeObserver(void Function() observer) {
+    _observers.remove(observer);
   }
 
   @override
-  bool get hasListeners => _listeners.isNotEmpty;
+  bool get hasObservers => _observers.isNotEmpty;
 }

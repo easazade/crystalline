@@ -31,14 +31,14 @@ class DataBuilder<T> extends StatelessWidget {
 class _DataRebuilder<T> extends StatefulWidget {
   final Data<T> data;
   // final T Function(BuildContext context)? lazyStore;
-  final void Function(BuildContext context, Data<T> data)? listener;
+  final void Function(BuildContext context, Data<T> data)? observer;
   final Widget Function(BuildContext context, Data<T> data) builder;
 
   const _DataRebuilder({
     Key? key,
     required this.data,
     required this.builder,
-    this.listener,
+    this.observer,
   }) : super(key: key);
 
   @override
@@ -48,12 +48,12 @@ class _DataRebuilder<T> extends StatefulWidget {
 class _DataRebuilderState<T> extends State<_DataRebuilder<T>> {
   late Data<T> _data;
 
-  late void Function() _listener = () => setState(() {});
+  late void Function() _observer = () => setState(() {});
 
   @override
   void initState() {
     _data = widget.data;
-    _data.addListener(_listener);
+    _data.addObserver(_observer);
     super.initState();
   }
 
@@ -67,15 +67,15 @@ class _DataRebuilderState<T> extends State<_DataRebuilder<T>> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: no listener is being passed here. classes that use this class
-    // TODO: is this the right place to call listener?
-    widget.listener?.call(context, _data);
+    // TODO: no observer is being passed here. classes that use this class
+    // TODO: is this the right place to call observer?
+    widget.observer?.call(context, _data);
     return widget.builder(context, _data);
   }
 
   @override
   void dispose() {
-    _data.removeListener(_listener);
+    _data.removeObserver(_observer);
     super.dispose();
   }
 }
