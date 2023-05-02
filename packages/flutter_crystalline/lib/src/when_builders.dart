@@ -100,8 +100,6 @@ class _WhenDataRebuilder<T> extends StatefulWidget {
   });
 
   final Data<T> data;
-  // final T Function(BuildContext context)? lazyStore;
-  // final void Function(BuildContext context, Data<T> data)? observer;
 
   final DataWidgetBuilder<T> onAvailable;
   final DataWidgetBuilder<T>? onNotAvailable;

@@ -22,17 +22,21 @@ class HomeStore extends ChangeNotifierData {
     final newValue = ++number.value;
     number.value = null;
     number.operation = Operation.update;
+    error = null;
     notifyListeners();
 
     await Future.delayed(const Duration(seconds: 1));
     number.value = newValue;
     number.operation = Operation.none;
     notifyListeners();
+
+    await Future.delayed(const Duration(seconds: 1));
+    error = DataError('Some fake made error', Exception(''));
   }
 
   @override
   List<Data<Object?>> get items => [title, number];
 
   @override
-  List<Data<Object?>>? get requiredItems => [number, title];
+  List<Data<Object?>>? get requiredItems => [title, number];
 }

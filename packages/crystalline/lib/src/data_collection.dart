@@ -32,15 +32,13 @@ abstract class CollectionData extends Data<List<Data<Object?>>> {
 
   @override
   void addObserver(void Function() observer) {
-    requiredItems?.forEach((item) {
-      item.addObserver(observer);
-    });
+    super.addObserver(observer);
+    requiredItems?.forEach((item) => item.addObserver(observer));
   }
 
   @override
   void removeObserver(void Function() observer) {
-    requiredItems?.forEach((item) {
-      item.removeObserver(observer);
-    });
+    super.removeObserver(observer);
+    requiredItems?.forEach((item) => item.removeObserver(observer));
   }
 }
