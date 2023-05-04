@@ -17,7 +17,4 @@ class ProfileStore extends ChangeNotifierData {
 
   @override
   List<Data<Object?>> get items => [];
-
-  @override
-  List<Data<Object?>> get requiredItems => const [];
 }

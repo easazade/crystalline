@@ -18,7 +18,13 @@ enum Operation {
 abstract class ReadableData<T> {
   T get value;
 
+  T? get valueOrNull;
+
   DataError get error;
+
+  DataError? get errorOrNull;
+
+  Operation get operation;
 
   DataError get consumeError;
 
@@ -73,7 +79,7 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
   DataError? _error;
   Operation _operation;
 
-  final List<void Function()> _observers = [];
+  final List<void Function()> observers = [];
 
   Data({T? value, DataError? error, Operation operation = Operation.none})
       : _value = value,
@@ -87,6 +93,8 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
     }
     return _value!;
   }
+
+  T? get valueOrNull => _value;
 
   @override
   DataError get consumeError {
@@ -105,6 +113,9 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
     }
     return _error!;
   }
+
+  @override
+  DataError? get errorOrNull => _error;
 
   @override
   bool get hasError => _error != null;
@@ -149,24 +160,26 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
   @override
   void set error(DataError? error) {
     _error = error;
-    if (_observers.isNotEmpty) {
-      _observers.forEach((observer) => observer());
+    if (observers.isNotEmpty) {
+      observers.forEach((observer) => observer());
     }
   }
 
   @override
   void set operation(Operation operation) {
     _operation = operation;
-    if (_observers.isNotEmpty) {
-      _observers.forEach((observer) => observer());
+    if (observers.isNotEmpty) {
+      observers.forEach((observer) => observer());
     }
   }
+
+  Operation get operation => _operation;
 
   @override
   set value(T? value) {
     _value = value;
-    if (_observers.isNotEmpty) {
-      _observers.forEach((observer) => observer());
+    if (observers.isNotEmpty) {
+      observers.forEach((observer) => observer());
     }
   }
 
@@ -190,14 +203,14 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
 
   @override
   void addObserver(void Function() observer) {
-    _observers.add(observer);
+    observers.add(observer);
   }
 
   @override
   void removeObserver(void Function() observer) {
-    _observers.remove(observer);
+    observers.remove(observer);
   }
 
   @override
-  bool get hasObservers => _observers.isNotEmpty;
+  bool get hasObservers => observers.isNotEmpty;
 }
