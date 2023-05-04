@@ -1,6 +1,6 @@
 name: crystalline
-description: State definition library that makes your states, reflective and crystally clear, no matter what state management library you use.
-version: 0.0.1
+description: Define crystal-clear states with crystalline
+version: 0.1.2
 repository: https://github.com/easazade/crystalline
 
 environment:
