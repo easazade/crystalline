@@ -120,14 +120,14 @@ class _WhenDataRebuilder<T> extends StatefulWidget {
 }
 
 class _WhenDataRebuilderState<T> extends State<_WhenDataRebuilder<T>> {
-  late Data<T> data;
+  late Data<T> _data;
 
   late void Function() _observer = () => setState(() {});
 
   @override
   void initState() {
-    data = widget.data;
-    data.addObserver(_observer);
+    _data = widget.data;
+    _data.addObserver(_observer);
     super.initState();
   }
 
@@ -135,46 +135,46 @@ class _WhenDataRebuilderState<T> extends State<_WhenDataRebuilder<T>> {
   void didUpdateWidget(covariant _WhenDataRebuilder<T> oldWidget) {
     if (oldWidget.data != widget.data) {
       oldWidget.data.removeObserver(_observer);
-      data = widget.data;
-      data.addObserver(_observer);
+      _data = widget.data;
+      _data.addObserver(_observer);
     }
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (data.isCreating && widget.onCreate != null) {
-      return widget.onCreate!(context, data);
+    if (_data.isCreating && widget.onCreate != null) {
+      return widget.onCreate!(context, _data);
     }
-    if (data.isDeleting && widget.onDelete != null) {
-      return widget.onDelete!(context, data);
+    if (_data.isDeleting && widget.onDelete != null) {
+      return widget.onDelete!(context, _data);
     }
-    if (data.isFetching && widget.onFetch != null) {
-      return widget.onFetch!(context, data);
+    if (_data.isFetching && widget.onFetch != null) {
+      return widget.onFetch!(context, _data);
     }
-    if (data.isUpdating && widget.onUpdate != null) {
-      return widget.onUpdate!(context, data);
+    if (_data.isUpdating && widget.onUpdate != null) {
+      return widget.onUpdate!(context, _data);
     }
-    if (data.isLoading && widget.onLoading != null) {
-      return widget.onLoading!(context, data);
+    if (_data.isLoading && widget.onLoading != null) {
+      return widget.onLoading!(context, _data);
     }
-    if (data.hasError && widget.onError != null) {
-      return widget.onError!(context, data);
+    if (_data.hasError && widget.onError != null) {
+      return widget.onError!(context, _data);
     }
-    if (data.isAvailable) {
-      return widget.onAvailable(context, data);
+    if (_data.isAvailable) {
+      return widget.onAvailable(context, _data);
     }
-    if (data.isNotAvailable && widget.onNotAvailable != null) {
-      return widget.onNotAvailable!(context, data);
+    if (_data.isNotAvailable && widget.onNotAvailable != null) {
+      return widget.onNotAvailable!(context, _data);
     }
     return (widget.orElse != null)
-        ? widget.orElse!(context, data)
+        ? widget.orElse!(context, _data)
         : widget.fallback;
   }
 
   @override
   void dispose() {
-    data.removeObserver(_observer);
+    _data.removeObserver(_observer);
     super.dispose();
   }
 }
