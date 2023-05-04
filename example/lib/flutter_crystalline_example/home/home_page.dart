@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         /// building title
-        title: WhenDataBuilder<String>(
+        title: WhenDataBuilder(
           observe: true,
           data: homeStore.title,
           onAvailable: (context, data) => Text(data.value),

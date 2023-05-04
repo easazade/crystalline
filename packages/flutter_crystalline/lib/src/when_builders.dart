@@ -2,7 +2,7 @@ import 'package:crystalline/crystalline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/src/builders.dart';
 
-class WhenDataBuilder<T> extends StatelessWidget {
+class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
   const WhenDataBuilder({
     super.key,
     required this.data,
@@ -19,19 +19,19 @@ class WhenDataBuilder<T> extends StatelessWidget {
     this.fallback = const SizedBox(),
   });
 
-  final Data<T> data;
+  final D data;
 
-  final DataWidgetBuilder<T> onAvailable;
-  final DataWidgetBuilder<T>? onNotAvailable;
+  final DataWidgetBuilder<T, D> onAvailable;
+  final DataWidgetBuilder<T, D>? onNotAvailable;
 
-  final DataWidgetBuilder<T>? onLoading;
-  final DataWidgetBuilder<T>? onCreate;
-  final DataWidgetBuilder<T>? onDelete;
-  final DataWidgetBuilder<T>? onFetch;
-  final DataWidgetBuilder<T>? onUpdate;
+  final DataWidgetBuilder<T, D>? onLoading;
+  final DataWidgetBuilder<T, D>? onCreate;
+  final DataWidgetBuilder<T, D>? onDelete;
+  final DataWidgetBuilder<T, D>? onFetch;
+  final DataWidgetBuilder<T, D>? onUpdate;
 
-  final DataWidgetBuilder<T>? onError;
-  final DataWidgetBuilder<T>? orElse;
+  final DataWidgetBuilder<T, D>? onError;
+  final DataWidgetBuilder<T, D>? orElse;
 
   final Widget fallback;
 
@@ -40,7 +40,7 @@ class WhenDataBuilder<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (observe) {
-      return _WhenDataRebuilder(
+      return _WhenDataRebuilder<T, D>(
         data: data,
         onAvailable: onAvailable,
         onNotAvailable: onNotAvailable,
@@ -83,7 +83,7 @@ class WhenDataBuilder<T> extends StatelessWidget {
   }
 }
 
-class _WhenDataRebuilder<T> extends StatefulWidget {
+class _WhenDataRebuilder<T, D extends Data<T>> extends StatefulWidget {
   const _WhenDataRebuilder({
     super.key,
     required this.data,
@@ -99,28 +99,30 @@ class _WhenDataRebuilder<T> extends StatefulWidget {
     this.fallback = const SizedBox(),
   });
 
-  final Data<T> data;
+  final D data;
 
-  final DataWidgetBuilder<T> onAvailable;
-  final DataWidgetBuilder<T>? onNotAvailable;
+  final DataWidgetBuilder<T, D> onAvailable;
+  final DataWidgetBuilder<T, D>? onNotAvailable;
 
-  final DataWidgetBuilder<T>? onLoading;
-  final DataWidgetBuilder<T>? onCreate;
-  final DataWidgetBuilder<T>? onDelete;
-  final DataWidgetBuilder<T>? onFetch;
-  final DataWidgetBuilder<T>? onUpdate;
+  final DataWidgetBuilder<T, D>? onLoading;
+  final DataWidgetBuilder<T, D>? onCreate;
+  final DataWidgetBuilder<T, D>? onDelete;
+  final DataWidgetBuilder<T, D>? onFetch;
+  final DataWidgetBuilder<T, D>? onUpdate;
 
-  final DataWidgetBuilder<T>? onError;
-  final DataWidgetBuilder<T>? orElse;
+  final DataWidgetBuilder<T, D>? onError;
+  final DataWidgetBuilder<T, D>? orElse;
 
   final Widget fallback;
 
   @override
-  State<_WhenDataRebuilder<T>> createState() => _WhenDataRebuilderState<T>();
+  State<_WhenDataRebuilder<T, D>> createState() =>
+      _WhenDataRebuilderState<T, D>();
 }
 
-class _WhenDataRebuilderState<T> extends State<_WhenDataRebuilder<T>> {
-  late Data<T> _data;
+class _WhenDataRebuilderState<T, D extends Data<T>>
+    extends State<_WhenDataRebuilder<T, D>> {
+  late D _data;
 
   late void Function() _observer = () => setState(() {});
 
@@ -132,7 +134,7 @@ class _WhenDataRebuilderState<T> extends State<_WhenDataRebuilder<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant _WhenDataRebuilder<T> oldWidget) {
+  void didUpdateWidget(covariant _WhenDataRebuilder<T, D> oldWidget) {
     if (oldWidget.data != widget.data) {
       oldWidget.data.removeObserver(_observer);
       _data = widget.data;

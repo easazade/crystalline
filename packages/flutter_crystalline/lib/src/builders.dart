@@ -1,12 +1,12 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:flutter/material.dart';
 
-typedef DataWidgetBuilder<T> = Widget Function(
+typedef DataWidgetBuilder<T, D extends Data<T>> = Widget Function(
   BuildContext context,
-  Data<T> data,
+  D data,
 );
 
-class DataBuilder<T> extends StatelessWidget {
+class DataBuilder<T, D extends Data<T>> extends StatelessWidget {
   const DataBuilder({
     Key? key,
     required this.data,
@@ -14,23 +14,23 @@ class DataBuilder<T> extends StatelessWidget {
     this.observe = false,
   }) : super(key: key);
 
-  final Data<T> data;
+  final D data;
   final bool observe;
 
-  final Widget Function(BuildContext context, Data<T> data) builder;
+  final Widget Function(BuildContext context, D data) builder;
 
   @override
   Widget build(BuildContext context) {
     if (observe) {
-      return _DataRebuilder<T>(data: data, builder: builder);
+      return _DataRebuilder<T, D>(data: data, builder: builder);
     }
     return builder(context, data);
   }
 }
 
-class _DataRebuilder<T> extends StatefulWidget {
-  final Data<T> data;
-  final Widget Function(BuildContext context, Data<T> data) builder;
+class _DataRebuilder<T, D extends Data<T>> extends StatefulWidget {
+  final D data;
+  final Widget Function(BuildContext context, D data) builder;
 
   const _DataRebuilder({
     Key? key,
@@ -39,11 +39,12 @@ class _DataRebuilder<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<_DataRebuilder<T>> createState() => _DataRebuilderState<T>();
+  State<_DataRebuilder<T, D>> createState() => _DataRebuilderState<T, D>();
 }
 
-class _DataRebuilderState<T> extends State<_DataRebuilder<T>> {
-  late Data<T> _data;
+class _DataRebuilderState<T, D extends Data<T>>
+    extends State<_DataRebuilder<T, D>> {
+  late D _data;
 
   late void Function() _observer = () => setState(() {});
 
@@ -55,7 +56,7 @@ class _DataRebuilderState<T> extends State<_DataRebuilder<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant _DataRebuilder<T> oldWidget) {
+  void didUpdateWidget(covariant _DataRebuilder<T, D> oldWidget) {
     if (oldWidget.data != widget.data) {
       _data = widget.data;
     }
