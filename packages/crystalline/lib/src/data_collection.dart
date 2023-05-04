@@ -6,7 +6,7 @@ typedef _DataPredicate<T> = bool Function(
     List<Data<T>> value, Operation operation, DataError? error)?;
 
 abstract class CollectionData<T> extends Data<List<Data<T>>>
-    with ListMixin<Data<T>> {
+    with IterableMixin<Data<T>> {
   List<Data<T>> get items;
 
   @override
@@ -36,15 +36,38 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.forEach((item) => item.removeObserver(observer));
   }
 
-  @override
   int get length => items.length;
 
-  @override
   Data<T> operator [](int index) => items[index];
 
-  @override
   void operator []=(int index, Data<T> value) {
     items[index] = value;
+    _notifyObservers();
+  }
+
+  Data<T> removeAt(int index) {
+    final removedItem = items.removeAt(index);
+    _notifyObservers();
+    return removedItem;
+  }
+
+  void add(Data<T> data) {
+    items.add(data);
+    _notifyObservers();
+  }
+
+  void insert(int index, Data<T> data) {
+    items.insert(index, data);
+    _notifyObservers();
+  }
+
+  void addAll(Iterable<Data<T>> list) {
+    items.addAll(list);
+    _notifyObservers();
+  }
+
+  void removeWhere(bool Function(Data<T> element) test) {
+    items.removeWhere(test);
     _notifyObservers();
   }
 
@@ -54,6 +77,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.clear();
     items.addAll(newItems);
     _notifyObserverIsAllowed = true;
+    _notifyObservers();
   }
 
   Future<void> modifyAsync(
@@ -63,11 +87,6 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.clear();
     items.addAll(newItems);
     _notifyObserverIsAllowed = true;
-  }
-
-  @override
-  set length(int newLength) {
-    items.length = length;
     _notifyObservers();
   }
 
@@ -75,6 +94,9 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     if (_notifyObserverIsAllowed)
       observers.forEach((observer) => observer.call());
   }
+
+  @override
+  Iterator<Data<T>> get iterator => items.iterator;
 }
 
 class ListData<T> extends CollectionData<T> {
