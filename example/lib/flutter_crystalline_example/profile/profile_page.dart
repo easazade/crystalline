@@ -24,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           DataBuilder(
             data: profileStore,
-            listen: true,
+            observe: true,
             builder: (context, _) {
               print('updating profile page widget');
               return Text(profileStore.toString());

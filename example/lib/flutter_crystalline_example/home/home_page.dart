@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         /// building title
         title: WhenDataBuilder<String>(
-          listen: true,
+          observe: true,
           data: homeStore.title,
           onAvailable: (context, data) => Text(data.value),
           onLoading: (context, data) => SizedBox(
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           WhenDataBuilder(
             data: homeStore.number,
-            listen: true,
+            observe: true,
             onAvailable: (context, data) => SizedBox(
               width: 54,
               height: 54,
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
             ),
             WhenDataBuilder(
               data: homeStore.number,
-              listen: true,
+              observe: true,
               onAvailable: (context, data) => SizedBox(
                 width: 54,
                 height: 54,
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
             ),
             WhenDataBuilder(
               data: homeStore.number,
-              listen: true,
+              observe: true,
               onAvailable: (context, data) => SizedBox(
                 width: 54,
                 height: 54,
@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
             ),
             DataBuilder(
               data: homeStore,
-              listen: true,
+              observe: true,
               builder: (context, _) {
                 print('home store being rebuilt');
                 if (homeStore.isLoading) {
@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             WhenDataBuilder(
-              listen: true,
+              observe: true,
               data: homeStore,
               onAvailable: (context, _) => Text('home store available'),
               onLoading: (context, _) => Text(

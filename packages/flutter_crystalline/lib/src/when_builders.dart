@@ -15,7 +15,7 @@ class WhenDataBuilder<T> extends StatelessWidget {
     this.onFetch,
     this.onError,
     this.orElse,
-    this.listen = false,
+    this.observe = false,
     this.fallback = const SizedBox(),
   });
 
@@ -35,11 +35,11 @@ class WhenDataBuilder<T> extends StatelessWidget {
 
   final Widget fallback;
 
-  final bool listen;
+  final bool observe;
 
   @override
   Widget build(BuildContext context) {
-    if (listen) {
+    if (observe) {
       return _WhenDataRebuilder(
         data: data,
         onAvailable: onAvailable,

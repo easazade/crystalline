@@ -49,7 +49,7 @@ abstract class EditableData<T> {
   void set error(DataError? error);
 }
 
-abstract class ListenableData<T> {
+abstract class ObservableData<T> {
   void addObserver(void Function() observer);
 
   void removeObserver(void Function() observer);
@@ -68,7 +68,7 @@ class DataError {
   String toString() => '${super.toString()}\n$message\n';
 }
 
-class Data<T> implements ReadableData<T>, EditableData<T>, ListenableData<T> {
+class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
   T? _value;
   DataError? _error;
   Operation _operation;

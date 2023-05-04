@@ -11,17 +11,17 @@ class DataBuilder<T> extends StatelessWidget {
     Key? key,
     required this.data,
     required this.builder,
-    this.listen = false,
+    this.observe = false,
   }) : super(key: key);
 
   final Data<T> data;
-  final bool listen;
+  final bool observe;
 
   final Widget Function(BuildContext context, Data<T> data) builder;
 
   @override
   Widget build(BuildContext context) {
-    if (listen) {
+    if (observe) {
       return _DataRebuilder<T>(data: data, builder: builder);
     }
     return builder(context, data);
