@@ -13,70 +13,73 @@ void main() {
     data = Data();
   });
 
-  testWidgets('Should observe data and udpate builder when data updated',
-      (tester) async {
-    await tester.pumpWidget(
-      Testable(
-        child: DataBuilder<String, Data<String>>(
-          data: data,
-          observe: true,
-          builder: (context, data) {
-            if (data.isAvailable)
-              return Text(data.value);
-            else
-              return Container();
-          },
+  testWidgets(
+    'Should observe data and udpate builder when data updated',
+    (tester) async {
+      await tester.pumpWidget(
+        Testable(
+          child: DataBuilder<String, Data<String>>(
+            data: data,
+            observe: true,
+            builder: (context, data) {
+              if (data.isAvailable)
+                return Text(data.value);
+              else
+                return Container();
+            },
+          ),
         ),
-      ),
-    );
+      );
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    expect(find.byType(Container), matchers.findsOneWidget);
-    expect(find.text('text'), matchers.findsNothing);
+      expect(find.byType(Container), matchers.findsOneWidget);
+      expect(find.text('text'), matchers.findsNothing);
 
-    // when data value changes
-    data.value = 'text';
+      // when data value changes
+      data.value = 'text';
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    // expect
-    expect(find.text('text'), matchers.findsOneWidget);
-    expect(find.byType(Container), matchers.findsNothing);
-  });
+      // expect
+      expect(find.text('text'), matchers.findsOneWidget);
+      expect(find.byType(Container), matchers.findsNothing);
+    },
+  );
 
   testWidgets(
-      'Should not udpate builder when ever data updated and observe property of DataBuilder is not set to true',
-      (tester) async {
-    await tester.pumpWidget(
-      Testable(
-        child: DataBuilder<String, Data<String>>(
-          data: data,
-          // observe: true,
-          builder: (context, data) {
-            if (data.isAvailable)
-              return Text(data.value);
-            else
-              return Container();
-          },
+    'Should not udpate builder when ever data updated and observe property of DataBuilder is not set to true',
+    (tester) async {
+      await tester.pumpWidget(
+        Testable(
+          child: DataBuilder<String, Data<String>>(
+            data: data,
+            // observe: true,
+            builder: (context, data) {
+              if (data.isAvailable)
+                return Text(data.value);
+              else
+                return Container();
+            },
+          ),
         ),
-      ),
-    );
+      );
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    expect(find.byType(Container), matchers.findsOneWidget);
-    expect(find.text('text'), matchers.findsNothing);
+      expect(find.byType(Container), matchers.findsOneWidget);
+      expect(find.text('text'), matchers.findsNothing);
 
-    // when data value changes
-    data.value = 'text';
+      // when data value changes
+      data.value = 'text';
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    // expect no update from DataBuilder
-    expect(find.byType(Container), matchers.findsOneWidget);
-    expect(find.text('text'), matchers.findsNothing);
-  });
+      // expect no update from DataBuilder
+      expect(find.byType(Container), matchers.findsOneWidget);
+      expect(find.text('text'), matchers.findsNothing);
+    },
+  );
 
   testWidgets(
     'Builder should update widget when operation is '
