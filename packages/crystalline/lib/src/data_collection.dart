@@ -22,8 +22,6 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   bool _notifyObserverIsAllowed = true;
 
-  bool get availableWhenEmpty => true;
-
   @override
   void addObserver(void Function() observer) {
     super.addObserver(observer);
