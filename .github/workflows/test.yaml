@@ -15,9 +15,10 @@ jobs:
         sdk: [stable]
     steps:
       - uses: actions/checkout@v2
-      - uses: dart-lang/setup-dart@v1
+      - uses: flutter-actions/setup-flutter@v2
         with:
-          sdk: ${{ matrix.sdk }}
+          channel: stable
+          version: latest
 
       - name: Install melos
         run: dart pub global activate melos 3.0.1
