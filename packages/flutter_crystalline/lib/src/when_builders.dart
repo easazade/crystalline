@@ -6,8 +6,8 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
   const WhenDataBuilder({
     super.key,
     required this.data,
-    required this.onAvailable,
-    this.onNotAvailable,
+    required this.onValue,
+    this.onNoValue,
     this.onLoading,
     this.onUpdate,
     this.onCreate,
@@ -21,8 +21,8 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
 
   final D data;
 
-  final DataWidgetBuilder<T, D> onAvailable;
-  final DataWidgetBuilder<T, D>? onNotAvailable;
+  final DataWidgetBuilder<T, D> onValue;
+  final DataWidgetBuilder<T, D>? onNoValue;
 
   final DataWidgetBuilder<T, D>? onLoading;
   final DataWidgetBuilder<T, D>? onCreate;
@@ -42,8 +42,8 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     if (observe) {
       return _WhenDataRebuilder<T, D>(
         data: data,
-        onAvailable: onAvailable,
-        onNotAvailable: onNotAvailable,
+        onValue: onValue,
+        onNoValue: onNoValue,
         onLoading: onLoading,
         onUpdate: onUpdate,
         onCreate: onCreate,
@@ -73,11 +73,11 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     if (data.hasError && onError != null) {
       return onError!(context, data);
     }
-    if (data.isAvailable) {
-      return onAvailable(context, data);
+    if (data.hasValue) {
+      return onValue(context, data);
     }
-    if (data.isNotAvailable && onNotAvailable != null) {
-      return onNotAvailable!(context, data);
+    if (data.hasNoValue && onNoValue != null) {
+      return onNoValue!(context, data);
     }
     return (orElse != null) ? orElse!(context, data) : fallback;
   }
@@ -87,8 +87,8 @@ class _WhenDataRebuilder<T, D extends Data<T>> extends StatefulWidget {
   const _WhenDataRebuilder({
     super.key,
     required this.data,
-    required this.onAvailable,
-    this.onNotAvailable,
+    required this.onValue,
+    this.onNoValue,
     this.onLoading,
     this.onUpdate,
     this.onCreate,
@@ -101,8 +101,8 @@ class _WhenDataRebuilder<T, D extends Data<T>> extends StatefulWidget {
 
   final D data;
 
-  final DataWidgetBuilder<T, D> onAvailable;
-  final DataWidgetBuilder<T, D>? onNotAvailable;
+  final DataWidgetBuilder<T, D> onValue;
+  final DataWidgetBuilder<T, D>? onNoValue;
 
   final DataWidgetBuilder<T, D>? onLoading;
   final DataWidgetBuilder<T, D>? onCreate;
@@ -163,11 +163,11 @@ class _WhenDataRebuilderState<T, D extends Data<T>>
     if (_data.hasError && widget.onError != null) {
       return widget.onError!(context, _data);
     }
-    if (_data.isAvailable) {
-      return widget.onAvailable(context, _data);
+    if (_data.hasValue) {
+      return widget.onValue(context, _data);
     }
-    if (_data.isNotAvailable && widget.onNotAvailable != null) {
-      return widget.onNotAvailable!(context, _data);
+    if (_data.hasNoValue && widget.onNoValue != null) {
+      return widget.onNoValue!(context, _data);
     }
     return (widget.orElse != null)
         ? widget.orElse!(context, _data)

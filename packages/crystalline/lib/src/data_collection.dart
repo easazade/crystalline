@@ -102,8 +102,8 @@ class ListData<T> extends CollectionData<T> {
     this.items, {
     this.isLoadingStrategy,
     this.hasErrorStrategy,
-    this.isAvailableStrategy,
-    this.isNotAvailableStrategy,
+    this.hasValueStrategy,
+    this.hasNoValueStrategy,
     this.isCreatingStrategy,
     this.isDeletingStrategy,
     this.isFetchingStrategy,
@@ -115,8 +115,8 @@ class ListData<T> extends CollectionData<T> {
 
   final _DataPredicate<T> isLoadingStrategy;
   final _DataPredicate<T> hasErrorStrategy;
-  final _DataPredicate<T> isAvailableStrategy;
-  final _DataPredicate<T> isNotAvailableStrategy;
+  final _DataPredicate<T> hasValueStrategy;
+  final _DataPredicate<T> hasNoValueStrategy;
   final _DataPredicate<T> isCreatingStrategy;
   final _DataPredicate<T> isDeletingStrategy;
   final _DataPredicate<T> isFetchingStrategy;
@@ -135,15 +135,15 @@ class ListData<T> extends CollectionData<T> {
   }
 
   @override
-  bool get isAvailable {
-    return isAvailableStrategy?.call(value, operation, errorOrNull) ??
-        super.isAvailable;
+  bool get hasValue {
+    return hasValueStrategy?.call(value, operation, errorOrNull) ??
+        super.hasValue;
   }
 
   @override
-  bool get isNotAvailable {
-    return isNotAvailableStrategy?.call(value, operation, errorOrNull) ??
-        super.isNotAvailable;
+  bool get hasNoValue {
+    return hasNoValueStrategy?.call(value, operation, errorOrNull) ??
+        super.hasNoValue;
   }
 
   @override

@@ -22,7 +22,7 @@ void main() {
             data: data,
             observe: true,
             builder: (context, data) {
-              if (data.isAvailable)
+              if (data.hasValue)
                 return Text(data.value);
               else
                 return Container();
@@ -56,7 +56,7 @@ void main() {
             data: data,
             // observe: true,
             builder: (context, data) {
-              if (data.isAvailable)
+              if (data.hasValue)
                 return Text(data.value);
               else
                 return Container();

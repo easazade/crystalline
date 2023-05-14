@@ -28,9 +28,9 @@ abstract class ReadableData<T> {
 
   DataError get consumeError;
 
-  bool get isAvailable;
+  bool get hasValue;
 
-  bool get isNotAvailable;
+  bool get hasNoValue;
 
   bool get isLoading;
 
@@ -121,10 +121,10 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
   bool get hasError => _error != null;
 
   @override
-  bool get isAvailable => _value != null;
+  bool get hasValue => _value != null;
 
   @override
-  bool get isNotAvailable => !isAvailable;
+  bool get hasNoValue => !hasValue;
 
   @override
   bool get isCreating => _operation == Operation.create;
@@ -148,9 +148,9 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
 
   @override
   bool valueEqualsTo(T? otherValue) {
-    if (isAvailable) {
+    if (hasValue) {
       return _value == otherValue;
-    } else if (otherValue == null && isNotAvailable) {
+    } else if (otherValue == null && hasNoValue) {
       return true;
     }
 

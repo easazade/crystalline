@@ -21,8 +21,8 @@ void main() {
             child: WhenDataBuilder<String, Data<String>>(
               data: data,
               observe: true,
-              onAvailable: (context, data) => Text(data.value),
-              onNotAvailable: (context, data) => Text('data has no value'),
+              onValue: (context, data) => Text(data.value),
+              onNoValue: (context, data) => Text('data has no value'),
               onCreate: (context, data) => Text(data.operation.name),
               onLoading: (context, data) => Text(data.operation.name),
               onFetch: (context, data) => Text(data.operation.name),
@@ -76,8 +76,8 @@ void main() {
             child: WhenDataBuilder<String, Data<String>>(
               data: data,
               // observe: true,
-              onAvailable: (context, data) => Text(data.value),
-              onNotAvailable: (context, data) => Text('data has no value'),
+              onValue: (context, data) => Text(data.value),
+              onNoValue: (context, data) => Text('data has no value'),
               onCreate: (context, data) => Text(data.operation.name),
               onLoading: (context, data) => Text(data.operation.name),
               onFetch: (context, data) => Text(data.operation.name),
@@ -131,8 +131,8 @@ void main() {
             child: WhenDataBuilder<String, Data<String>>(
               data: data,
               observe: true,
-              onAvailable: (context, data) => Text(data.value),
-              onNotAvailable: (context, data) => Text('data has no value'),
+              onValue: (context, data) => Text(data.value),
+              onNoValue: (context, data) => Text('data has no value'),
               onLoading: (context, data) => Text('loading'),
               orElse: (context, data) => Text('or else'),
               // onCreate: (context, data) => Text(data.operation.name),
@@ -179,17 +179,17 @@ void main() {
 
     testWidgets(
       'WhenDataBuilder orElse should be called when data has no value '
-      'and onNotAvailable callback is not implemented',
+      'and onNoValue callback is not implemented',
       (tester) async {
         await tester.pumpWidget(
           Testable(
             child: WhenDataBuilder<String, Data<String>>(
               data: data,
               observe: true,
-              onAvailable: (context, data) => Text(data.value),
+              onValue: (context, data) => Text(data.value),
               onLoading: (context, data) => Text('loading'),
               orElse: (context, data) => Text('or else'),
-              // onNotAvailable: (context, data) => Text('data has no value'),
+              // onNoValue: (context, data) => Text('data has no value'),
               // onCreate: (context, data) => Text(data.operation.name),
               // onFetch: (context, data) => Text(data.operation.name),
               // onDelete: (context, data) => Text(data.operation.name),
@@ -238,14 +238,14 @@ void main() {
 
     testWidgets(
       'WhenDataBuilder orElse should be called when data has no value '
-      'and onNotAvailable callback is not implemented',
+      'and onNoValue callback is not implemented',
       (tester) async {
         await tester.pumpWidget(
           Testable(
             child: WhenDataBuilder<String, Data<String>>(
               data: data,
               observe: true,
-              onAvailable: (context, data) => Text(data.value),
+              onValue: (context, data) => Text(data.value),
               onLoading: (context, data) => Text('loading'),
               orElse: (context, data) => Text('or else'),
             ),
@@ -300,7 +300,7 @@ void main() {
             child: WhenDataBuilder<String, Data<String>>(
               data: data,
               observe: true,
-              onAvailable: (context, data) => Text(data.value),
+              onValue: (context, data) => Text(data.value),
               onLoading: (context, data) => Text('loading'),
               orElse: (context, data) => Text('or else'),
               onError: (context, data) => Text(data.error.message),

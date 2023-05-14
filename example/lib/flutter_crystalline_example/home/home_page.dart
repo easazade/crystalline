@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
         title: WhenDataBuilder(
           observe: true,
           data: homeStore.title,
-          onAvailable: (context, data) => Text(data.value),
+          onValue: (context, data) => Text(data.value),
           onLoading: (context, data) => SizedBox(
             height: 14,
             width: 14,
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
           WhenDataBuilder(
             data: homeStore.number,
             observe: true,
-            onAvailable: (context, data) => SizedBox(
+            onValue: (context, data) => SizedBox(
               width: 54,
               height: 54,
               child: Center(
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
             WhenDataBuilder(
               data: homeStore.number,
               observe: true,
-              onAvailable: (context, data) => SizedBox(
+              onValue: (context, data) => SizedBox(
                 width: 54,
                 height: 54,
                 child: Center(
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
             WhenDataBuilder(
               data: homeStore.number,
               observe: true,
-              onAvailable: (context, data) => SizedBox(
+              onValue: (context, data) => SizedBox(
                 width: 54,
                 height: 54,
                 child: Center(
@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
             WhenDataBuilder(
               observe: true,
               data: homeStore,
-              onAvailable: (context, _) => Text('home store available'),
+              onValue: (context, _) => Text('home store available'),
               onLoading: (context, _) => Text(
                 'on of required data in Home Store'
                 ' has null value aka not available',

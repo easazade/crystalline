@@ -5,7 +5,7 @@ class ValueNotAvailableException implements Exception {
   String toString() {
     return '${super.toString()}\n'
         'Data has no value please check for availability of value in Data before calling value\n'
-        'this can be done by calling `isAvailable` getter method first'
+        'this can be done by calling `hasValue` getter method first'
         '\n';
   }
 }
