@@ -69,9 +69,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ElevatedButton(
               child: Text('Change Number'),
-              onPressed: () {
-                homeStore.changeNumber();
-              },
+              onPressed: () => homeStore.changeNumber(),
             ),
             WhenDataBuilder(
               data: homeStore.number,

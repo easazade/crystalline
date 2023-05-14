@@ -2,7 +2,7 @@ import 'package:flutter_crystalline/flutter_crystalline.dart';
 
 final homeStore = HomeStore._();
 
-class HomeStore extends ChangeNotifierData {
+class HomeStore extends Store {
   HomeStore._();
 
   final Data<String> title = Data(value: 'THIS TITLE');
