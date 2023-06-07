@@ -1,12 +1,10 @@
-import 'dart:collection';
-
 import 'package:crystalline/src/data.dart';
 
 typedef _DataPredicate<T> = bool Function(
     List<Data<T>> value, Operation operation, DataError? error)?;
 
 abstract class CollectionData<T> extends Data<List<Data<T>>>
-    with IterableMixin<Data<T>> {
+    with Iterable<Data<T>> {
   List<Data<T>> get items;
 
   @override

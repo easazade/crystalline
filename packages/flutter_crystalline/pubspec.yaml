@@ -4,8 +4,8 @@ version: 0.1.3
 homepage: https://github.com/easazade/crystalline
 
 environment:
-  sdk: ">=2.19.2 <3.0.0"
-  flutter: ">=3.0.0"
+  sdk: ">=3.0.3 <4.0.0"
+  flutter: ">=3.10.4"
 
 dependencies:
   flutter:
