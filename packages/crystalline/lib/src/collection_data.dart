@@ -29,7 +29,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   @override
   void removeObserver(void Function() observer) {
     super.removeObserver(observer);
-    items.forEach((item) => item.removeObserver(observer));
+    items.forEach((e) => e.removeObserver(observer));
   }
 
   @override
@@ -49,6 +49,12 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     _removeObserversFromItem(removedItem);
     _notifyObservers();
     return removedItem;
+  }
+
+  void removeAll() {
+    items.forEach((e) => _removeObserversFromItem(e));
+    items.clear();
+    _notifyObservers();
   }
 
   void add(Data<T> data) {
@@ -82,8 +88,10 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   void modify(Iterable<Data<T>> Function(List<Data<T>> items) modifier) {
     _notifyObserverIsAllowed = false;
     final newItems = modifier(items);
+    items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
+    items.forEach((e) => _addObserversToItem(e));
     _notifyObserverIsAllowed = true;
     _notifyObservers();
   }
@@ -92,8 +100,10 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
       Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
     _notifyObserverIsAllowed = false;
     final newItems = await modifier(items);
+    items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
+    items.forEach((e) => _addObserversToItem(e));
     _notifyObserverIsAllowed = true;
     _notifyObservers();
   }
