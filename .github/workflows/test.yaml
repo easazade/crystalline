@@ -24,7 +24,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           # 11
-          flutter-version: "3.7.11"
+          flutter-version: "3.10.4"
           channel: "stable"
 
       - name: Install melos
