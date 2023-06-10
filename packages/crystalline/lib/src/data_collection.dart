@@ -5,6 +5,8 @@ typedef _DataPredicate<T> = bool Function(
 
 abstract class CollectionData<T> extends Data<List<Data<T>>>
     with Iterable<Data<T>> {
+  bool _notifyObserverIsAllowed = true;
+
   List<Data<T>> get items;
 
   @override
@@ -18,8 +20,6 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     );
   }
 
-  bool _notifyObserverIsAllowed = true;
-
   @override
   void addObserver(void Function() observer) {
     super.addObserver(observer);
@@ -32,6 +32,9 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.forEach((item) => item.removeObserver(observer));
   }
 
+  @override
+  Iterator<Data<T>> get iterator => items.iterator;
+
   int get length => items.length;
 
   Data<T> operator [](int index) => items[index];
@@ -43,26 +46,35 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   Data<T> removeAt(int index) {
     final removedItem = items.removeAt(index);
+    _removeObserversFromItem(removedItem);
     _notifyObservers();
     return removedItem;
   }
 
   void add(Data<T> data) {
     items.add(data);
+    _addObserversToItem(data);
     _notifyObservers();
   }
 
   void insert(int index, Data<T> data) {
     items.insert(index, data);
+    _addObserversToItem(data);
     _notifyObservers();
   }
 
   void addAll(Iterable<Data<T>> list) {
     items.addAll(list);
+    for (var item in list) {
+      _addObserversToItem(item);
+    }
     _notifyObservers();
   }
 
   void removeWhere(bool Function(Data<T> element) test) {
+    for (var item in items.where(test)) {
+      _removeObserversFromItem(item);
+    }
     items.removeWhere(test);
     _notifyObservers();
   }
@@ -91,8 +103,17 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
       observers.forEach((observer) => observer.call());
   }
 
-  @override
-  Iterator<Data<T>> get iterator => items.iterator;
+  void _removeObserversFromItem(Data<T> item) {
+    for (var observer in observers) {
+      item.removeObserver(observer);
+    }
+  }
+
+  void _addObserversToItem(Data<T> item) {
+    for (var observer in observers) {
+      item.addObserver(observer);
+    }
+  }
 }
 
 class ListData<T> extends CollectionData<T> {
