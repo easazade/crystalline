@@ -1,12 +1,12 @@
 import 'package:crystalline/src/exceptions.dart';
 
 enum Operation {
-  loading(1),
-  update(2),
-  delete(3),
-  fetch(4),
-  create(5),
-  none(6);
+  loading(0),
+  update(1),
+  delete(2),
+  fetch(3),
+  create(4),
+  none(5);
 
   final int id;
 
