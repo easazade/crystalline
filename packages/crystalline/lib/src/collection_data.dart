@@ -129,6 +129,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 class ListData<T> extends CollectionData<T> {
   ListData(
     this.items, {
+    Operation operation = Operation.none,
+    DataError? error,
     this.isLoadingStrategy,
     this.hasErrorStrategy,
     this.hasValueStrategy,
@@ -137,7 +139,10 @@ class ListData<T> extends CollectionData<T> {
     this.isDeletingStrategy,
     this.isFetchingStrategy,
     this.isUpdatingStrategy,
-  });
+  }) {
+    this.operation = operation;
+    this.error = error;
+  }
 
   @override
   final List<Data<T>> items;
@@ -198,4 +203,11 @@ class ListData<T> extends CollectionData<T> {
     return isUpdatingStrategy?.call(value, operation, errorOrNull) ??
         super.isUpdating;
   }
+
+  @override
+  ListData<T> copy() => ListData(
+        items.toList().map((data) => data.copy()).toList(),
+        operation: this.operation,
+        error: this.errorOrNull,
+      );
 }
