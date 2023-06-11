@@ -124,6 +124,13 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
       item.addObserver(observer);
     }
   }
+
+  @override
+  CollectionData<T> copy() => ListData(
+        items.toList().map((data) => data.copy()).toList(),
+        operation: this.operation,
+        error: this.errorOrNull,
+      );
 }
 
 class ListData<T> extends CollectionData<T> {
