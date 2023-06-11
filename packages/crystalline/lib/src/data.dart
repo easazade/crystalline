@@ -1,18 +1,25 @@
 import 'package:crystalline/src/exceptions.dart';
 
-enum Operation {
-  loading(0),
-  update(1),
-  delete(2),
-  fetch(3),
-  create(4),
-  none(5);
+class Operation {
+  static const Operation loading = Operation('loading');
+  static const Operation update = Operation('update');
+  static const Operation delete = Operation('delete');
+  static const Operation fetch = Operation('fetch');
+  static const Operation create = Operation('create');
+  static const Operation none = Operation('none');
 
-  final int id;
+  static final defaultOperations = [
+    loading,
+    update,
+    delete,
+    fetch,
+    create,
+    none,
+  ];
 
-  const Operation(this.id);
+  final String name;
 
-  factory Operation.fromId(int id) => values.firstWhere((e) => e.id == id);
+  const Operation(this.name);
 }
 
 abstract class ReadableData<T> {

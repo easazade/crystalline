@@ -27,7 +27,7 @@ void main() {
 
   test('Should set the operation', () {
     expect(data.operation, Operation.none);
-    final expectedOperation = Operation.values.randomItem!;
+    final expectedOperation = Operation.defaultOperations.randomItem!;
     data.operation = expectedOperation;
     expect(data.operation, expectedOperation);
   });
