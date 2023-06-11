@@ -1,15 +1,14 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
+import 'utils.dart';
+
 void main() {
   late ListData<String> listData;
-
   late List<Data<String>> items1;
-
   late List<Data<String>> items2;
-
-  Data<String> singleItem = Data(value: 'tomato');
-
+  late Data<String> singleItem;
+  late ListDataTestObserver<String> testObserver;
   final observer = () {};
 
   setUp(() {
@@ -19,6 +18,7 @@ void main() {
         .toList();
     items2 = ['book', 'pencil', 'eraser'].map((e) => Data(value: e)).toList();
     singleItem = Data(value: 'tomato');
+    testObserver = DataTestObserver(listData);
   });
 
   test('Should return correct length of items', () {
@@ -34,6 +34,7 @@ void main() {
     listData.insert(0, singleItem);
     expect(listData.length, 1);
     expect(listData.first, singleItem);
+    expect(testObserver.timesUpdated, 1);
   });
 
   test('Should add Item', () {
@@ -41,6 +42,7 @@ void main() {
     listData.add(singleItem);
     expect(listData.length, 1);
     expect(listData.first, singleItem);
+    expect(testObserver.timesUpdated, 1);
   });
 
   test('Should add all Item', () {
@@ -49,6 +51,7 @@ void main() {
     expect(listData.length, items1.length);
     expect(listData.first, items1.first);
     expect(listData.items, items1);
+    expect(testObserver.timesUpdated, 1);
   });
 
   test('Should remove Item', () {
@@ -56,6 +59,7 @@ void main() {
     final firstItem = listData.first;
     final removedItem = listData.removeAt(0);
     expect(removedItem, firstItem);
+    expect(testObserver.timesUpdated, 2);
   });
 
   test('Should modify list', () {
@@ -63,6 +67,7 @@ void main() {
     expect(listData.items, items1);
     listData.modify((items) => items2);
     expect(listData.items, items2);
+    expect(testObserver.timesUpdated, 2);
   });
 
   test('Should modify list async', () async {
@@ -70,6 +75,7 @@ void main() {
     expect(listData.items, items1);
     await listData.modifyAsync((items) => Future.value(items2));
     expect(listData.items, items2);
+    expect(testObserver.timesUpdated, 2);
   });
 
   test('Should add observer on list and all its items using addObserver', () {
@@ -77,11 +83,12 @@ void main() {
     expect(listData.items, items1);
 
     // items should have no observer
-    listData.forEach((e) => expect(e.observers, isEmpty));
+    listData.forEach((e) => expect(e.observers.contains(observer), isFalse));
 
     // when added an observer it should be added on all data items
     listData.addObserver(observer);
     items1.forEach((e) => expect(e.observers, contains(observer)));
+    expect(testObserver.timesUpdated, 1);
   });
 
   test(
@@ -91,7 +98,7 @@ void main() {
       expect(listData.items, items1);
 
       // items should have no observer
-      listData.forEach((e) => expect(e.observers, isEmpty));
+      listData.forEach((e) => expect(e.observers.contains(observer), isFalse));
 
       // when added an observer it should be added on all data items
       listData.addObserver(observer);
@@ -100,8 +107,9 @@ void main() {
 
       // when removed an observer it should be removed from all data items and ListData itself
       listData.removeObserver(observer);
-      items1.forEach((e) => expect(e.observers, isEmpty));
-      expect(listData.observers, isEmpty);
+      items1.forEach((e) => expect(e.observers.contains(observer), isFalse));
+      expect(listData.observers.contains(observer), isFalse);
+      expect(testObserver.timesUpdated, 1);
     },
   );
 
@@ -110,7 +118,7 @@ void main() {
     expect(listData.items, items1);
 
     // items should have no observer
-    listData.forEach((e) => expect(e.observers, isEmpty));
+    listData.forEach((e) => expect(e.observers.contains(observer), isFalse));
 
     // when added an observer it should be added on all data items
     listData.addObserver(observer);
@@ -120,10 +128,11 @@ void main() {
     listData.modify((items) => items2);
 
     // expect observer should be removed from removed items
-    items1.forEach((e) => expect(e.observers, isEmpty));
+    items1.forEach((e) => expect(e.observers.contains(observer), isFalse));
 
     // expect new items should have the observer
     items2.forEach((e) => expect(e.observers, contains(observer)));
+    expect(testObserver.timesUpdated, 2);
   });
 
   test('Should add observer to new item after it is added', () {
@@ -132,6 +141,7 @@ void main() {
     listData.addObserver(observer);
     listData.add(singleItem);
     expect(singleItem.observers, contains(observer));
+    expect(testObserver.timesUpdated, 2);
   });
 
   test(
@@ -142,6 +152,7 @@ void main() {
       listData.addObserver(observer);
       listData.insert(0, singleItem);
       expect(singleItem.observers, contains(observer));
+      expect(testObserver.timesUpdated, 2);
     },
   );
 
@@ -151,40 +162,46 @@ void main() {
     expect(singleItem.observers, contains(observer));
     listData.removeAt(0);
     expect(singleItem.observers, isEmpty);
+    expect(testObserver.timesUpdated, 2);
   });
 
   test('Should notify observers when a single item is udpated', () {
     final expectedValue = 'peach!!';
-    String actualValue = '';
-
     listData.add(singleItem);
-    listData.addObserver(() => actualValue = listData[0].value);
 
     singleItem.value = expectedValue;
+    testObserver.expectNthUpdate(2, (list) {
+      expect(list.first.value, expectedValue);
+      expect(list.first.value, listData.first.value);
+    });
 
-    expect(actualValue, expectedValue);
+    expect(testObserver.timesUpdated, 2);
   });
 
   test('Should notify observers when a single item operation is updated', () {
     final expectedOperation = Operation.loading;
-    Operation? actualOperation;
 
     listData.add(singleItem);
-    listData.addObserver(() => actualOperation = listData[0].operation);
 
     singleItem.operation = expectedOperation;
-    expect(actualOperation, expectedOperation);
+    testObserver.expectNthUpdate(2, (list) {
+      expect(list.first.operation, expectedOperation);
+      expect(list.first.operation, listData.first.operation);
+    });
+    expect(testObserver.timesUpdated, 2);
   });
 
   test('Should notify observers when item in list has an error', () {
     final expectedError = DataError('message', Exception('message of'));
-    DataError? actualError;
 
     listData.add(singleItem);
-    listData.addObserver(() => actualError = listData[0].error);
 
     singleItem.error = expectedError;
-    expect(actualError, expectedError);
+    testObserver.expectNthUpdate(2, (list) {
+      expect(list.first.error, expectedError);
+      expect(list.first.error, listData.first.error);
+    });
+    expect(testObserver.timesUpdated, 2);
   });
 
   test(
@@ -195,6 +212,8 @@ void main() {
       listData.addAll([foo, bar]);
       listData.removeWhere((e) => e.value == 'foo');
       expect(listData[0], bar);
+      expect(listData.length, 1);
+      expect(testObserver.timesUpdated, 2);
     },
   );
 }
