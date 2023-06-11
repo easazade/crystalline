@@ -34,7 +34,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
 
   final DataWidgetBuilder<T, D>? onError;
 
-  /// called when there is no corresponding builder method for 
+  /// called when there is no corresponding builder method for
   /// the given status (operation/value/error)
   final DataWidgetBuilder<T, D>? orElse;
 

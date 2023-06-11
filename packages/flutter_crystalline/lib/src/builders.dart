@@ -64,9 +64,7 @@ class _DataRebuilderState<T, D extends Data<T>>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return widget.builder(context, _data);
-  }
+  Widget build(BuildContext context) => widget.builder(context, _data);
 
   @override
   void dispose() {
