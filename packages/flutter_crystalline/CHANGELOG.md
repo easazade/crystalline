@@ -1,6 +1,12 @@
+## 0.2.4
+
+- Add support for custom operations
+- Fix builders callbacks not showing the correct data parameter
+- Add tests
+
 ## 0.1.3
 
-- change name of listen property to observe in builders 
+- change name of listen property to observe in builders
 
 ## 0.1.2
 
