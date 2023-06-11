@@ -146,6 +146,7 @@ class ListData<T> extends CollectionData<T> {
     this.isDeletingStrategy,
     this.isFetchingStrategy,
     this.isUpdatingStrategy,
+    this.hasCustomOperationStrategy,
   }) {
     this.operation = operation;
     this.error = error;
@@ -162,6 +163,7 @@ class ListData<T> extends CollectionData<T> {
   final _DataPredicate<T> isDeletingStrategy;
   final _DataPredicate<T> isFetchingStrategy;
   final _DataPredicate<T> isUpdatingStrategy;
+  final _DataPredicate<T> hasCustomOperationStrategy;
 
   @override
   bool get isLoading {
@@ -209,6 +211,12 @@ class ListData<T> extends CollectionData<T> {
   bool get isUpdating {
     return isUpdatingStrategy?.call(value, operation, errorOrNull) ??
         super.isUpdating;
+  }
+
+  @override
+  bool get hasCustomOperation {
+    return hasCustomOperationStrategy?.call(value, operation, errorOrNull) ??
+        super.hasCustomOperation;
   }
 
   @override

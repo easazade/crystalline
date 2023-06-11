@@ -13,6 +13,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     this.onCreate,
     this.onDelete,
     this.onFetch,
+    this.onCustomOperation,
     this.onError,
     this.orElse,
     this.observe = false,
@@ -29,6 +30,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
   final DataWidgetBuilder<T, D>? onDelete;
   final DataWidgetBuilder<T, D>? onFetch;
   final DataWidgetBuilder<T, D>? onUpdate;
+  final DataWidgetBuilder<T, D>? onCustomOperation;
 
   final DataWidgetBuilder<T, D>? onError;
   final DataWidgetBuilder<T, D>? orElse;
@@ -49,6 +51,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
         onCreate: onCreate,
         onDelete: onDelete,
         onFetch: onFetch,
+        onCustomOperation: onCustomOperation,
         onError: onError,
         orElse: orElse,
         fallback: fallback,
@@ -69,6 +72,9 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     }
     if (data.isLoading && onLoading != null) {
       return onLoading!(context, data);
+    }
+    if (data.hasCustomOperation && onCustomOperation != null) {
+      return onCustomOperation!(context, data);
     }
     if (data.hasError && onError != null) {
       return onError!(context, data);
@@ -94,6 +100,7 @@ class _WhenDataRebuilder<T, D extends Data<T>> extends StatefulWidget {
     this.onCreate,
     this.onDelete,
     this.onFetch,
+    this.onCustomOperation,
     this.onError,
     this.orElse,
     this.fallback = const SizedBox(),
@@ -109,6 +116,7 @@ class _WhenDataRebuilder<T, D extends Data<T>> extends StatefulWidget {
   final DataWidgetBuilder<T, D>? onDelete;
   final DataWidgetBuilder<T, D>? onFetch;
   final DataWidgetBuilder<T, D>? onUpdate;
+  final DataWidgetBuilder<T, D>? onCustomOperation;
 
   final DataWidgetBuilder<T, D>? onError;
   final DataWidgetBuilder<T, D>? orElse;
@@ -159,6 +167,9 @@ class _WhenDataRebuilderState<T, D extends Data<T>>
     }
     if (_data.isLoading && widget.onLoading != null) {
       return widget.onLoading!(context, _data);
+    }
+    if (_data.hasCustomOperation && widget.onCustomOperation != null) {
+      return widget.onCustomOperation!(context, _data);
     }
     if (_data.hasError && widget.onError != null) {
       return widget.onError!(context, _data);

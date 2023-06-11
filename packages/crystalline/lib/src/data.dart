@@ -20,6 +20,8 @@ class Operation {
   final String name;
 
   const Operation(this.name);
+
+  bool get isCustom => !defaultOperations.contains(this);
 }
 
 abstract class ReadableData<T> {
@@ -48,6 +50,8 @@ abstract class ReadableData<T> {
   bool get isFetching;
 
   bool get isCreating;
+
+  bool get hasCustomOperation;
 
   bool get hasError;
 
@@ -146,6 +150,9 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
   bool get isUpdating => _operation == Operation.update;
 
   @override
+  bool get hasCustomOperation => _operation.isCustom;
+
+  @override
   bool get isLoading =>
       _operation == Operation.loading ||
       isUpdating ||
@@ -157,7 +164,7 @@ class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
   bool valueEqualsTo(T? otherValue) {
     if (hasValue) {
       return _value == otherValue;
-    } else if (otherValue == null && hasNoValue) {
+    } else if (otherValue == null && this.hasNoValue) {
       return true;
     }
 
