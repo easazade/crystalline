@@ -4,8 +4,9 @@ import 'package:test/test.dart';
 import 'utils.dart';
 
 void main() {
-  late ContextData<String, int> contextData;
-  late DataTestObserver<String, ContextData<String, int>> testObserver;
+  late ContextData<String, ({String job, String car})> contextData;
+  late DataTestObserver<String, ContextData<String, ({String job, String car})>>
+      testObserver;
 
   setUp(() {
     contextData = ContextData();
@@ -14,7 +15,7 @@ void main() {
 
   test('Should Update context with new context value', () {
     expect(contextData.contextOrNull, isNull);
-    final expectedContext = 20;
+    final expectedContext = (job: 'programmer', car: 'pars');
     contextData.context = expectedContext;
     expect(contextData.context, expectedContext);
     expect(testObserver.timesUpdated, 1);
@@ -22,7 +23,7 @@ void main() {
 
   test('Should Update context with null value', () {
     expect(contextData.contextOrNull, isNull);
-    final expectedContext = 20;
+    final expectedContext = (job: 'programmer', car: 'pars');
     contextData.context = expectedContext;
     expect(contextData.context, expectedContext);
     contextData.context = null;
@@ -32,7 +33,7 @@ void main() {
 
   test('Should Update context', () {
     expect(contextData.contextOrNull, isNull);
-    final expectedContext = 20;
+    final expectedContext = (job: 'programmer', car: 'pars');
     contextData.context = expectedContext;
     expect(contextData.context, expectedContext);
     expect(testObserver.timesUpdated, 1);
