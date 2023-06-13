@@ -21,3 +21,16 @@ class DataErrorIsNullException implements Exception {
         '\n';
   }
 }
+
+class ContextIsNullException implements Exception {
+  const ContextIsNullException();
+
+  @override
+  String toString() {
+    return '${super.toString()}\n'
+        'ContextData has no context please check if ContextData has context first\n'
+        'this can be done by calling `hasContext` getter method first\n'
+        'Alternativly you can use `contextOrNull`'
+        '\n';
+  }
+}
