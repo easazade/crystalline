@@ -74,6 +74,9 @@ abstract class ObservableData<T> {
   bool get hasObservers;
 }
 
+abstract class ReadableObservableData<T>
+    implements ReadableData<T>, ObservableData<T> {}
+
 class DataError {
   const DataError(this.message, this.exception);
 

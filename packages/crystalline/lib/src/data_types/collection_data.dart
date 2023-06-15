@@ -1,4 +1,4 @@
-import 'package:crystalline/src/data.dart';
+import 'package:crystalline/src/data_types/data.dart';
 
 typedef _DataPredicate<T> = bool Function(
     List<Data<T>> value, Operation operation, DataError? error)?;

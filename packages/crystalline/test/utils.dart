@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:crystalline/src/collection_data.dart';
-import 'package:crystalline/src/data.dart';
+import 'package:crystalline/src/data_types/collection_data.dart';
+import 'package:crystalline/src/data_types/data.dart';
 
 final _random = Random();
 
