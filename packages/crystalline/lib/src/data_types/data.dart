@@ -88,7 +88,7 @@ class DataError {
   String toString() => '${super.toString()}\n$message\n';
 }
 
-class Data<T> implements ReadableData<T>, EditableData<T>, ObservableData<T> {
+class Data<T> implements ReadableObservableData<T>, EditableData<T> {
   T? _value;
   DataError? _error;
   Operation _operation;
