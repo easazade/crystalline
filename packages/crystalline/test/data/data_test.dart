@@ -1,7 +1,7 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
-import 'utils.dart';
+import '../utils.dart';
 
 void main() {
   late Data<String> data;

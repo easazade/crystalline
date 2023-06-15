@@ -1,7 +1,8 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
-import 'utils.dart';
+import '../utils.dart';
+
 
 void main() {
   late ContextData<String, ({String job, String car})> contextData;
