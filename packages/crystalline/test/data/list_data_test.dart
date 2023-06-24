@@ -217,7 +217,7 @@ void main() {
     },
   );
 
-  test('Should modify context-data and call observers only once', () {
+  test('Should modify list-data and call observers only once', () {
     listData.modify((data) {
       data.value.add(Data(value: 'apple'));
       data.value.add(Data(value: 'orange'));
@@ -229,7 +229,7 @@ void main() {
   });
 
   test(
-    'Should modify context-data asynchronously and call observers only once',
+    'Should modify list-data asynchronously and call observers only once',
     () async {
       await listData.modifyAsync((data) async {
         data.value.add(Data(value: 'apple'));
@@ -237,6 +237,20 @@ void main() {
         data.operation = Operation.create;
         data.error = DataError('message', Exception('exception message'));
       });
+
+      expect(testObserver.timesUpdated, 1);
+    },
+  );
+
+  test(
+    'Should udpate list-data from another list-data',
+    () async {
+      final otherData =
+          ListData<String>([Data(value: 'shapoor'), Data(value: 'chancho')]);
+      expect(listData == otherData, isFalse);
+
+      listData.updateFrom(otherData);
+      expect(listData == otherData, isTrue);
 
       expect(testObserver.timesUpdated, 1);
     },

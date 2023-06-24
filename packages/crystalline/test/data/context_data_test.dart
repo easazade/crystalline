@@ -100,4 +100,35 @@ void main() {
       expect(testObserver.timesUpdated, 1);
     },
   );
+
+  test(
+    'Should udpate data from another data',
+    () async {
+      final otherData = ContextData<String, ({String job, String car})>(
+        value: 'alireza',
+        context: (job: 'programmer', car: 'pars 96'),
+      );
+      expect(contextData == otherData, isFalse);
+      contextData.updateFrom(otherData);
+      expect(contextData == otherData, isTrue);
+
+      expect(testObserver.timesUpdated, 1);
+    },
+  );
+
+  test(
+    'Should not udpateData from another data beucase they are different types',
+    () async {
+      final otherData = ContextData<String, ({String job, int age})>(
+        value: 'alireza',
+        context: (job: 'programmer', age: 29),
+      );
+      expect(
+        () => contextData.updateFrom(otherData),
+        throwsA(isA<CannotUpdateFromTypeException>()),
+      );
+
+      expect(testObserver.timesUpdated, 0);
+    },
+  );
 }
