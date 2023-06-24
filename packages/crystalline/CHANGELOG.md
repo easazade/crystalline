@@ -1,3 +1,12 @@
+## 0.3.0
+
+- Add ContextData type
+- Add support for mutators
+- Add map(), distinct(), mirror() mutators
+- Add modify(), modifyAsync() to data types
+- Add updateFrom() to Data types
+- Update toString() method on Data for better logging
+- Change name of type ReadableObservableData to UnModifiableData
 ## 0.2.3
 
 - Refactor Operation class and add support for custom operations
