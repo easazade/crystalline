@@ -1,5 +1,6 @@
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/exceptions.dart';
+import 'package:collection/collection.dart';
 
 typedef _DataPredicate<T> = bool Function(
     List<Data<T>> value, Operation operation, DataError? error)?;
@@ -153,6 +154,16 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
         operation: this.operation,
         error: this.errorOrNull,
       );
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! CollectionData<T>) return false;
+
+    return runtimeType == other.runtimeType &&
+        ListEquality<Data<T>>().equals(items, other.items) &&
+        operation == other.operation &&
+        errorOrNull == other.errorOrNull;
+  }
 }
 
 class ListData<T> extends CollectionData<T> {
