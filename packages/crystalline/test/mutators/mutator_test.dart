@@ -59,4 +59,40 @@ void main() {
       expect(distinctTestObserver.timesUpdated, 3);
     },
   );
+
+  test(
+    'Should create a mirror data that udpates every time origin data has changed distinctively',
+    () {
+      final original = data1;
+      final mirror = original.mirror();
+
+      final DataTestObserver<int, Data<int>> mirrorTestObserver =
+          DataTestObserver(mirror);
+
+      original.value = 20;
+      original.value = 20;
+      original.value = 20;
+      original.value = 20;
+
+      expect(mirror.valueOrNull, 20);
+      expect(mirrorTestObserver.timesUpdated, 4);
+
+      original.operation = Operation.create;
+      original.operation = Operation.create;
+      original.operation = Operation.create;
+      original.operation = Operation.create;
+
+      expect(mirror.operation, Operation.create);
+      expect(mirrorTestObserver.timesUpdated, 8);
+
+      final newError = DataError('message', Exception(''));
+      original.error = newError;
+      original.error = newError;
+      original.error = newError;
+      original.error = newError;
+
+      expect(mirror.errorOrNull, newError);
+      expect(mirrorTestObserver.timesUpdated, 12);
+    },
+  );
 }
