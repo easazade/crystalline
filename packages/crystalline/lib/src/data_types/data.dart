@@ -93,7 +93,7 @@ abstract class ObservableData<T> {
   bool get hasObservers;
 }
 
-abstract class ReadableObservableData<T>
+abstract class UnModifiableData<T>
     implements ReadableData<T>, ObservableData<T> {}
 
 class DataError {
@@ -107,7 +107,7 @@ class DataError {
   String toString() => '${super.toString()}\n$message\n';
 }
 
-class Data<T> implements ReadableObservableData<T>, EditableData<T> {
+class Data<T> implements UnModifiableData<T>, EditableData<T> {
   T? _value;
   DataError? _error;
   Operation _operation;
