@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Bump crystalline 0.3.0
+
 ## 0.2.4
 
 - Add support for custom operations
