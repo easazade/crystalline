@@ -23,6 +23,9 @@ class Operation {
   const Operation(this.name);
 
   bool get isCustom => !defaultOperations.contains(this);
+
+  @override
+  String toString() => 'Operation.$name';
 }
 
 abstract class ReadableData<T> {
@@ -244,7 +247,7 @@ class Data<T> implements ReadableObservableData<T>, EditableData<T> {
 
   @override
   String toString() =>
-      '$runtimeType - operation: $_operation - error: $_error - value : $_value';
+      '{$runtimeType = $_operation | $_value${_error != null ? " | error: $error" : ""}}';
 
   @override
   bool operator ==(Object other) {
