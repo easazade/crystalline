@@ -11,7 +11,7 @@ class Mapper<T1, T2, D1 extends ReadableObservableData<T1>,
   }
 }
 
-extension DataX<T1, T2, D1 extends ReadableObservableData<T1>> on Data<T1> {
+extension MappperX<T1, T2, D1 extends ReadableObservableData<T1>> on Data<T1> {
   /// map function
   D2 map<D2 extends Data<T2>>(
     D2 mapData,
