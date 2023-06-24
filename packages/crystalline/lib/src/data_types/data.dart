@@ -1,4 +1,5 @@
 import 'package:crystalline/src/exceptions.dart';
+import 'package:meta/meta.dart';
 
 class Operation {
   static const Operation loading = Operation('loading');
@@ -64,6 +65,19 @@ abstract class EditableData<T> {
   void set operation(Operation operation);
 
   void set error(DataError? error);
+
+  void modify(void Function(Data<T> data) fn);
+
+  Future<void> modifyAsync(Future<void> Function(Data<T> data) fn);
+
+  @mustCallSuper
+  void allowNotifyObservers();
+
+  @mustCallSuper
+  void disallowNotifyObservers();
+
+  @mustCallSuper
+  void notifyObservers();
 }
 
 abstract class ObservableData<T> {
@@ -92,6 +106,8 @@ class Data<T> implements ReadableObservableData<T>, EditableData<T> {
   T? _value;
   DataError? _error;
   Operation _operation;
+
+  bool _allowNotifyObservers = true;
 
   final List<void Function()> observers = [];
 
@@ -177,17 +193,13 @@ class Data<T> implements ReadableObservableData<T>, EditableData<T> {
   @override
   void set error(DataError? error) {
     _error = error;
-    if (observers.isNotEmpty) {
-      observers.forEach((observer) => observer());
-    }
+    notifyObservers();
   }
 
   @override
   void set operation(Operation operation) {
     _operation = operation;
-    if (observers.isNotEmpty) {
-      observers.forEach((observer) => observer());
-    }
+    notifyObservers();
   }
 
   Operation get operation => _operation;
@@ -195,9 +207,23 @@ class Data<T> implements ReadableObservableData<T>, EditableData<T> {
   @override
   set value(T? value) {
     _value = value;
-    if (observers.isNotEmpty) {
-      observers.forEach((observer) => observer());
-    }
+    notifyObservers();
+  }
+
+  @override
+  void modify(void Function(Data<T> data) fn) {
+    disallowNotifyObservers();
+    fn(this);
+    allowNotifyObservers();
+    notifyObservers();
+  }
+
+  @override
+  Future<void> modifyAsync(Future<void> Function(Data<T> data) fn) async {
+    disallowNotifyObservers();
+    await fn(this);
+    allowNotifyObservers();
+    notifyObservers();
   }
 
   /// returns a new instance of data object which is copy of this object.
@@ -230,4 +256,19 @@ class Data<T> implements ReadableObservableData<T>, EditableData<T> {
 
   @override
   bool get hasObservers => observers.isNotEmpty;
+
+  @override
+  void allowNotifyObservers() {
+    _allowNotifyObservers = true;
+  }
+
+  @override
+  void disallowNotifyObservers() {
+    _allowNotifyObservers = false;
+  }
+
+  @override
+  void notifyObservers() {
+    if (_allowNotifyObservers) observers.forEach((observer) => observer());
+  }
 }

@@ -15,7 +15,7 @@ class ContextData<T, C> extends Data<T> {
 
   void set context(C? context) {
     _context = context;
-    observers.forEach((observer) => observer());
+    notifyObservers();
   }
 
   C get context {
@@ -26,6 +26,18 @@ class ContextData<T, C> extends Data<T> {
   }
 
   C? get contextOrNull => _context;
+
+  @override
+  void modify(void Function(ContextData<T, C> data) fn) {
+    super.modify((data) => fn(data as ContextData<T, C>));
+  }
+
+  @override
+  Future<void> modifyAsync(
+    Future<void> Function(ContextData<T, C> data) fn,
+  ) {
+    return super.modifyAsync((data) => fn(data as ContextData<T, C>));
+  }
 
   @override
   ContextData<T, C> copy() => ContextData(

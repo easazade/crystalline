@@ -5,8 +5,6 @@ typedef _DataPredicate<T> = bool Function(
 
 abstract class CollectionData<T> extends Data<List<Data<T>>>
     with Iterable<Data<T>> {
-  bool _notifyObserverIsAllowed = true;
-
   List<Data<T>> get items;
 
   @override
@@ -41,32 +39,32 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   void operator []=(int index, Data<T> value) {
     items[index] = value;
-    _notifyObservers();
+    notifyObservers();
   }
 
   Data<T> removeAt(int index) {
     final removedItem = items.removeAt(index);
     _removeObserversFromItem(removedItem);
-    _notifyObservers();
+    notifyObservers();
     return removedItem;
   }
 
   void removeAll() {
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
-    _notifyObservers();
+    notifyObservers();
   }
 
   void add(Data<T> data) {
     items.add(data);
     _addObserversToItem(data);
-    _notifyObservers();
+    notifyObservers();
   }
 
   void insert(int index, Data<T> data) {
     items.insert(index, data);
     _addObserversToItem(data);
-    _notifyObservers();
+    notifyObservers();
   }
 
   void addAll(Iterable<Data<T>> list) {
@@ -74,7 +72,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     for (var item in list) {
       _addObserversToItem(item);
     }
-    _notifyObservers();
+    notifyObservers();
   }
 
   void removeWhere(bool Function(Data<T> element) test) {
@@ -82,35 +80,42 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
       _removeObserversFromItem(item);
     }
     items.removeWhere(test);
-    _notifyObservers();
+    notifyObservers();
   }
 
-  void modify(Iterable<Data<T>> Function(List<Data<T>> items) modifier) {
-    _notifyObserverIsAllowed = false;
+  void modifyItems(Iterable<Data<T>> Function(List<Data<T>> items) modifier) {
+    disallowNotifyObservers();
     final newItems = modifier(items);
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
     items.forEach((e) => _addObserversToItem(e));
-    _notifyObserverIsAllowed = true;
-    _notifyObservers();
+    allowNotifyObservers();
+    notifyObservers();
   }
 
-  Future<void> modifyAsync(
+  Future<void> modifyItemsAsync(
       Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
-    _notifyObserverIsAllowed = false;
+    disallowNotifyObservers();
     final newItems = await modifier(items);
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
     items.forEach((e) => _addObserversToItem(e));
-    _notifyObserverIsAllowed = true;
-    _notifyObservers();
+    allowNotifyObservers();
+    notifyObservers();
   }
 
-  void _notifyObservers() {
-    if (_notifyObserverIsAllowed)
-      observers.forEach((observer) => observer.call());
+  @override
+  void modify(void Function(CollectionData<T> data) fn) {
+    super.modify((data) => fn(data as CollectionData<T>));
+  }
+
+  @override
+  Future<void> modifyAsync(
+    Future<void> Function(CollectionData<T> data) fn,
+  ) {
+    return super.modifyAsync((data) => fn(data as CollectionData<T>));
   }
 
   void _removeObserversFromItem(Data<T> item) {
@@ -225,4 +230,16 @@ class ListData<T> extends CollectionData<T> {
         operation: this.operation,
         error: this.errorOrNull,
       );
+
+  @override
+  void modify(void Function(ListData<T> data) fn) {
+    super.modify((data) => fn(data as ListData<T>));
+  }
+
+  @override
+  Future<void> modifyAsync(
+    Future<void> Function(ListData<T> data) fn,
+  ) {
+    return super.modifyAsync((data) => fn(data as ListData<T>));
+  }
 }

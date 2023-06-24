@@ -65,7 +65,7 @@ void main() {
   test('Should modify list', () {
     listData.addAll(items1);
     expect(listData.items, items1);
-    listData.modify((items) => items2);
+    listData.modifyItems((items) => items2);
     expect(listData.items, items2);
     expect(testObserver.timesUpdated, 2);
   });
@@ -73,7 +73,7 @@ void main() {
   test('Should modify list async', () async {
     listData.addAll(items1);
     expect(listData.items, items1);
-    await listData.modifyAsync((items) => Future.value(items2));
+    await listData.modifyItemsAsync((items) => Future.value(items2));
     expect(listData.items, items2);
     expect(testObserver.timesUpdated, 2);
   });
@@ -125,7 +125,7 @@ void main() {
     items1.forEach((e) => expect(e.observers, contains(observer)));
 
     // when moyfied list and remove some items
-    listData.modify((items) => items2);
+    listData.modifyItems((items) => items2);
 
     // expect observer should be removed from removed items
     items1.forEach((e) => expect(e.observers.contains(observer), isFalse));
@@ -214,6 +214,31 @@ void main() {
       expect(listData[0], bar);
       expect(listData.length, 1);
       expect(testObserver.timesUpdated, 2);
+    },
+  );
+
+  test('Should modify context-data and call observers only once', () {
+    listData.modify((data) {
+      data.value.add(Data(value: 'apple'));
+      data.value.add(Data(value: 'orange'));
+      data.operation = Operation.create;
+      data.error = DataError('message', Exception('exception message'));
+    });
+
+    expect(testObserver.timesUpdated, 1);
+  });
+
+  test(
+    'Should modify context-data asynchronously and call observers only once',
+    () async {
+      await listData.modifyAsync((data) async {
+        data.value.add(Data(value: 'apple'));
+        data.value.add(Data(value: 'orange'));
+        data.operation = Operation.create;
+        data.error = DataError('message', Exception('exception message'));
+      });
+
+      expect(testObserver.timesUpdated, 1);
     },
   );
 }

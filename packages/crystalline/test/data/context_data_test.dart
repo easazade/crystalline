@@ -3,7 +3,6 @@ import 'package:test/test.dart';
 
 import '../utils.dart';
 
-
 void main() {
   late ContextData<String, ({String job, String car})> contextData;
   late DataTestObserver<String, ContextData<String, ({String job, String car})>>
@@ -76,4 +75,29 @@ void main() {
     expect(contextData.errorOrNull, isNull);
     expect(() => contextData.error, throwsA(isA<DataErrorIsNullException>()));
   });
+
+  test('Should modify context-data and call observers only once', () {
+    contextData.modify((data) {
+      data.value = 'apple';
+      data.value = 'orage';
+      data.operation = Operation.create;
+      data.error = DataError('message', Exception('exception message'));
+    });
+
+    expect(testObserver.timesUpdated, 1);
+  });
+
+  test(
+    'Should modify context-data asynchronously and call observers only once',
+    () async {
+      await contextData.modifyAsync((data) async {
+        data.value = 'apple';
+        data.value = 'orage';
+        data.operation = Operation.create;
+        data.error = DataError('message', Exception('exception message'));
+      });
+
+      expect(testObserver.timesUpdated, 1);
+    },
+  );
 }

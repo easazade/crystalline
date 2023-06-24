@@ -5,9 +5,11 @@ import '../utils.dart';
 
 void main() {
   late Data<String> data;
+  late DataTestObserver<String, Data<String>> testObserver;
 
   setUp(() {
     data = Data();
+    testObserver = DataTestObserver(data);
   });
 
   test('Should set value', () {
@@ -15,6 +17,7 @@ void main() {
     final expectedValue = 'Some String';
     data.value = expectedValue;
     expect(data.value, expectedValue);
+    expect(testObserver.timesUpdated, 1);
   });
 
   test(
@@ -30,6 +33,7 @@ void main() {
     final expectedOperation = Operation.defaultOperations.randomItem!;
     data.operation = expectedOperation;
     expect(data.operation, expectedOperation);
+    expect(testObserver.timesUpdated, 1);
   });
 
   test('Should set error', () {
@@ -37,6 +41,7 @@ void main() {
     final expectedError = DataError('message', Exception('message'));
     data.error = expectedError;
     expect(data.error, expectedError);
+    expect(testObserver.timesUpdated, 1);
   });
 
   test(
@@ -45,4 +50,29 @@ void main() {
     expect(data.errorOrNull, isNull);
     expect(() => data.error, throwsA(isA<DataErrorIsNullException>()));
   });
+
+  test('Should modify data and call observers only once', () {
+    data.modify((data) {
+      data.value = 'apple';
+      data.value = 'orage';
+      data.operation = Operation.create;
+      data.error = DataError('message', Exception('exception message'));
+    });
+
+    expect(testObserver.timesUpdated, 1);
+  });
+
+  test(
+    'Should modify data asynchronously and call observers only once',
+    () async {
+      await data.modifyAsync((data) async {
+        data.value = 'apple';
+        data.value = 'orage';
+        data.operation = Operation.create;
+        data.error = DataError('message', Exception('exception message'));
+      });
+
+      expect(testObserver.timesUpdated, 1);
+    },
+  );
 }
