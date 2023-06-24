@@ -1,4 +1,5 @@
 import 'package:crystalline/src/data_types/data.dart';
+import 'package:crystalline/src/exceptions.dart';
 
 typedef _DataPredicate<T> = bool Function(
     List<Data<T>> value, Operation operation, DataError? error)?;
@@ -85,7 +86,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   void modifyItems(Iterable<Data<T>> Function(List<Data<T>> items) modifier) {
     disallowNotifyObservers();
-    final newItems = modifier(items);
+    final newItems = modifier(items).toList();
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
@@ -97,7 +98,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   Future<void> modifyItemsAsync(
       Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
     disallowNotifyObservers();
-    final newItems = await modifier(items);
+    final newItems = await modifier(items).then((e) => e.toList());
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
@@ -109,6 +110,22 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   @override
   void modify(void Function(CollectionData<T> data) fn) {
     super.modify((data) => fn(data as CollectionData<T>));
+  }
+
+  @override
+  void updateFrom(Data<List<Data<T>>> data) {
+    if (data is! CollectionData<T>) {
+      throw CannotUpdateFromTypeException(this, data);
+    }
+    disallowNotifyObservers();
+    items.forEach((e) => _removeObserversFromItem(e));
+    items.clear();
+    items.addAll(data.items.toList());
+    items.forEach((e) => _addObserversToItem(e));
+    operation = data.operation;
+    error = data.errorOrNull;
+    allowNotifyObservers();
+    notifyObservers();
   }
 
   @override

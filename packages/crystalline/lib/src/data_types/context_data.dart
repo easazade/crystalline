@@ -40,6 +40,20 @@ class ContextData<T, C> extends Data<T> {
   }
 
   @override
+  void updateFrom(Data<T> data) {
+    if (data is! ContextData<T, C>) {
+      throw CannotUpdateFromTypeException(this, data);
+    }
+    disallowNotifyObservers();
+    value = data.valueOrNull;
+    operation = data.operation;
+    error = data.errorOrNull;
+    context = data.context;
+    allowNotifyObservers();
+    notifyObservers();
+  }
+
+  @override
   ContextData<T, C> copy() => ContextData(
         value: valueOrNull,
         error: errorOrNull,

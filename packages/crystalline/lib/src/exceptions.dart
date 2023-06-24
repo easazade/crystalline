@@ -1,3 +1,5 @@
+import 'data_types/data.dart';
+
 class ValueNotAvailableException implements Exception {
   const ValueNotAvailableException();
 
@@ -32,5 +34,19 @@ class ContextIsNullException implements Exception {
         'this can be done by calling `hasContext` getter method first\n'
         'Alternativly you can use `contextOrNull`'
         '\n';
+  }
+}
+
+class CannotUpdateFromTypeException implements Exception {
+  const CannotUpdateFromTypeException(this.source, this.other);
+
+  final ReadableData<dynamic> source;
+  final ReadableData<dynamic> other;
+
+  @override
+  String toString() {
+    return '${super.toString()}\n'
+        'Cannot update type ${source.runtimeType} from type ${other.runtimeType}'
+        'Because they are different types';
   }
 }

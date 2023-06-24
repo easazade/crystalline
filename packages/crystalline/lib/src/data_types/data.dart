@@ -78,6 +78,8 @@ abstract class EditableData<T> {
 
   @mustCallSuper
   void notifyObservers();
+
+  void updateFrom(Data<T> data);
 }
 
 abstract class ObservableData<T> {
@@ -222,6 +224,16 @@ class Data<T> implements ReadableObservableData<T>, EditableData<T> {
   Future<void> modifyAsync(Future<void> Function(Data<T> data) fn) async {
     disallowNotifyObservers();
     await fn(this);
+    allowNotifyObservers();
+    notifyObservers();
+  }
+
+  @override
+  void updateFrom(Data<T> data) {
+    disallowNotifyObservers();
+    value = data.valueOrNull;
+    operation = data.operation;
+    error = data.errorOrNull;
     allowNotifyObservers();
     notifyObservers();
   }
