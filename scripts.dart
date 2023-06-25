@@ -1,6 +1,9 @@
 import 'dart:io';
 
 Future main(List<String> args) async {
+  print('listing all .dart files in this mono-repo '
+      'and counts the lines of code in each file');
+
   final directory = Directory('');
 
   int lineCount = 0;
