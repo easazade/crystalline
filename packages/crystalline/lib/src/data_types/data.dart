@@ -95,7 +95,7 @@ abstract class EditableData<T> {
   @mustCallSuper
   void notifyObservers();
 
-  void updateFrom(Data<T> data);
+  void updateFrom(ReadableData<T> data);
 }
 
 abstract class ObservableData<T> {
@@ -275,6 +275,8 @@ class Data<T> implements UnModifiableData<T>, EditableData<T> {
     value = data.valueOrNull;
     operation = data.operation;
     error = data.errorOrNull;
+    sideEffects.clear();
+    sideEffects.addAll(data.sideEffects);
     allowNotifyObservers();
     notifyObservers();
   }

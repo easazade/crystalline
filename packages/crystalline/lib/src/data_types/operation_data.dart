@@ -3,20 +3,28 @@ import 'package:crystalline/src/data_types/failure.dart';
 
 class OperationData extends Data<void> {
   OperationData({
-    Failure? error,
     Operation operation = Operation.none,
     List<dynamic>? sideEffects,
+    Failure? error,
   }) : super(
-          error: error,
           operation: operation,
           sideEffects: sideEffects,
+          error: error,
         );
+
+  factory OperationData.from(ReadableData<dynamic> data) => OperationData(
+        operation: data.operation,
+        sideEffects: data.sideEffects,
+        error: data.errorOrNull,
+      )..updateFrom(data);
 
   @override
   void updateFrom(ReadableData<dynamic> data) {
     disallowNotifyObservers();
     operation = data.operation;
     error = data.errorOrNull;
+    sideEffects.clear();
+    sideEffects.addAll(data.sideEffects);
     allowNotifyObservers();
     notifyObservers();
   }
