@@ -42,6 +42,10 @@ abstract class ReadableData<T> {
 
   Failure get consumeError;
 
+  List<dynamic> get sideEffects;
+
+  bool get hasSideEffects;
+
   bool get hasValue;
 
   bool get hasNoValue;
@@ -69,6 +73,14 @@ abstract class EditableData<T> {
   void set operation(Operation operation);
 
   void set error(Failure? error);
+
+  void addSideEffect(dynamic sideEffect);
+
+  void addAllSideEffects(Iterable<dynamic> sideEffect);
+
+  void removeSideEffect(dynamic sideEffect);
+
+  void clearAllSideEffects();
 
   void modify(void Function(Data<T> data) fn);
 
@@ -105,10 +117,16 @@ class Data<T> implements UnModifiableData<T>, EditableData<T> {
   bool _allowNotifyObservers = true;
 
   final List<void Function()> observers = [];
+  final List<dynamic> _sideEffects;
 
-  Data({T? value, Failure? error, Operation operation = Operation.none})
-      : _value = value,
+  Data({
+    T? value,
+    Failure? error,
+    Operation operation = Operation.none,
+    List<dynamic>? sideEffects,
+  })  : _value = value,
         _error = error,
+        _sideEffects = sideEffects ?? [],
         _operation = operation;
 
   @override
@@ -138,6 +156,36 @@ class Data<T> implements UnModifiableData<T>, EditableData<T> {
     }
     return _error!;
   }
+
+  @override
+  List<dynamic> get sideEffects => _sideEffects;
+
+  @override
+  void addSideEffect(dynamic sideEffect) {
+    _sideEffects.add(sideEffect);
+    notifyObservers();
+  }
+
+  @override
+  void addAllSideEffects(Iterable<dynamic> sideEffects) {
+    _sideEffects.addAll(sideEffects);
+    notifyObservers();
+  }
+
+  @override
+  void removeSideEffect(dynamic sideEffect) {
+    _sideEffects.remove(sideEffects);
+    notifyObservers();
+  }
+
+  @override
+  void clearAllSideEffects() {
+    _sideEffects.clear();
+    notifyObservers();
+  }
+
+  @override
+  bool get hasSideEffects => _sideEffects.isNotEmpty;
 
   @override
   Failure? get errorOrNull => _error;

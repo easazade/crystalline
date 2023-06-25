@@ -7,9 +7,15 @@ class ContextData<T, C> extends Data<T> {
     T? value,
     Failure? error,
     Operation operation = Operation.none,
+    List<dynamic>? sideEffects,
     C? context,
   })  : _context = context,
-        super(value: value, error: error, operation: operation);
+        super(
+          value: value,
+          error: error,
+          operation: operation,
+          sideEffects: sideEffects,
+        );
 
   C? _context;
 

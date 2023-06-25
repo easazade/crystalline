@@ -172,6 +172,7 @@ class ListData<T> extends CollectionData<T> {
     this.items, {
     Operation operation = Operation.none,
     Failure? error,
+    List<dynamic>? sideEffects,
     this.isLoadingStrategy,
     this.hasErrorStrategy,
     this.hasValueStrategy,
@@ -184,6 +185,9 @@ class ListData<T> extends CollectionData<T> {
   }) {
     this.operation = operation;
     this.error = error;
+    if (sideEffects != null) {
+      sideEffects.addAll(sideEffects);
+    }
   }
 
   @override
