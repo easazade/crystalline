@@ -30,5 +30,7 @@ scripts:
     description: Run dart analyze in all packages
 
   test:
-    run: melos exec --ignore="*example*" -c 1 -- flutter test
+    run: |
+      melos exec --ignore="*example*" -c 1 -- flutter test --coverage
+      melos exec --ignore="*example*" --ignore="*flutter_riverpod_crystalline*" -c 1 -- genhtml coverage/lcov.info -o coverage/html
     description: Run all tests .
