@@ -67,7 +67,7 @@ abstract class ReadableData<T> {
   bool valueEqualsTo(T? another);
 }
 
-abstract class EditableData<T> {
+abstract class ModifiableData<T> {
   void set value(T? value);
 
   void set operation(Operation operation);
@@ -109,7 +109,7 @@ abstract class ObservableData<T> {
 abstract class UnModifiableData<T>
     implements ReadableData<T>, ObservableData<T> {}
 
-class Data<T> implements UnModifiableData<T>, EditableData<T> {
+class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   T? _value;
   Failure? _error;
   Operation _operation;
