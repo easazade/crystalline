@@ -188,7 +188,7 @@ class ListData<T> extends CollectionData<T> {
     this.operation = operation;
     this.error = error;
     if (sideEffects != null) {
-      sideEffects.addAll(sideEffects);
+      addAllSideEffects(sideEffects);
     }
   }
 
