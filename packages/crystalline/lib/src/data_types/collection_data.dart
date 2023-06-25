@@ -1,10 +1,10 @@
 import 'package:crystalline/src/data_types/data.dart';
-import 'package:crystalline/src/data_types/side_effect.dart';
+import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
 import 'package:collection/collection.dart';
 
 typedef _DataPredicate<T> = bool Function(
-    List<Data<T>> value, Operation operation, DataError? error)?;
+    List<Data<T>> value, Operation operation, Failure? error)?;
 
 abstract class CollectionData<T> extends Data<List<Data<T>>>
     with Iterable<Data<T>> {
@@ -171,7 +171,7 @@ class ListData<T> extends CollectionData<T> {
   ListData(
     this.items, {
     Operation operation = Operation.none,
-    DataError? error,
+    Failure? error,
     this.isLoadingStrategy,
     this.hasErrorStrategy,
     this.hasValueStrategy,

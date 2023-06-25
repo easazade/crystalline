@@ -152,7 +152,7 @@ void main() {
     'Builder should update widget when error is '
     'updated on data and observe is set to true on DataBuilder',
     (tester) async {
-      final error = DataError('error message');
+      final error = Failure('error message');
 
       await tester.pumpWidget(
         Testable(
@@ -188,7 +188,7 @@ void main() {
     'Builder should NOT update widget when error is '
     'updated on data and observe is NOT set to true on DataBuilder',
     (tester) async {
-      final error = DataError('error message');
+      final error = Failure('error message');
 
       await tester.pumpWidget(
         Testable(

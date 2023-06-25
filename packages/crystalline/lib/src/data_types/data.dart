@@ -1,4 +1,4 @@
-import 'package:crystalline/src/data_types/side_effect.dart';
+import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
 import 'package:meta/meta.dart';
 
@@ -34,13 +34,13 @@ abstract class ReadableData<T> {
 
   T? get valueOrNull;
 
-  DataError get error;
+  Failure get error;
 
-  DataError? get errorOrNull;
+  Failure? get errorOrNull;
 
   Operation get operation;
 
-  DataError get consumeError;
+  Failure get consumeError;
 
   bool get hasValue;
 
@@ -68,7 +68,7 @@ abstract class EditableData<T> {
 
   void set operation(Operation operation);
 
-  void set error(DataError? error);
+  void set error(Failure? error);
 
   void modify(void Function(Data<T> data) fn);
 
@@ -99,14 +99,14 @@ abstract class UnModifiableData<T>
 
 class Data<T> implements UnModifiableData<T>, EditableData<T> {
   T? _value;
-  DataError? _error;
+  Failure? _error;
   Operation _operation;
 
   bool _allowNotifyObservers = true;
 
   final List<void Function()> observers = [];
 
-  Data({T? value, DataError? error, Operation operation = Operation.none})
+  Data({T? value, Failure? error, Operation operation = Operation.none})
       : _value = value,
         _error = error,
         _operation = operation;
@@ -122,17 +122,17 @@ class Data<T> implements UnModifiableData<T>, EditableData<T> {
   T? get valueOrNull => _value;
 
   @override
-  DataError get consumeError {
+  Failure get consumeError {
     if (_error == null) {
       throw DataErrorIsNullException();
     }
-    DataError consumedErrorValue = _error!;
+    Failure consumedErrorValue = _error!;
     _error = null;
     return consumedErrorValue;
   }
 
   @override
-  DataError get error {
+  Failure get error {
     if (_error == null) {
       throw DataErrorIsNullException();
     }
@@ -140,7 +140,7 @@ class Data<T> implements UnModifiableData<T>, EditableData<T> {
   }
 
   @override
-  DataError? get errorOrNull => _error;
+  Failure? get errorOrNull => _error;
 
   @override
   bool get hasError => _error != null;
@@ -186,7 +186,7 @@ class Data<T> implements UnModifiableData<T>, EditableData<T> {
   }
 
   @override
-  void set error(DataError? error) {
+  void set error(Failure? error) {
     _error = error;
     notifyObservers();
   }

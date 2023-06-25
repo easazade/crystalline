@@ -64,7 +64,7 @@ void main() {
 
   test('Should set error', () {
     expect(contextData.errorOrNull, isNull);
-    final expectedError = DataError('message');
+    final expectedError = Failure('message');
     contextData.error = expectedError;
     expect(contextData.error, expectedError);
   });
@@ -81,7 +81,7 @@ void main() {
       data.value = 'apple';
       data.value = 'orage';
       data.operation = Operation.create;
-      data.error = DataError('message');
+      data.error = Failure('message');
     });
 
     expect(testObserver.timesUpdated, 1);
@@ -94,7 +94,7 @@ void main() {
         data.value = 'apple';
         data.value = 'orage';
         data.operation = Operation.create;
-        data.error = DataError('message');
+        data.error = Failure('message');
       });
 
       expect(testObserver.timesUpdated, 1);

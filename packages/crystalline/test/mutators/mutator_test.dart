@@ -49,7 +49,7 @@ void main() {
       expect(distinct.operation, Operation.create);
       expect(distinctTestObserver.timesUpdated, 2);
 
-      final newError = DataError('message');
+      final newError = Failure('message');
       original.error = newError;
       original.error = newError;
       original.error = newError;
@@ -85,7 +85,7 @@ void main() {
       expect(mirror.operation, Operation.create);
       expect(mirrorTestObserver.timesUpdated, 8);
 
-      final newError = DataError('message');
+      final newError = Failure('message');
       original.error = newError;
       original.error = newError;
       original.error = newError;

@@ -1,12 +1,11 @@
-
 import 'package:crystalline/src/data_types/data.dart';
-import 'package:crystalline/src/data_types/side_effect.dart';
+import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
 
 class ContextData<T, C> extends Data<T> {
   ContextData({
     T? value,
-    DataError? error,
+    Failure? error,
     Operation operation = Operation.none,
     C? context,
   })  : _context = context,
