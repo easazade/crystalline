@@ -293,7 +293,7 @@ void main() {
       'WhenDataBuilder onError should be called when data has and error'
       'and operation is set Operation.none',
       (tester) async {
-        final error = DataError('message', Exception('exception message'));
+        final error = DataError('message');
 
         await tester.pumpWidget(
           Testable(

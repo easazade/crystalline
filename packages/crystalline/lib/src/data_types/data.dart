@@ -1,3 +1,4 @@
+import 'package:crystalline/src/data_types/side_effect.dart';
 import 'package:crystalline/src/exceptions.dart';
 import 'package:meta/meta.dart';
 
@@ -95,17 +96,6 @@ abstract class ObservableData<T> {
 
 abstract class UnModifiableData<T>
     implements ReadableData<T>, ObservableData<T> {}
-
-class DataError {
-  const DataError(this.message, this.exception);
-
-  final String message;
-
-  final Exception exception;
-
-  @override
-  String toString() => '${super.toString()}\n$message\n';
-}
 
 class Data<T> implements UnModifiableData<T>, EditableData<T> {
   T? _value;

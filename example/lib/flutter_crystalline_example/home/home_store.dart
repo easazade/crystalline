@@ -31,7 +31,7 @@ class HomeStore extends Store {
     notifyListeners();
 
     await Future.delayed(const Duration(seconds: 1));
-    error = DataError('Some fake made error', Exception(''));
+    error = DataError('Some fake made error');
   }
 
   @override

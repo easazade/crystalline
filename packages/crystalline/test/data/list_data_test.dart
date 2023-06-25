@@ -192,7 +192,7 @@ void main() {
   });
 
   test('Should notify observers when item in list has an error', () {
-    final expectedError = DataError('message', Exception('message of'));
+    final expectedError = DataError('message');
 
     listData.add(singleItem);
 
@@ -222,7 +222,7 @@ void main() {
       data.value.add(Data(value: 'apple'));
       data.value.add(Data(value: 'orange'));
       data.operation = Operation.create;
-      data.error = DataError('message', Exception('exception message'));
+      data.error = DataError('message');
     });
 
     expect(testObserver.timesUpdated, 1);
@@ -235,7 +235,7 @@ void main() {
         data.value.add(Data(value: 'apple'));
         data.value.add(Data(value: 'orange'));
         data.operation = Operation.create;
-        data.error = DataError('message', Exception('exception message'));
+        data.error = DataError('message');
       });
 
       expect(testObserver.timesUpdated, 1);

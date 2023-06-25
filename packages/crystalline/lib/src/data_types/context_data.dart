@@ -1,4 +1,7 @@
-import 'package:crystalline/crystalline.dart';
+
+import 'package:crystalline/src/data_types/data.dart';
+import 'package:crystalline/src/data_types/side_effect.dart';
+import 'package:crystalline/src/exceptions.dart';
 
 class ContextData<T, C> extends Data<T> {
   ContextData({
