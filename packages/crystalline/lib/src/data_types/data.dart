@@ -270,7 +270,7 @@ class Data<T> implements UnModifiableData<T>, EditableData<T> {
   }
 
   @override
-  void updateFrom(Data<T> data) {
+  void updateFrom(ReadableData<T> data) {
     disallowNotifyObservers();
     value = data.valueOrNull;
     operation = data.operation;

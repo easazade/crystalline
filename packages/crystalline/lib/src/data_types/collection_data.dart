@@ -115,7 +115,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   }
 
   @override
-  void updateFrom(Data<List<Data<T>>> data) {
+  void updateFrom(ReadableData<List<Data<T>>> data) {
     if (data is! CollectionData<T>) {
       throw CannotUpdateFromTypeException(this, data);
     }
