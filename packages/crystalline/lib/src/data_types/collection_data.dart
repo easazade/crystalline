@@ -116,13 +116,10 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   @override
   void updateFrom(ReadableData<List<Data<T>>> data) {
-    if (data is! CollectionData<T>) {
-      throw CannotUpdateFromTypeException(this, data);
-    }
     disallowNotifyObservers();
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
-    items.addAll(data.items.toList());
+    items.addAll(data.value.toList());
     items.forEach((e) => _addObserversToItem(e));
     operation = data.operation;
     error = data.errorOrNull;
