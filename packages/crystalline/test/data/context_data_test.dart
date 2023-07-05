@@ -55,6 +55,23 @@ void main() {
     },
   );
 
+  test(
+    'Should throw Error when context of Data is null and getter context is called',
+    () {
+      expect(contextData.contextOrNull, isNull);
+      expect(() => contextData.context, throwsA(isA<ContextIsNullException>()));
+    },
+  );
+
+  test(
+    'hasContext getter method should return false when context is null and vise versa',
+    () {
+      expect(contextData.hasContext, isFalse);
+      contextData.context = (job: 'programmer', car: 'pride');
+      expect(contextData.hasContext, isTrue);
+    },
+  );
+
   test('Should set the operation', () {
     expect(contextData.operation, Operation.none);
     final expectedOperation = Operation.defaultOperations.randomItem!;
