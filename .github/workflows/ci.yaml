@@ -39,7 +39,7 @@ jobs:
       - name: 📊 Check Code Coverage on crystalline
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          path: packages/flutter_crystalline/coverage/lcov.info
+          path: packages/crystalline/coverage/lcov.info
           min_coverage: 100
 
       - name: 📊 Check Code Coverage on flutter_crystalline
