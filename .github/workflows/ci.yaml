@@ -39,6 +39,13 @@ jobs:
       - uses: devmasx/coverage-check-action@v1.2.0
         with:
           type: lcov
-          result_path: coverage/example.lcov
+          result_path: packages/crystalline/coverage/lcov.info
+          min_coverage: 100
+          token: ${{ github.token }}
+
+      - uses: devmasx/coverage-check-action@v1.2.0
+        with:
+          type: lcov
+          result_path: packages/flutter_crystalline/coverage/lcov.info
           min_coverage: 100
           token: ${{ github.token }}
