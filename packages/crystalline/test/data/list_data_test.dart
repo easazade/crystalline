@@ -217,6 +217,39 @@ void main() {
     },
   );
 
+  test(
+    'Should remove all items using removeAll() method',
+    () {
+      final bar = Data(value: 'bar');
+      final foo = Data(value: 'foo');
+      listData.addAll([foo, bar]);
+
+      expect(listData.length, 2);
+
+      listData.removeAll();
+
+      expect(listData.length, 0);
+      expect(testObserver.timesUpdated, 2);
+    },
+  );
+
+  test(
+    'Should set new items using [] operator',
+    () {
+      final bar = Data(value: 'bar');
+      final foo = Data(value: 'foo');
+      listData.addAll([foo]);
+      expect(listData[0], foo);
+      expect(listData.length, 1);
+
+      listData[0] = bar;
+      expect(listData[0], bar);
+      expect(listData.length, 1);
+
+      expect(testObserver.timesUpdated, 2);
+    },
+  );
+
   test('Should modify list-data and call observers only once', () {
     listData.modify((data) {
       data.value.add(Data(value: 'apple'));
@@ -252,6 +285,27 @@ void main() {
       listData.updateFrom(otherData);
       expect(listData == otherData, isTrue);
 
+      expect(testObserver.timesUpdated, 1);
+    },
+  );
+
+  test(
+    'Should throw an exception when trying to set items on listdata using value setter method',
+    () async {
+      expect(() => listData.value = [], throwsA(isA<Exception>()));
+    },
+  );
+
+  test(
+    'Should copy the list successfully',
+    () {
+      final bar = Data(value: 'bar');
+      final foo = Data(value: 'foo');
+      listData.addAll([foo, bar]);
+
+      final cloneList = listData.copy();
+
+      expect(cloneList, listData);
       expect(testObserver.timesUpdated, 1);
     },
   );
