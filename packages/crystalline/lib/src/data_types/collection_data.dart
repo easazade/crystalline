@@ -1,6 +1,5 @@
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
-import 'package:crystalline/src/exceptions.dart';
 import 'package:collection/collection.dart';
 
 typedef _DataPredicate<T> = bool Function(
