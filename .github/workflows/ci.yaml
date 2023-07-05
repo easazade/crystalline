@@ -23,7 +23,6 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          # 11
           flutter-version: "3.10.4"
           channel: "stable"
 
@@ -36,16 +35,14 @@ jobs:
       - name: Run all melos scripts
         run: melos all
 
-      - uses: devmasx/coverage-check-action@v1.2.0
+      - name: 📊 Check Code Coverage on crystalline
+        uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          type: lcov
-          result_path: packages/crystalline/coverage/lcov.info
+          path: packages/flutter_crystalline/coverage/lcov.info
           min_coverage: 100
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: devmasx/coverage-check-action@v1.2.0
+      - name: 📊 Check Code Coverage on flutter_crystalline
+        uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          type: lcov
-          result_path: packages/flutter_crystalline/coverage/lcov.info
+          path: packages/flutter_crystalline/coverage/lcov.info
           min_coverage: 100
-          token: ${{ secrets.GITHUB_TOKEN }}
