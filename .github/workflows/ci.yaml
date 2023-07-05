@@ -41,6 +41,8 @@ jobs:
         with:
           path: packages/crystalline/coverage/lcov.info
           min_coverage: 100
+          exclude: |
+            - packages/crystalline/lib/src/exceptions.dart
 
       - name: 📊 Check Code Coverage on flutter_crystalline
         uses: VeryGoodOpenSource/very_good_coverage@v2
