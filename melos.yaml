@@ -15,21 +15,21 @@ scripts:
       melos run test &&
       melos run format &&
       melos run analyze
-    description: Run melos bootstrap, test, format & analyze in order
+    description: 📦 Run melos bootstrap, test, format & analyze in order
 
   format:
     run: |
       melos exec -c 1 -- \
         dart analyze .
-    description: Run dart format in all packages
+    description: ✨ Run dart format in all packages
 
   analyze:
     run: |
       melos exec -c 1 -- \
         flutter analyze .
-    description: Run dart analyze in all packages
+    description: 🕵️ Run dart analyze in all packages
 
   test:
     run: |
       melos exec --ignore="*example*" -c 1 -- flutter test --coverage
-    description: Run all tests .
+    description: 🧪 Run all tests .
