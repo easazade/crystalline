@@ -32,5 +32,4 @@ scripts:
   test:
     run: |
       melos exec --ignore="*example*" --ignore="*flutter_riverpod_crystalline*" -c 1 -- flutter test --coverage
-      melos exec --ignore="*example*" --ignore="*flutter_riverpod_crystalline*" -c 1 -- lcov --remove coverage/lcov.info "lib/src/exceptions.dart" -o coverage/lcov.info
     description: Run all tests .
