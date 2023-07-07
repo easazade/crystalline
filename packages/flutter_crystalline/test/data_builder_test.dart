@@ -71,7 +71,6 @@ void main() {
               data: getData(),
               observe: true,
               builder: (context, data) {
-                print(data.toString());
                 if (data.hasValue)
                   return Text(data.value);
                 else

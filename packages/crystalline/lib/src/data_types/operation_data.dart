@@ -1,5 +1,6 @@
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
+import 'package:crystalline/src/mutators/mutators.dart';
 
 class OperationData extends Data<void> {
   OperationData({
@@ -12,11 +13,14 @@ class OperationData extends Data<void> {
           error: error,
         );
 
-  factory OperationData.from(ReadableData<dynamic> data) => OperationData(
-        operation: data.operation,
-        sideEffects: data.sideEffects,
-        error: data.errorOrNull,
-      )..updateFrom(data);
+  factory OperationData.from(UnModifiableData<dynamic> data) {
+    return data.map(OperationData(), (origin, mutated) {
+      mutated.error = origin.errorOrNull;
+      mutated.operation = origin.operation;
+      mutated.clearAllSideEffects();
+      mutated.addAllSideEffects(origin.sideEffects);
+    });
+  }
 
   @override
   void updateFrom(ReadableData<dynamic> data) {
