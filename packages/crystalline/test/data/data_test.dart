@@ -200,4 +200,13 @@ void main() {
       expect(data.isLoading, isTrue);
     },
   );
+
+  test(
+    'data.valueEqualsTo should return true when data.value equals otherValue',
+    () {
+      expect(data.valueEqualsTo('cat'), isFalse);
+      data.value = 'cat';
+      expect(data.valueEqualsTo('cat'), isTrue);
+    },
+  );
 }

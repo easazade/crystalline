@@ -218,15 +218,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   bool get isLoading => _operation != Operation.none;
 
   @override
-  bool valueEqualsTo(T? otherValue) {
-    if (hasValue) {
-      return _value == otherValue;
-    } else if (otherValue == null && this.hasNoValue) {
-      return true;
-    }
-
-    return false;
-  }
+  bool valueEqualsTo(T? otherValue) => _value == otherValue;
 
   @override
   void set error(Failure? error) {
