@@ -73,11 +73,11 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     if (data.isUpdating && onUpdate != null) {
       return onUpdate!(context, data);
     }
-    if (data.isOperating && onOperate != null) {
-      return onOperate!(context, data);
-    }
     if (data.hasCustomOperation && onCustomOperation != null) {
       return onCustomOperation!(context, data);
+    }
+    if (data.isOperating && onOperate != null) {
+      return onOperate!(context, data);
     }
     if (data.hasError && onError != null) {
       return onError!(context, data);
@@ -168,11 +168,11 @@ class _WhenDataRebuilderState<T, D extends Data<T>>
     if (_data.isUpdating && widget.onUpdate != null) {
       return widget.onUpdate!(context, _data);
     }
-    if (_data.isOperating && widget.onOperate != null) {
-      return widget.onOperate!(context, _data);
-    }
     if (_data.hasCustomOperation && widget.onCustomOperation != null) {
       return widget.onCustomOperation!(context, _data);
+    }
+    if (_data.isOperating && widget.onOperate != null) {
+      return widget.onOperate!(context, _data);
     }
     if (_data.hasError && widget.onError != null) {
       return widget.onError!(context, _data);
