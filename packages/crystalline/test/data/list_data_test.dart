@@ -334,6 +334,36 @@ void main() {
       expect(listData.hasNoValue, isFalse);
     },
   );
+  test(
+    'error and value flag methods for ListData should behave as overrided '
+    'and return false at all time since the override function just returns false',
+    () {
+      bool overrideFunc(
+        List<Data<String>> value,
+        Operation operation,
+        Failure? error,
+      ) {
+        return false;
+      }
+
+      listData = ListData<String>(
+        [],
+        hasValueStrategy: overrideFunc,
+        hasNoValueStrategy: overrideFunc,
+        hasErrorStrategy: overrideFunc,
+      );
+
+      expect(listData.hasError, isFalse);
+      listData.error = Failure('oops!');
+      expect(listData.hasError, isFalse);
+
+      expect(listData.hasValue, isFalse);
+      expect(listData.hasNoValue, isFalse);
+      listData.add(singleItem);
+      expect(listData.hasValue, isFalse);
+      expect(listData.hasNoValue, isFalse);
+    },
+  );
 
   test(
     'operation flag methods for ListData should behave as default expected',
@@ -359,7 +389,7 @@ void main() {
 
   test(
     'operation flag methods for ListData should behave as overrided '
-    'and return false because the override method just returns false',
+    'and return false at all time since the override function just returns false',
     () {
       bool overrideFunc(
         List<Data<String>> value,
