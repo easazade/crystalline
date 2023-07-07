@@ -174,7 +174,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
 
   @override
   void removeSideEffect(dynamic sideEffect) {
-    _sideEffects.remove(sideEffects);
+    _sideEffects.remove(sideEffect);
     notifyObservers();
   }
 
@@ -215,12 +215,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   bool get hasCustomOperation => _operation.isCustom;
 
   @override
-  bool get isLoading =>
-      _operation == Operation.loading ||
-      isUpdating ||
-      isFetching ||
-      isDeleting ||
-      isCreating;
+  bool get isLoading => _operation != Operation.none;
 
   @override
   bool valueEqualsTo(T? otherValue) {
