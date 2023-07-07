@@ -309,4 +309,14 @@ void main() {
       expect(testObserver.timesUpdated, 1);
     },
   );
+
+  test(
+    'Should create a new ListData instance with initial sideEffects',
+    () {
+      final sideEffects = ['side effetc'];
+      final list = ListData<int>([], sideEffects: sideEffects);
+
+      expect(list.sideEffects, sideEffects);
+    },
+  );
 }

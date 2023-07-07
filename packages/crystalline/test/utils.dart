@@ -31,3 +31,5 @@ class DataTestObserver<T, D extends Data<T>> {
 }
 
 typedef ListDataTestObserver<T> = DataTestObserver<List<Data<T>>, ListData<T>>;
+typedef CollectionDataTestObserver<T>
+    = DataTestObserver<List<Data<T>>, CollectionData<T>>;
