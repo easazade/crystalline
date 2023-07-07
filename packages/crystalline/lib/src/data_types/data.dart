@@ -1,5 +1,6 @@
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
+import 'package:crystalline/src/utils.dart';
 import 'package:meta/meta.dart';
 
 class Operation {
@@ -273,8 +274,38 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
       Data<T>(value: _value, error: _error, operation: _operation);
 
   @override
-  String toString() =>
-      '{$runtimeType = $_operation | $_value${_error != null ? " | error: $error" : ""}}';
+  String toString() {
+    final buffer = StringBuffer();
+    buffer.write('{ ');
+    buffer.write('$runtimeType = ');
+    if (hasError) {
+      buffer.write("error: ${inRed('<')}");
+      if (_error?.id != null) {
+        buffer.write(inRed('id: ${error.id} - '));
+      }
+      buffer.write('${inRed("${error.message}> ")}| ');
+    }
+
+    if (operation == Operation.none) {
+      buffer.write('operation: ${operation.name}');
+    } else {
+      buffer.write('operation: ${inBlinking(inMagenta(operation.name))}');
+    }
+
+    if (hasValue) {
+      buffer.write(' | value: ${inGreen(_value)}');
+    } else {
+      buffer.write(' | value: ${_value}');
+    }
+
+    buffer.writeln(' }');
+
+    if (_error != null) {
+      buffer.write('$error');
+    }
+
+    return buffer.toString();
+  }
 
   @override
   bool operator ==(Object other) {

@@ -1,4 +1,5 @@
 import 'package:crystalline/crystalline.dart';
+import 'package:crystalline/src/utils.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -207,6 +208,39 @@ void main() {
       expect(data.valueEqualsTo('cat'), isFalse);
       data.value = 'cat';
       expect(data.valueEqualsTo('cat'), isTrue);
+    },
+  );
+
+  test(
+    'data.toString() should return expected data',
+    () {
+      try {
+        throw Exception('oops');
+      } catch (e, stacktrace) {
+        data.value = 'cat';
+        data.operation = Operation.create;
+        data.error =
+            Failure('oops!', id: 'ID-2', exception: e, stacktrace: stacktrace);
+
+        final string = data.toString();
+        expect(string, contains(data.operation.name));
+        expect(string, contains(data.value.toString()));
+        expect(string, contains(data.error.id));
+        expect(string, contains(data.error.message));
+        expect(string, contains(data.error.stacktrace.toString()));
+        expect(string, contains(data.error.exception.toString()));
+      }
+    },
+  );
+
+  test(
+    'data.hasObservers should return true if it has any',
+    () {
+      final newData = Data<String>();
+      expect(newData.hasObservers, isFalse);
+      newData.addObserver(() {});
+      expect(newData.observers.length, 1);
+      expect(newData.hasObservers, isTrue);
     },
   );
 }
