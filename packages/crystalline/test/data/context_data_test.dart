@@ -90,7 +90,7 @@ void main() {
       'Should throw Error when error of Data is null and getter error is called',
       () {
     expect(contextData.errorOrNull, isNull);
-    expect(() => contextData.error, throwsA(isA<DataErrorIsNullException>()));
+    expect(() => contextData.error, throwsA(isA<ErrorIsNullException>()));
   });
 
   test('Should modify context-data and call observers only once', () {

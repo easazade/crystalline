@@ -14,7 +14,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        /// building title
         title: WhenDataBuilder(
           observe: true,
           data: homeStore.title,
@@ -63,9 +62,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             ElevatedButton(
               child: Text('Change Title'),
-              onPressed: () {
-                homeStore.changeTitle();
-              },
+              onPressed: () => homeStore.changeTitle(),
             ),
             ElevatedButton(
               child: Text('Change Number'),

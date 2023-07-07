@@ -319,4 +319,82 @@ void main() {
       expect(list.sideEffects, sideEffects);
     },
   );
+
+  test(
+    'error and value flag methods for ListData should behave as default expected',
+    () {
+      expect(listData.hasError, isFalse);
+      listData.error = Failure('oops!');
+      expect(listData.hasError, isTrue);
+
+      expect(listData.hasValue, isFalse);
+      expect(listData.hasNoValue, isTrue);
+      listData.add(singleItem);
+      expect(listData.hasValue, isTrue);
+      expect(listData.hasNoValue, isFalse);
+    },
+  );
+
+  test(
+    'operation flag methods for ListData should behave as default expected',
+    () {
+      expect(listData.isOperating, isFalse);
+
+      listData.operation = Operation.create;
+      expect(listData.isCreating, isTrue);
+
+      listData.operation = Operation.delete;
+      expect(listData.isDeleting, isTrue);
+
+      listData.operation = Operation.fetch;
+      expect(listData.isFetching, isTrue);
+
+      listData.operation = Operation.update;
+      expect(listData.isUpdating, isTrue);
+
+      listData.operation = Operation('add-to-cart');
+      expect(listData.hasCustomOperation, isTrue);
+    },
+  );
+
+  test(
+    'operation flag methods for ListData should behave as overrided '
+    'and return false because the override method just returns false',
+    () {
+      bool overrideFunc(
+        List<Data<String>> value,
+        Operation operation,
+        Failure? error,
+      ) {
+        return false;
+      }
+
+      final listData = ListData<String>(
+        [],
+        isCreatingStrategy: overrideFunc,
+        isDeletingStrategy: overrideFunc,
+        isUpdatingStrategy: overrideFunc,
+        isFetchingStrategy: overrideFunc,
+        isOperatingStrategy: overrideFunc,
+        hasCustomOperationStrategy: overrideFunc,
+      );
+
+      expect(listData.isOperating, isFalse);
+
+      listData.operation = Operation.create;
+      expect(listData.isCreating, isFalse);
+
+      listData.operation = Operation.delete;
+      expect(listData.isDeleting, isFalse);
+
+      listData.operation = Operation.fetch;
+      expect(listData.isFetching, isFalse);
+
+      listData.operation = Operation.update;
+      expect(listData.isUpdating, isFalse);
+
+      listData.operation = Operation('add-to-cart');
+      expect(listData.hasCustomOperation, isFalse);
+    },
+  );
 }

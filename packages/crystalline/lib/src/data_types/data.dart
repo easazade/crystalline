@@ -143,7 +143,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   @override
   Failure get consumeError {
     if (_error == null) {
-      throw DataErrorIsNullException();
+      throw ErrorIsNullException();
     }
     Failure consumedErrorValue = _error!;
     _error = null;
@@ -153,7 +153,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   @override
   Failure get error {
     if (_error == null) {
-      throw DataErrorIsNullException();
+      throw ErrorIsNullException();
     }
     return _error!;
   }

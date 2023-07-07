@@ -13,6 +13,9 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   List<Data<T>> get value => items;
 
   @override
+  bool get hasValue => value.isNotEmpty;
+
+  @override
   set value(List<Data<T>>? value) {
     throw Exception(
       'You cannot change value of a $runtimeType directly. please use '

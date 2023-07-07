@@ -48,7 +48,7 @@ void main() {
       'Should throw Error when error of Data is null and getter error is called',
       () {
     expect(data.hasError, isFalse);
-    expect(() => data.error, throwsA(isA<DataErrorIsNullException>()));
+    expect(() => data.error, throwsA(isA<ErrorIsNullException>()));
   });
 
   test(
@@ -67,7 +67,7 @@ void main() {
     'Should throw exception when data has no error and data.consumeError is called',
     () {
       expect(data.hasError, isFalse);
-      expect(() => data.consumeError, throwsA(isA<DataErrorIsNullException>()));
+      expect(() => data.consumeError, throwsA(isA<ErrorIsNullException>()));
     },
   );
 

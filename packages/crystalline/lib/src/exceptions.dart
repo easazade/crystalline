@@ -12,8 +12,8 @@ class ValueNotAvailableException implements Exception {
   }
 }
 
-class DataErrorIsNullException implements Exception {
-  const DataErrorIsNullException();
+class ErrorIsNullException implements Exception {
+  const ErrorIsNullException();
 
   @override
   String toString() {
