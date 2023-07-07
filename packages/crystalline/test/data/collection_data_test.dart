@@ -12,12 +12,12 @@ class CollectionDataTestImpl<T> extends CollectionData<T> {
 }
 
 void main() {
-  late ListData<String> collectionData;
+  late CollectionDataTestImpl<String> collectionData;
   late List<Data<String>> items1;
   late CollectionDataTestObserver<String> testObserver;
 
   setUp(() {
-    collectionData = ListData([]);
+    collectionData = CollectionDataTestImpl([]);
     items1 = ['apple', 'orange', 'ananas', 'banana']
         .map((e) => Data(value: e))
         .toList();
