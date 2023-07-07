@@ -4,7 +4,7 @@ import 'package:crystalline/src/utils.dart';
 import 'package:meta/meta.dart';
 
 class Operation {
-  static const Operation loading = Operation('loading');
+  static const Operation operating = Operation('operating');
   static const Operation update = Operation('update');
   static const Operation delete = Operation('delete');
   static const Operation fetch = Operation('fetch');
@@ -12,7 +12,7 @@ class Operation {
   static const Operation none = Operation('none');
 
   static final defaultOperations = [
-    loading,
+    operating,
     update,
     delete,
     fetch,
@@ -51,7 +51,7 @@ abstract class ReadableData<T> {
 
   bool get hasNoValue;
 
-  bool get isLoading;
+  bool get isOperating;
 
   bool get isUpdating;
 
@@ -216,7 +216,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   bool get hasCustomOperation => _operation.isCustom;
 
   @override
-  bool get isLoading => _operation != Operation.none;
+  bool get isOperating => _operation != Operation.none;
 
   @override
   bool valueEqualsTo(T? otherValue) => _value == otherValue;

@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
           observe: true,
           data: homeStore.title,
           onValue: (context, data) => Text(data.value),
-          onLoading: (context, data) => SizedBox(
+          onOperate: (context, data) => SizedBox(
             height: 14,
             width: 14,
             child: CircularProgressIndicator(
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text('${data.value}'),
               ),
             ),
-            onLoading: (context, data) => SizedBox(
+            onOperate: (context, data) => SizedBox(
               height: 54,
               width: 54,
               child: Row(
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                   child: Text('${data.value}'),
                 ),
               ),
-              onLoading: (context, data) => SizedBox(
+              onOperate: (context, data) => SizedBox(
                 height: 54,
                 width: 54,
                 child: Row(
@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                   child: Text('${data.value}'),
                 ),
               ),
-              onLoading: (context, data) => SizedBox(
+              onOperate: (context, data) => SizedBox(
                 height: 54,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
               observe: true,
               builder: (context, _) {
                 print('home store being rebuilt');
-                if (homeStore.isLoading) {
+                if (homeStore.isOperating) {
                   return Text(
                     'on of required data in Home Store'
                     ' has null value aka not available',
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
               observe: true,
               data: homeStore,
               onValue: (context, _) => Text('home store available'),
-              onLoading: (context, _) => Text(
+              onOperate: (context, _) => Text(
                 'on of required data in Home Store'
                 ' has null value aka not available',
               ),

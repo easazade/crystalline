@@ -179,7 +179,7 @@ void main() {
   });
 
   test('Should notify observers when a single item operation is updated', () {
-    final expectedOperation = Operation.loading;
+    final expectedOperation = Operation.operating;
 
     listData.add(singleItem);
 

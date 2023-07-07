@@ -8,7 +8,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     required this.data,
     required this.onValue,
     this.onNoValue,
-    this.onLoading,
+    this.onOperate,
     this.onUpdate,
     this.onCreate,
     this.onDelete,
@@ -25,7 +25,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
   final DataWidgetBuilder<T, D> onValue;
   final DataWidgetBuilder<T, D>? onNoValue;
 
-  final DataWidgetBuilder<T, D>? onLoading;
+  final DataWidgetBuilder<T, D>? onOperate;
   final DataWidgetBuilder<T, D>? onCreate;
   final DataWidgetBuilder<T, D>? onDelete;
   final DataWidgetBuilder<T, D>? onFetch;
@@ -49,7 +49,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
         data: data,
         onValue: onValue,
         onNoValue: onNoValue,
-        onLoading: onLoading,
+        onOperate: onOperate,
         onUpdate: onUpdate,
         onCreate: onCreate,
         onDelete: onDelete,
@@ -73,8 +73,8 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     if (data.isUpdating && onUpdate != null) {
       return onUpdate!(context, data);
     }
-    if (data.isLoading && onLoading != null) {
-      return onLoading!(context, data);
+    if (data.isOperating && onOperate != null) {
+      return onOperate!(context, data);
     }
     if (data.hasCustomOperation && onCustomOperation != null) {
       return onCustomOperation!(context, data);
@@ -98,7 +98,7 @@ class _WhenDataRebuilder<T, D extends Data<T>> extends StatefulWidget {
     required this.data,
     required this.onValue,
     this.onNoValue,
-    this.onLoading,
+    this.onOperate,
     this.onUpdate,
     this.onCreate,
     this.onDelete,
@@ -114,7 +114,7 @@ class _WhenDataRebuilder<T, D extends Data<T>> extends StatefulWidget {
   final DataWidgetBuilder<T, D> onValue;
   final DataWidgetBuilder<T, D>? onNoValue;
 
-  final DataWidgetBuilder<T, D>? onLoading;
+  final DataWidgetBuilder<T, D>? onOperate;
   final DataWidgetBuilder<T, D>? onCreate;
   final DataWidgetBuilder<T, D>? onDelete;
   final DataWidgetBuilder<T, D>? onFetch;
@@ -168,8 +168,8 @@ class _WhenDataRebuilderState<T, D extends Data<T>>
     if (_data.isUpdating && widget.onUpdate != null) {
       return widget.onUpdate!(context, _data);
     }
-    if (_data.isLoading && widget.onLoading != null) {
-      return widget.onLoading!(context, _data);
+    if (_data.isOperating && widget.onOperate != null) {
+      return widget.onOperate!(context, _data);
     }
     if (_data.hasCustomOperation && widget.onCustomOperation != null) {
       return widget.onCustomOperation!(context, _data);

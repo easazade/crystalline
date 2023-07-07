@@ -6,7 +6,7 @@ class ProfileStore extends ChangeNotifierData {
   Future update() async {
     print('updating profile');
 
-    operation = Operation.loading;
+    operation = Operation.operating;
     error = Failure('message');
 
     await Future.delayed(const Duration(seconds: 1));

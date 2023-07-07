@@ -193,11 +193,11 @@ void main() {
   );
 
   test(
-    'data.isLoading should return true when operation is not Operation.none',
+    'data.isOperating should return true when operation is not Operation.none',
     () {
-      expect(data.isLoading, isFalse);
+      expect(data.isOperating, isFalse);
       data.operation = Operation('custom');
-      expect(data.isLoading, isTrue);
+      expect(data.isOperating, isTrue);
     },
   );
 

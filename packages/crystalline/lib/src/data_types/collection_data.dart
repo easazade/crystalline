@@ -171,7 +171,7 @@ class ListData<T> extends CollectionData<T> {
     Operation operation = Operation.none,
     Failure? error,
     List<dynamic>? sideEffects,
-    this.isLoadingStrategy,
+    this.isOperatingStrategy,
     this.hasErrorStrategy,
     this.hasValueStrategy,
     this.hasNoValueStrategy,
@@ -191,7 +191,7 @@ class ListData<T> extends CollectionData<T> {
   @override
   final List<Data<T>> items;
 
-  final _DataPredicate<T> isLoadingStrategy;
+  final _DataPredicate<T> isOperatingStrategy;
   final _DataPredicate<T> hasErrorStrategy;
   final _DataPredicate<T> hasValueStrategy;
   final _DataPredicate<T> hasNoValueStrategy;
@@ -202,9 +202,9 @@ class ListData<T> extends CollectionData<T> {
   final _DataPredicate<T> hasCustomOperationStrategy;
 
   @override
-  bool get isLoading {
-    return isLoadingStrategy?.call(value, operation, errorOrNull) ??
-        super.isLoading;
+  bool get isOperating {
+    return isOperatingStrategy?.call(value, operation, errorOrNull) ??
+        super.isOperating;
   }
 
   @override
