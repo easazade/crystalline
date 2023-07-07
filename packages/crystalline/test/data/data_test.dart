@@ -1,5 +1,4 @@
 import 'package:crystalline/crystalline.dart';
-import 'package:crystalline/src/utils.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -212,7 +211,7 @@ void main() {
   );
 
   test(
-    'data.toString() should return expected data',
+    'data.toString() should return expected info',
     () {
       try {
         throw Exception('oops');
@@ -230,6 +229,15 @@ void main() {
         expect(string, contains(data.error.stacktrace.toString()));
         expect(string, contains(data.error.exception.toString()));
       }
+    },
+  );
+
+  test(
+    'data.toString() should return expected info for a data without any errors or value',
+    () {
+      final string = data.toString();
+      expect(string, contains(data.operation.name));
+      expect(string, contains(data.valueOrNull.toString()));
     },
   );
 
