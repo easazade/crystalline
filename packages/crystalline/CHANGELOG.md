@@ -1,3 +1,21 @@
+## 0.4.0
+- Add sideEffects to Data types
+- Add OperationData
+- Data.updateFrom() method can now read from ReadableData instead of just Data
+- Fix data types updateFrom method not updating sideEffects & add OperationData.from() factory method
+- Change type name EditableData to ModifiableData
+- Fix bug in ListData not setting side effects
+- Increase test coverage to 100%
+- Remove throwing CannotUpdateFromTypeException in CollectionData.updateFrom(other)
+- change term loading to operating
+- Fix bug in Data.isLoading getter method not returning true when operation was custom
+- Update Data.valueEqualsTo(otherData) method
+- Change DataError with Failure
+- Improve toString() implementation on Data and Failure for better/readable/clear logging
+- Fix bug in CollectionData.hasValue method returning false when list has items & Add more tests for ListData
+- Fix builders not updating from new data when data object instance changes
+- Fix bug in WhenBuilder sometimes not calling onCustomOperation callback when needed to && Add more tests for WhenBuilder
+- Add extension methods toOperationData() and unModifiable() on Data<T>
 ## 0.3.0
 
 - Add ContextData type
