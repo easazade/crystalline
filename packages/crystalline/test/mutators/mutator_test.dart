@@ -8,21 +8,44 @@ void main() {
 
   setUp(() => data1 = Data());
 
-  test('Should map Data<int> to Data<String>', () {
-    final data2 = data1.map(
-      Data<String>(),
-      (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
-    );
+  test(
+    'Should map Data<int> to Data<String> and Data<String>',
+    () {
+      data1.value = 30;
+      final data2 = data1.map(
+        Data<String>(),
+        (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
+      );
 
-    final DataTestObserver<String, Data<String>> testObserver =
-        DataTestObserver(data2);
+      final DataTestObserver<String, Data<String>> data2TestObserver =
+          DataTestObserver(data2);
 
-    data1.value = 20;
-    expect(data2, isA<Data<String>>());
-    expect(data2.value, isNotNull);
-    expect(data2.value, data1.value.toString());
-    expect(testObserver.timesUpdated, 1);
-  });
+      expect(data2, isA<Data<String>>());
+      expect(data2.valueOrNull, isNotNull);
+      expect(data2.value, data1.value.toString());
+      expect(data2TestObserver.timesUpdated, 0);
+    },
+  );
+
+  test(
+    'Should map Data<int> to Data<String> and Data<String> should '
+    'be updated whenever Data<int> updates',
+    () {
+      final data2 = data1.map(
+        Data<String>(),
+        (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
+      );
+
+      final DataTestObserver<String, Data<String>> testObserver =
+          DataTestObserver(data2);
+
+      data1.value = 20;
+      expect(data2, isA<Data<String>>());
+      expect(data2.value, isNotNull);
+      expect(data2.value, data1.value.toString());
+      expect(testObserver.timesUpdated, 1);
+    },
+  );
 
   test(
     'Should create a distinct data that only udpates when origin data has changed distinctively',

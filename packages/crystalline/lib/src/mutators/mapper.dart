@@ -7,8 +7,9 @@ class _Mapper<T1, T2, D1 extends UnModifiableData<T1>, D2 extends Data<T2>> {
   _Mapper(
     this.origin,
     this.mutated,
-    void Function(D1 origin, D2 mapData) mapper,
+    void Function(D1 origin, D2 mutated) mapper,
   ) {
+    mapper(origin, mutated);
     origin.addObserver(() {
       mutated.disallowNotifyObservers();
       mapper(origin, mutated);
