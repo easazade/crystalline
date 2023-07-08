@@ -1,4 +1,5 @@
 import 'package:crystalline/crystalline.dart';
+import 'package:crystalline/src/data_types/extensions.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -296,6 +297,20 @@ void main() {
       expect(data.hasSideEffects, isFalse);
       data.addAllSideEffects(['effect1', 'effect2', 14, 4.5]);
       expect(data.hasSideEffects, isTrue);
+    },
+  );
+
+  test(
+    'data.unModifiable() extension should convert Data to UnModifiableData',
+    () {
+      expect(data.unModifiable(), isA<UnModifiableData<String>>());
+    },
+  );
+
+  test(
+    'data.toOperationData() extension should convert Data to an OperationData',
+    () {
+      expect(data.toOperationData(), isA<OperationData>());
     },
   );
 }
