@@ -1,3 +1,9 @@
+## 0.4.0
+
+- Change term onLoading to onOperate
+- Bump crystalline version to 0.4.0
+- Remove equatable dependency
+- Increase test coverage to 100%
 ## 0.3.0
 
 - Bump crystalline 0.3.0
