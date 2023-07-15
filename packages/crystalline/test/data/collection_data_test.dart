@@ -1,7 +1,6 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
-import '../utils.dart';
 
 class CollectionDataTestImpl<T> extends CollectionData<T> {
   CollectionDataTestImpl(this.items);
