@@ -101,9 +101,9 @@ void main() {
     'Should udpateData from another data',
     () async {
       final otherData = Data(value: 'subway');
-      expect(data == otherData, isFalse);
+      expect(data , isNot(otherData));
       data.updateFrom(otherData);
-      expect(data == otherData, isTrue);
+      expect(data ,otherData);
 
       expect(testObserver.timesUpdated, 1);
     },

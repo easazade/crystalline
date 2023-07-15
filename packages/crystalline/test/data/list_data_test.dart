@@ -279,10 +279,10 @@ void main() {
     () async {
       final otherData =
           ListData<String>([Data(value: 'shapoor'), Data(value: 'chancho')]);
-      expect(listData == otherData, isFalse);
+      expect(listData , isNot(otherData));
 
       listData.updateFrom(otherData);
-      expect(listData == otherData, isTrue);
+      expect(listData ,otherData);
 
       expect(testObserver.timesUpdated, 1);
     },

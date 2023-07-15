@@ -33,7 +33,7 @@ void main() {
     () {
       data.value = 'something';
 
-      expect(testObserver.timesUpdated == 2, isFalse);
+      expect(testObserver.timesUpdated, isNot(2));
       expect(
         () => testObserver.expectNthUpdate(2, (data) {}),
         throwsA(isA<Exception>()),
@@ -47,7 +47,7 @@ void main() {
     () {
       data.value = 'something';
 
-      expect(testObserver.timesUpdated == 1, isTrue);
+      expect(testObserver.timesUpdated, equals(1));
       expect(
         () => testObserver.expectNthUpdate(0, (data) {}),
         throwsA(isA<Exception>()),

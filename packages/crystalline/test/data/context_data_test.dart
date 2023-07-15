@@ -125,9 +125,9 @@ void main() {
         value: 'alireza',
         context: (job: 'programmer', car: 'pars 96'),
       );
-      expect(contextData == otherData, isFalse);
+      expect(contextData  ,isNot(otherData));
       contextData.updateFrom(otherData);
-      expect(contextData == otherData, isTrue);
+      expect(contextData ,otherData);
 
       expect(testObserver.timesUpdated, 1);
     },
