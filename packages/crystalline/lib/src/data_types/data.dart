@@ -283,6 +283,9 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
       if (_error?.id != null) {
         buffer.write(inRed('id: ${error.id} - '));
       }
+      if (_error?.cause != null) {
+        buffer.write(inRed('cause: ${error.cause} - '));
+      }
       buffer.write('${inRed("${error.message}> ")}| ');
     }
 

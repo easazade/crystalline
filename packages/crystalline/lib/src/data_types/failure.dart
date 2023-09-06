@@ -1,10 +1,12 @@
+import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/utils.dart';
 
 class Failure {
-  Failure(this.message, {this.id, this.exception, this.stacktrace});
+  Failure(this.message, {this.id, this.cause, this.exception, this.stacktrace});
 
   final String message;
   final String? id;
+  final Operation? cause;
   final dynamic exception;
   final StackTrace? stacktrace;
 
