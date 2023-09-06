@@ -114,9 +114,9 @@ abstract class ObservableData<T> {
 
   bool get hasObservers;
 
-  void addEventListener(void Function() listener);
+  void addEventListener(bool Function() listener);
 
-  void removeEventListener(void Function() listener);
+  void removeEventListener(bool Function() listener);
 }
 
 abstract class UnModifiableData<T>
@@ -127,10 +127,10 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   Failure? _error;
   Operation _operation;
 
-  bool _allowNotifyObservers = true;
+  bool _allowedToNotifyObservers = true;
 
   final List<void Function()> observers = [];
-  final List<void Function()> eventListeners = [];
+  final List<bool Function()> eventListeners = [];
   final List<dynamic> _sideEffects;
 
   Data({
@@ -348,31 +348,38 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
 
   @override
   void allowNotifyObservers() {
-    _allowNotifyObservers = true;
+    _allowedToNotifyObservers = true;
   }
 
   @override
   void disallowNotifyObservers() {
-    _allowNotifyObservers = false;
+    _allowedToNotifyObservers = false;
   }
 
   @override
   void notifyObservers() {
-    if (_allowNotifyObservers) observers.forEach((observer) => observer());
+    if (_allowedToNotifyObservers) observers.forEach((observer) => observer());
   }
 
   @override
-  void addEventListener(void Function() listener) {
+  void addEventListener(bool Function() listener) {
     eventListeners.add(listener);
   }
 
   @override
   void dispatchEvent(Event event) {
-    if (_allowNotifyObservers) eventListeners.forEach((listener) => listener());
+    if (_allowedToNotifyObservers) {
+      for (var callback in eventListeners) {
+        final eventConsumed = callback();
+        if (eventConsumed) {
+          break;
+        }
+      }
+    }
   }
 
   @override
-  void removeEventListener(void Function() listener) {
+  void removeEventListener(bool Function() listener) {
     eventListeners.remove(listener);
   }
 }
