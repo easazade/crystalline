@@ -30,6 +30,12 @@ class Operation {
   String toString() => 'Operation.$name';
 }
 
+class Event {
+  Event(this.name);
+
+  final String name;
+}
+
 abstract class ReadableData<T> {
   T get value;
 
@@ -97,6 +103,8 @@ abstract class ModifiableData<T> {
   void notifyObservers();
 
   void updateFrom(ReadableData<T> data);
+
+  void dispatchEvent(Event event);
 }
 
 abstract class ObservableData<T> {
@@ -105,6 +113,10 @@ abstract class ObservableData<T> {
   void removeObserver(void Function() observer);
 
   bool get hasObservers;
+
+  void addEventListener(void Function() listener);
+
+  void removeEventListener(void Function() listener);
 }
 
 abstract class UnModifiableData<T>
@@ -118,6 +130,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   bool _allowNotifyObservers = true;
 
   final List<void Function()> observers = [];
+  final List<void Function()> eventListeners = [];
   final List<dynamic> _sideEffects;
 
   Data({
@@ -346,5 +359,20 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   @override
   void notifyObservers() {
     if (_allowNotifyObservers) observers.forEach((observer) => observer());
+  }
+
+  @override
+  void addEventListener(void Function() listener) {
+    eventListeners.add(listener);
+  }
+
+  @override
+  void dispatchEvent(Event event) {
+    if (_allowNotifyObservers) eventListeners.forEach((listener) => listener());
+  }
+
+  @override
+  void removeEventListener(void Function() listener) {
+    eventListeners.remove(listener);
   }
 }

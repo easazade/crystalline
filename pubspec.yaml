@@ -1,4 +1,4 @@
-name: crystalline_wrokspace # used by melos
+name: crystalline_workspace # used by melos
 publish_to: none
 
 environment:
