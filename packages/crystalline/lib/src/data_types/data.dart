@@ -31,7 +31,7 @@ class Operation {
 }
 
 class Event {
-  Event(this.name);
+  const Event(this.name);
 
   final String name;
 }
@@ -114,9 +114,9 @@ abstract class ObservableData<T> {
 
   bool get hasObservers;
 
-  void addEventListener(bool Function() listener);
+  void addEventListener(bool Function(Event event) listener);
 
-  void removeEventListener(bool Function() listener);
+  void removeEventListener(bool Function(Event event) listener);
 }
 
 abstract class UnModifiableData<T>
@@ -130,7 +130,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   bool _allowedToNotifyObservers = true;
 
   final List<void Function()> observers = [];
-  final List<bool Function()> eventListeners = [];
+  final List<bool Function(Event event)> eventListeners = [];
   final List<dynamic> _sideEffects;
 
   Data({
@@ -362,7 +362,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   }
 
   @override
-  void addEventListener(bool Function() listener) {
+  void addEventListener(bool Function(Event event) listener) {
     eventListeners.add(listener);
   }
 
@@ -370,7 +370,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   void dispatchEvent(Event event) {
     if (_allowedToNotifyObservers) {
       for (var callback in eventListeners) {
-        final eventConsumed = callback();
+        final eventConsumed = callback(event);
         if (eventConsumed) {
           break;
         }
@@ -379,7 +379,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   }
 
   @override
-  void removeEventListener(bool Function() listener) {
+  void removeEventListener(bool Function(Event event) listener) {
     eventListeners.remove(listener);
   }
 }
