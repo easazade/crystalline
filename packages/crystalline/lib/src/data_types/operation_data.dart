@@ -14,7 +14,7 @@ class OperationData extends Data<void> {
         );
 
   factory OperationData.from(UnModifiableData<dynamic> data) {
-    return data.map(OperationData(), (origin, mutated) {
+    return data.mapTo(OperationData(), (origin, mutated) {
       mutated.error = origin.errorOrNull;
       mutated.operation = origin.operation;
       mutated.clearAllSideEffects();

@@ -10,7 +10,7 @@ void main() {
     'Should map Data<int> to Data<String> and Data<String>',
     () {
       data1.value = 30;
-      final data2 = data1.map(
+      final data2 = data1.mapTo(
         Data<String>(),
         (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
       );
@@ -29,7 +29,7 @@ void main() {
     'Should map Data<int> to Data<String> and Data<String> should '
     'be updated whenever Data<int> updates',
     () {
-      final data2 = data1.map(
+      final data2 = data1.mapTo(
         Data<String>(),
         (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
       );
@@ -46,7 +46,7 @@ void main() {
   );
 
   test(
-    'Should create a distinct data that only udpates when origin data has changed distinctively',
+    'Should create a distinct data that only updates when origin data has changed distinctively',
     () {
       final original = data1;
       final distinct = original.distinct();

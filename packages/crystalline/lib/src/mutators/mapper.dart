@@ -22,7 +22,7 @@ class _Mapper<T1, T2, D1 extends UnModifiableData<T1>, D2 extends Data<T2>> {
 extension MappperX<T1, T2, D1 extends UnModifiableData<T1>>
     on UnModifiableData<T1> {
   /// map function
-  D2 map<D2 extends Data<T2>>(
+  D2 mapTo<D2 extends Data<T2>>(
     D2 mapData,
     void Function(D1 origin, D2 mutated) mapper,
   ) {
