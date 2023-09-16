@@ -367,6 +367,11 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   }
 
   @override
+  void removeEventListener(bool Function(Event event) listener) {
+    eventListeners.remove(listener);
+  }
+
+  @override
   void dispatchEvent(Event event) {
     if (_allowedToNotifyObservers) {
       for (var callback in eventListeners) {
@@ -376,10 +381,5 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
         }
       }
     }
-  }
-
-  @override
-  void removeEventListener(bool Function(Event event) listener) {
-    eventListeners.remove(listener);
   }
 }
