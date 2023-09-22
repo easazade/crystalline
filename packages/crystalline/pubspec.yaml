@@ -1,6 +1,6 @@
 name: crystalline
 description: Define Crystal clear state definition across all state management libraries.
-version: 0.4.0
+version: 0.5.0
 repository: https://github.com/easazade/crystalline
 
 environment:

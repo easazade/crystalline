@@ -1,3 +1,15 @@
+## 0.5.0
+
+- Move test observers from crystalline/test to crystalline/lib & Add tests for them
+- Restyle tests
+- Add cause to Failure
+- Change mutator name map() to mapTo to avoid conflict with CollectionData map()
+- Add events
+- Update events to be consumable
+- Add missing event arg in event listener callbacks
+- Add extension on Iterable<T> to map to data objects
+- Refactor term error to failure in all packages
+
 ## 0.4.0
 - Add sideEffects to Data types
 - Add OperationData
