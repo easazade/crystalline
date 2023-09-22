@@ -70,13 +70,13 @@ void main() {
       expect(distinct.operation, Operation.create);
       expect(distinctTestObserver.timesUpdated, 2);
 
-      final newError = Failure('message');
-      original.error = newError;
-      original.error = newError;
-      original.error = newError;
-      original.error = newError;
+      final newFailure = Failure('message');
+      original.failure = newFailure;
+      original.failure = newFailure;
+      original.failure = newFailure;
+      original.failure = newFailure;
 
-      expect(distinct.errorOrNull, newError);
+      expect(distinct.failureOrNull, newFailure);
       expect(distinctTestObserver.timesUpdated, 3);
     },
   );
@@ -106,13 +106,13 @@ void main() {
       expect(mirror.operation, Operation.create);
       expect(mirrorTestObserver.timesUpdated, 8);
 
-      final newError = Failure('message');
-      original.error = newError;
-      original.error = newError;
-      original.error = newError;
-      original.error = newError;
+      final newFailure = Failure('message');
+      original.failure = newFailure;
+      original.failure = newFailure;
+      original.failure = newFailure;
+      original.failure = newFailure;
 
-      expect(mirror.errorOrNull, newError);
+      expect(mirror.failureOrNull, newFailure);
       expect(mirrorTestObserver.timesUpdated, 12);
     },
   );

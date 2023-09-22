@@ -1,7 +1,6 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
-
 void main() {
   late ListData<String> listData;
   late List<Data<String>> items1;
@@ -190,15 +189,15 @@ void main() {
     expect(testObserver.timesUpdated, 2);
   });
 
-  test('Should notify observers when item in list has an error', () {
-    final expectedError = Failure('message');
+  test('Should notify observers when item in list has an failure', () {
+    final expectedFailure = Failure('message');
 
     listData.add(singleItem);
 
-    singleItem.error = expectedError;
+    singleItem.failure = expectedFailure;
     testObserver.expectNthUpdate(2, (list) {
-      expect(list.first.error, expectedError);
-      expect(list.first.error, listData.first.error);
+      expect(list.first.failure, expectedFailure);
+      expect(list.first.failure, listData.first.failure);
     });
     expect(testObserver.timesUpdated, 2);
   });
@@ -254,7 +253,7 @@ void main() {
       data.value.add(Data(value: 'apple'));
       data.value.add(Data(value: 'orange'));
       data.operation = Operation.create;
-      data.error = Failure('message');
+      data.failure = Failure('message');
     });
 
     expect(testObserver.timesUpdated, 1);
@@ -267,7 +266,7 @@ void main() {
         data.value.add(Data(value: 'apple'));
         data.value.add(Data(value: 'orange'));
         data.operation = Operation.create;
-        data.error = Failure('message');
+        data.failure = Failure('message');
       });
 
       expect(testObserver.timesUpdated, 1);
@@ -279,10 +278,10 @@ void main() {
     () async {
       final otherData =
           ListData<String>([Data(value: 'shapoor'), Data(value: 'chancho')]);
-      expect(listData , isNot(otherData));
+      expect(listData, isNot(otherData));
 
       listData.updateFrom(otherData);
-      expect(listData ,otherData);
+      expect(listData, otherData);
 
       expect(testObserver.timesUpdated, 1);
     },
@@ -320,11 +319,11 @@ void main() {
   );
 
   test(
-    'error and value flag methods for ListData should behave as default expected',
+    'failure and value flag methods for ListData should behave as default expected',
     () {
-      expect(listData.hasError, isFalse);
-      listData.error = Failure('oops!');
-      expect(listData.hasError, isTrue);
+      expect(listData.hasFailure, isFalse);
+      listData.failure = Failure('oops!');
+      expect(listData.hasFailure, isTrue);
 
       expect(listData.hasValue, isFalse);
       expect(listData.hasNoValue, isTrue);
@@ -334,13 +333,13 @@ void main() {
     },
   );
   test(
-    'error and value flag methods for ListData should behave as overrided '
+    'failure and value flag methods for ListData should behave as overrided '
     'and return false at all time since the override function just returns false',
     () {
       bool overrideFunc(
         List<Data<String>> value,
         Operation operation,
-        Failure? error,
+        Failure? failure,
       ) {
         return false;
       }
@@ -349,12 +348,12 @@ void main() {
         [],
         hasValueStrategy: overrideFunc,
         hasNoValueStrategy: overrideFunc,
-        hasErrorStrategy: overrideFunc,
+        hasFailureStrategy: overrideFunc,
       );
 
-      expect(listData.hasError, isFalse);
-      listData.error = Failure('oops!');
-      expect(listData.hasError, isFalse);
+      expect(listData.hasFailure, isFalse);
+      listData.failure = Failure('oops!');
+      expect(listData.hasFailure, isFalse);
 
       expect(listData.hasValue, isFalse);
       expect(listData.hasNoValue, isFalse);
@@ -393,7 +392,7 @@ void main() {
       bool overrideFunc(
         List<Data<String>> value,
         Operation operation,
-        Failure? error,
+        Failure? failure,
       ) {
         return false;
       }

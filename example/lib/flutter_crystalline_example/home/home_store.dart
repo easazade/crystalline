@@ -22,7 +22,7 @@ class HomeStore extends Store {
     final newValue = ++number.value;
     number.value = null;
     number.operation = Operation.update;
-    error = null;
+    failure = null;
     notifyListeners();
 
     await Future.delayed(const Duration(seconds: 1));
@@ -31,7 +31,7 @@ class HomeStore extends Store {
     notifyListeners();
 
     await Future.delayed(const Duration(seconds: 1));
-    error = Failure('Some fake made error');
+    failure = Failure('Some fake made failure');
   }
 
   @override

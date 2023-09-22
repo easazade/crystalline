@@ -6,16 +6,16 @@ class OperationData extends Data<void> {
   OperationData({
     Operation operation = Operation.none,
     List<dynamic>? sideEffects,
-    Failure? error,
+    Failure? failure,
   }) : super(
           operation: operation,
           sideEffects: sideEffects,
-          error: error,
+          failure: failure,
         );
 
   factory OperationData.from(UnModifiableData<dynamic> data) {
     return data.mapTo(OperationData(), (origin, mutated) {
-      mutated.error = origin.errorOrNull;
+      mutated.failure = origin.failureOrNull;
       mutated.operation = origin.operation;
       mutated.clearAllSideEffects();
       mutated.addAllSideEffects(origin.sideEffects);
@@ -26,7 +26,7 @@ class OperationData extends Data<void> {
   void updateFrom(ReadableData<dynamic> data) {
     disallowNotifyObservers();
     operation = data.operation;
-    error = data.errorOrNull;
+    failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects);
     allowNotifyObservers();
@@ -36,7 +36,7 @@ class OperationData extends Data<void> {
   @override
   OperationData copy() => OperationData(
         operation: operation,
-        error: errorOrNull,
+        failure: failureOrNull,
         sideEffects: sideEffects,
       );
 }

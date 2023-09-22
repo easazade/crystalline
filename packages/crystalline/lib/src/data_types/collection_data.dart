@@ -3,7 +3,7 @@ import 'package:crystalline/src/data_types/failure.dart';
 import 'package:collection/collection.dart';
 
 typedef _DataPredicate<T> = bool Function(
-    List<Data<T>> value, Operation operation, Failure? error)?;
+    List<Data<T>> value, Operation operation, Failure? failure)?;
 
 abstract class CollectionData<T> extends Data<List<Data<T>>>
     with Iterable<Data<T>> {
@@ -124,7 +124,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.addAll(data.value.toList());
     items.forEach((e) => _addObserversToItem(e));
     operation = data.operation;
-    error = data.errorOrNull;
+    failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects);
     allowNotifyObservers();
@@ -154,7 +154,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   CollectionData<T> copy() => ListData(
         items.toList().map((data) => data.copy()).toList(),
         operation: this.operation,
-        error: this.errorOrNull,
+        failure: this.failureOrNull,
       );
 
   @override
@@ -164,7 +164,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     return runtimeType == other.runtimeType &&
         ListEquality<Data<T>>().equals(items, other.items) &&
         operation == other.operation &&
-        errorOrNull == other.errorOrNull;
+        failureOrNull == other.failureOrNull;
   }
 }
 
@@ -172,10 +172,10 @@ class ListData<T> extends CollectionData<T> {
   ListData(
     this.items, {
     Operation operation = Operation.none,
-    Failure? error,
+    Failure? failure,
     List<dynamic>? sideEffects,
     this.isOperatingStrategy,
-    this.hasErrorStrategy,
+    this.hasFailureStrategy,
     this.hasValueStrategy,
     this.hasNoValueStrategy,
     this.isCreatingStrategy,
@@ -185,7 +185,7 @@ class ListData<T> extends CollectionData<T> {
     this.hasCustomOperationStrategy,
   }) {
     this.operation = operation;
-    this.error = error;
+    this.failure = failure;
     if (sideEffects != null) {
       addAllSideEffects(sideEffects);
     }
@@ -195,7 +195,7 @@ class ListData<T> extends CollectionData<T> {
   final List<Data<T>> items;
 
   final _DataPredicate<T> isOperatingStrategy;
-  final _DataPredicate<T> hasErrorStrategy;
+  final _DataPredicate<T> hasFailureStrategy;
   final _DataPredicate<T> hasValueStrategy;
   final _DataPredicate<T> hasNoValueStrategy;
   final _DataPredicate<T> isCreatingStrategy;
@@ -206,55 +206,55 @@ class ListData<T> extends CollectionData<T> {
 
   @override
   bool get isOperating {
-    return isOperatingStrategy?.call(value, operation, errorOrNull) ??
+    return isOperatingStrategy?.call(value, operation, failureOrNull) ??
         super.isOperating;
   }
 
   @override
-  bool get hasError {
-    return hasErrorStrategy?.call(value, operation, errorOrNull) ??
-        super.hasError;
+  bool get hasFailure {
+    return hasFailureStrategy?.call(value, operation, failureOrNull) ??
+        super.hasFailure;
   }
 
   @override
   bool get hasValue {
-    return hasValueStrategy?.call(value, operation, errorOrNull) ??
+    return hasValueStrategy?.call(value, operation, failureOrNull) ??
         super.hasValue;
   }
 
   @override
   bool get hasNoValue {
-    return hasNoValueStrategy?.call(value, operation, errorOrNull) ??
+    return hasNoValueStrategy?.call(value, operation, failureOrNull) ??
         super.hasNoValue;
   }
 
   @override
   bool get isCreating {
-    return isCreatingStrategy?.call(value, operation, errorOrNull) ??
+    return isCreatingStrategy?.call(value, operation, failureOrNull) ??
         super.isCreating;
   }
 
   @override
   bool get isDeleting {
-    return isDeletingStrategy?.call(value, operation, errorOrNull) ??
+    return isDeletingStrategy?.call(value, operation, failureOrNull) ??
         super.isDeleting;
   }
 
   @override
   bool get isFetching {
-    return isFetchingStrategy?.call(value, operation, errorOrNull) ??
+    return isFetchingStrategy?.call(value, operation, failureOrNull) ??
         super.isFetching;
   }
 
   @override
   bool get isUpdating {
-    return isUpdatingStrategy?.call(value, operation, errorOrNull) ??
+    return isUpdatingStrategy?.call(value, operation, failureOrNull) ??
         super.isUpdating;
   }
 
   @override
   bool get hasCustomOperation {
-    return hasCustomOperationStrategy?.call(value, operation, errorOrNull) ??
+    return hasCustomOperationStrategy?.call(value, operation, failureOrNull) ??
         super.hasCustomOperation;
   }
 
@@ -262,7 +262,7 @@ class ListData<T> extends CollectionData<T> {
   ListData<T> copy() => ListData(
         items.toList().map((data) => data.copy()).toList(),
         operation: this.operation,
-        error: this.errorOrNull,
+        failure: this.failureOrNull,
       );
 
   @override

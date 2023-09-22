@@ -12,14 +12,14 @@ class ValueNotAvailableException implements Exception {
   }
 }
 
-class ErrorIsNullException implements Exception {
-  const ErrorIsNullException();
+class FailureIsNullException implements Exception {
+  const FailureIsNullException();
 
   @override
   String toString() {
     return '${super.toString()}\n'
-        'Data has no error please check if Data has error first\n'
-        'this can be done by calling `hasError` getter method first'
+        'Data has no failure please check if Data has failure first\n'
+        'this can be done by calling `hasFailure` getter method first'
         '\n';
   }
 }
@@ -32,7 +32,7 @@ class ContextIsNullException implements Exception {
     return '${super.toString()}\n'
         'ContextData has no context please check if ContextData has context first\n'
         'this can be done by calling `hasContext` getter method first\n'
-        'Alternativly you can use `contextOrNull`';
+        'Alternatively you can use `contextOrNull`';
   }
 }
 

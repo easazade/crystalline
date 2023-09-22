@@ -7,12 +7,12 @@ class ProfileStore extends ChangeNotifierData {
     print('updating profile');
 
     operation = Operation.operating;
-    error = Failure('message');
+    failure = Failure('message');
 
     await Future.delayed(const Duration(seconds: 1));
 
     operation = Operation.none;
-    error = null;
+    failure = null;
   }
 
   @override

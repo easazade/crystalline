@@ -1,4 +1,6 @@
-import 'package:crystalline/crystalline.dart';
+
+import 'package:crystalline/src/data_types/data.dart';
+import 'package:crystalline/src/data_types/operation_data.dart';
 
 extension CrystallineDataX<T> on Data<T> {
   /// returns an [OperationData] that observers this data

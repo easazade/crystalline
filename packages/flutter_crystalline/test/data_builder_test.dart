@@ -212,10 +212,10 @@ void main() {
   );
 
   testWidgets(
-    'Builder should update widget when error is '
+    'Builder should update widget when failure is '
     'updated on data and observe is set to true on DataBuilder',
     (tester) async {
-      final error = Failure('error message');
+      final failure = Failure('failure message');
 
       await tester.pumpWidget(
         Testable(
@@ -223,10 +223,10 @@ void main() {
             data: data,
             observe: true,
             builder: (context, data) {
-              if (data.hasError)
-                return Text(data.error.message);
+              if (data.hasFailure)
+                return Text(data.failure.message);
               else
-                return Text('no error');
+                return Text('no failure');
             },
           ),
         ),
@@ -234,24 +234,24 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('no error'), matchers.findsOneWidget);
-      expect(find.text(error.message), matchers.findsNothing);
+      expect(find.text('no failure'), matchers.findsOneWidget);
+      expect(find.text(failure.message), matchers.findsNothing);
 
       // when data value changes
-      data.error = error;
+      data.failure = failure;
 
       await tester.pumpAndSettle();
 
       // expect
-      expect(find.text(error.message), matchers.findsOneWidget);
+      expect(find.text(failure.message), matchers.findsOneWidget);
     },
   );
 
   testWidgets(
-    'Builder should NOT update widget when error is '
+    'Builder should NOT update widget when failure is '
     'updated on data and observe is NOT set to true on DataBuilder',
     (tester) async {
-      final error = Failure('error message');
+      final failure = Failure('failure message');
 
       await tester.pumpWidget(
         Testable(
@@ -259,10 +259,10 @@ void main() {
             data: data,
             // observe: true,
             builder: (context, data) {
-              if (data.hasError)
-                return Text(data.error.message);
+              if (data.hasFailure)
+                return Text(data.failure.message);
               else
-                return Text('no error');
+                return Text('no failure');
             },
           ),
         ),
@@ -270,16 +270,16 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('no error'), matchers.findsOneWidget);
-      expect(find.text(error.message), matchers.findsNothing);
+      expect(find.text('no failure'), matchers.findsOneWidget);
+      expect(find.text(failure.message), matchers.findsNothing);
 
       // when data value changes
-      data.error = error;
+      data.failure = failure;
 
       await tester.pumpAndSettle();
 
       // expect
-      expect(find.text(error.message), matchers.findsNothing);
+      expect(find.text(failure.message), matchers.findsNothing);
     },
   );
 }

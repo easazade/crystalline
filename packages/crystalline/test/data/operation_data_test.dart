@@ -15,7 +15,7 @@ void main() {
       value: 'some value',
       operation: Operation.fetch,
       sideEffects: ['side-effect'],
-      error: Failure('message'),
+      failure: Failure('message'),
     );
   });
 
@@ -23,16 +23,16 @@ void main() {
     'Should Update operationData successfully',
     () {
       expect(operationData.operation, Operation.none);
-      expect(operationData.errorOrNull, isNull);
+      expect(operationData.failureOrNull, isNull);
       expect(operationData.sideEffects, isEmpty);
 
-      operationData.error = Failure('message');
+      operationData.failure = Failure('message');
       operationData.operation = Operation.create;
       operationData.addSideEffect('side-effect');
 
       expect(operationData.operation, Operation.create);
-      expect(operationData.errorOrNull, isNotNull);
-      expect(operationData.error.message, 'message');
+      expect(operationData.failureOrNull, isNotNull);
+      expect(operationData.failure.message, 'message');
       expect(operationData.sideEffects.length, 1);
       expect(operationData.sideEffects.first, 'side-effect');
       expect(testObserver.timesUpdated, 3);
@@ -43,13 +43,13 @@ void main() {
     'OperationData should update from another data using updateFrom()',
     () {
       expect(operationData.operation, Operation.none);
-      expect(operationData.errorOrNull, isNull);
+      expect(operationData.failureOrNull, isNull);
       expect(operationData.sideEffects, isEmpty);
 
       operationData.updateFrom(data);
 
       expect(operationData.operation, data.operation);
-      expect(operationData.errorOrNull, data.errorOrNull);
+      expect(operationData.failureOrNull, data.failureOrNull);
       expect(operationData.sideEffects, data.sideEffects);
       expect(operationData.sideEffects.length, 1);
     },
@@ -58,27 +58,27 @@ void main() {
   test(
     'Should create an OperationData from another data and update '
     'itself from that other data. '
-    'should update operation, error and sideEffects',
+    'should update operation, failure and sideEffects',
     () {
       // create a new OperationData from another data
       operationData = OperationData.from(data);
       testObserver = DataTestObserver(operationData);
 
-      // expect the created OperationData has same operation, error and sideEffect values
+      // expect the created OperationData has same operation, failure and sideEffect values
       // as the data it is created from
       expect(operationData.operation, data.operation);
-      expect(operationData.errorOrNull, data.errorOrNull);
+      expect(operationData.failureOrNull, data.failureOrNull);
       expect(operationData.sideEffects, data.sideEffects);
       expect(operationData.sideEffects.length, 1);
 
       // when data updates, OperationData that is created from it should update as well
-      data.error = Failure('message 2');
+      data.failure = Failure('message 2');
       data.operation = Operation.delete;
       data.addSideEffect('side-effect-2');
 
       expect(operationData.operation, Operation.delete);
-      expect(operationData.errorOrNull, isNotNull);
-      expect(operationData.error.message, 'message 2');
+      expect(operationData.failureOrNull, isNotNull);
+      expect(operationData.failure.message, 'message 2');
       expect(operationData.sideEffects.length, 2);
       expect(operationData.sideEffects, data.sideEffects);
       expect(operationData.sideEffects.last, 'side-effect-2');

@@ -14,7 +14,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     this.onDelete,
     this.onFetch,
     this.onCustomOperation,
-    this.onError,
+    this.onFailure,
     this.orElse,
     this.observe = false,
     this.fallback = const SizedBox(),
@@ -32,10 +32,10 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
   final DataWidgetBuilder<T, D>? onUpdate;
   final DataWidgetBuilder<T, D>? onCustomOperation;
 
-  final DataWidgetBuilder<T, D>? onError;
+  final DataWidgetBuilder<T, D>? onFailure;
 
   /// called when there is no corresponding builder method for
-  /// the given status (operation/value/error)
+  /// the given status (operation/value/failure)
   final DataWidgetBuilder<T, D>? orElse;
 
   final Widget fallback;
@@ -55,7 +55,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
         onDelete: onDelete,
         onFetch: onFetch,
         onCustomOperation: onCustomOperation,
-        onError: onError,
+        onFailure: onFailure,
         orElse: orElse,
         fallback: fallback,
       );
@@ -79,8 +79,8 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     if (data.isOperating && onOperate != null) {
       return onOperate!(context, data);
     }
-    if (data.hasError && onError != null) {
-      return onError!(context, data);
+    if (data.hasFailure && onFailure != null) {
+      return onFailure!(context, data);
     }
     if (data.hasValue) {
       return onValue(context, data);
@@ -104,7 +104,7 @@ class _WhenDataRebuilder<T, D extends Data<T>> extends StatefulWidget {
     this.onDelete,
     this.onFetch,
     this.onCustomOperation,
-    this.onError,
+    this.onFailure,
     this.orElse,
     this.fallback = const SizedBox(),
   });
@@ -121,7 +121,7 @@ class _WhenDataRebuilder<T, D extends Data<T>> extends StatefulWidget {
   final DataWidgetBuilder<T, D>? onUpdate;
   final DataWidgetBuilder<T, D>? onCustomOperation;
 
-  final DataWidgetBuilder<T, D>? onError;
+  final DataWidgetBuilder<T, D>? onFailure;
   final DataWidgetBuilder<T, D>? orElse;
 
   final Widget fallback;
@@ -174,8 +174,8 @@ class _WhenDataRebuilderState<T, D extends Data<T>>
     if (_data.isOperating && widget.onOperate != null) {
       return widget.onOperate!(context, _data);
     }
-    if (_data.hasError && widget.onError != null) {
-      return widget.onError!(context, _data);
+    if (_data.hasFailure && widget.onFailure != null) {
+      return widget.onFailure!(context, _data);
     }
     if (_data.hasValue) {
       return widget.onValue(context, _data);

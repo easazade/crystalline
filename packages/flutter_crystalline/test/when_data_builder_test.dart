@@ -69,7 +69,7 @@ void main() {
             onOperate: (context, data) => Text(data.operation.name),
             onFetch: (context, data) => Text(data.operation.name),
             onDelete: (context, data) => Text(data.operation.name),
-            onError: (context, data) => Text(data.error.message),
+            onFailure: (context, data) => Text(data.failure.message),
             onUpdate: (context, data) => Text(data.operation.name),
             onCustomOperation: (context, data) => Text(data.operation.name),
             orElse: (context, data) => Text('or else'),
@@ -135,7 +135,7 @@ void main() {
               onOperate: (context, data) => Text(data.operation.name),
               onFetch: (context, data) => Text(data.operation.name),
               onDelete: (context, data) => Text(data.operation.name),
-              onError: (context, data) => Text(data.error.message),
+              onFailure: (context, data) => Text(data.failure.message),
               onUpdate: (context, data) => Text(data.operation.name),
               onCustomOperation: (context, data) => Text(data.operation.name),
               orElse: (context, data) => Text('or else'),
@@ -187,10 +187,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(data.value), matchers.findsOneWidget);
 
-      data.error = Failure('oops!');
+      data.failure = Failure('oops!');
       rebuildParent();
       await tester.pumpAndSettle();
-      expect(find.text(data.error.message), matchers.findsOneWidget);
+      expect(find.text(data.failure.message), matchers.findsOneWidget);
     },
   );
 
@@ -209,7 +209,7 @@ void main() {
             onOperate: (context, data) => Text(data.operation.name),
             onFetch: (context, data) => Text(data.operation.name),
             onDelete: (context, data) => Text(data.operation.name),
-            onError: (context, data) => Text(data.error.message),
+            onFailure: (context, data) => Text(data.failure.message),
             onUpdate: (context, data) => Text(data.operation.name),
             orElse: (context, data) => Text('or else'),
           ),
@@ -265,7 +265,7 @@ void main() {
             // onCreate: (context, data) => Text(data.operation.name),
             // onFetch: (context, data) => Text(data.operation.name),
             // onDelete: (context, data) => Text(data.operation.name),
-            // onError: (context, data) => Text(data.error.message),
+            // onFailure: (context, data) => Text(data.failure.message),
             // onUpdate: (context, data) => Text(data.operation.name),
           ),
         ),
@@ -411,10 +411,10 @@ void main() {
   );
 
   testWidgets(
-    'WhenDataBuilder onError should be called when data has and error'
+    'WhenDataBuilder onFailure should be called when data has and failure'
     'and operation is set Operation.none',
     (tester) async {
-      final error = Failure('message');
+      final failure = Failure('message');
 
       await tester.pumpWidget(
         Testable(
@@ -424,7 +424,7 @@ void main() {
             onValue: (context, data) => Text(data.value),
             onOperate: (context, data) => Text('operating'),
             orElse: (context, data) => Text('or else'),
-            onError: (context, data) => Text(data.error.message),
+            onFailure: (context, data) => Text(data.failure.message),
           ),
         ),
       );
@@ -436,9 +436,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Hello'), matchers.findsOneWidget);
 
-      data.error = error;
+      data.failure = failure;
       await tester.pumpAndSettle();
-      expect(find.text(error.message), matchers.findsOneWidget);
+      expect(find.text(failure.message), matchers.findsOneWidget);
 
       data.operation = Operation.operating;
       await tester.pumpAndSettle();
@@ -446,7 +446,7 @@ void main() {
 
       data.operation = Operation.none;
       await tester.pumpAndSettle();
-      expect(find.text(error.message), matchers.findsOneWidget);
+      expect(find.text(failure.message), matchers.findsOneWidget);
     },
   );
 

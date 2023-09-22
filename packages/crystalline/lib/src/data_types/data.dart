@@ -41,13 +41,13 @@ abstract class ReadableData<T> {
 
   T? get valueOrNull;
 
-  Failure get error;
+  Failure get failure;
 
-  Failure? get errorOrNull;
+  Failure? get failureOrNull;
 
   Operation get operation;
 
-  Failure get consumeError;
+  Failure get consumeFailure;
 
   List<dynamic> get sideEffects;
 
@@ -69,7 +69,7 @@ abstract class ReadableData<T> {
 
   bool get hasCustomOperation;
 
-  bool get hasError;
+  bool get hasFailure;
 
   bool valueEqualsTo(T? another);
 }
@@ -79,7 +79,7 @@ abstract class ModifiableData<T> {
 
   void set operation(Operation operation);
 
-  void set error(Failure? error);
+  void set failure(Failure? failure);
 
   void addSideEffect(dynamic sideEffect);
 
@@ -124,7 +124,7 @@ abstract class UnModifiableData<T>
 
 class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   T? _value;
-  Failure? _error;
+  Failure? _failure;
   Operation _operation;
 
   bool _allowedToNotifyObservers = true;
@@ -135,11 +135,11 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
 
   Data({
     T? value,
-    Failure? error,
+    Failure? failure,
     Operation operation = Operation.none,
     List<dynamic>? sideEffects,
   })  : _value = value,
-        _error = error,
+        _failure = failure,
         _sideEffects = sideEffects ?? [],
         _operation = operation;
 
@@ -154,21 +154,21 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   T? get valueOrNull => _value;
 
   @override
-  Failure get consumeError {
-    if (_error == null) {
-      throw ErrorIsNullException();
+  Failure get consumeFailure {
+    if (_failure == null) {
+      throw FailureIsNullException();
     }
-    Failure consumedErrorValue = _error!;
-    _error = null;
-    return consumedErrorValue;
+    Failure consumedFailureValue = _failure!;
+    _failure = null;
+    return consumedFailureValue;
   }
 
   @override
-  Failure get error {
-    if (_error == null) {
-      throw ErrorIsNullException();
+  Failure get failure {
+    if (_failure == null) {
+      throw FailureIsNullException();
     }
-    return _error!;
+    return _failure!;
   }
 
   @override
@@ -202,10 +202,10 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   bool get hasSideEffects => _sideEffects.isNotEmpty;
 
   @override
-  Failure? get errorOrNull => _error;
+  Failure? get failureOrNull => _failure;
 
   @override
-  bool get hasError => _error != null;
+  bool get hasFailure => _failure != null;
 
   @override
   bool get hasValue => _value != null;
@@ -235,8 +235,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   bool valueEqualsTo(T? otherValue) => _value == otherValue;
 
   @override
-  void set error(Failure? error) {
-    _error = error;
+  void set failure(Failure? failure) {
+    _failure = failure;
     notifyObservers();
   }
 
@@ -275,7 +275,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     disallowNotifyObservers();
     value = data.valueOrNull;
     operation = data.operation;
-    error = data.errorOrNull;
+    failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects);
     allowNotifyObservers();
@@ -284,22 +284,22 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
 
   /// returns a new instance of data object which is copy of this object.
   Data<T> copy() =>
-      Data<T>(value: _value, error: _error, operation: _operation);
+      Data<T>(value: _value, failure: _failure, operation: _operation);
 
   @override
   String toString() {
     final buffer = StringBuffer();
     buffer.write('{ ');
     buffer.write('$runtimeType = ');
-    if (hasError) {
-      buffer.write("error: ${inRed('<')}");
-      if (_error?.id != null) {
-        buffer.write(inRed('id: ${error.id} - '));
+    if (hasFailure) {
+      buffer.write("failure: ${inRed('<')}");
+      if (_failure?.id != null) {
+        buffer.write(inRed('id: ${failure.id} - '));
       }
-      if (_error?.cause != null) {
-        buffer.write(inRed('cause: ${error.cause} - '));
+      if (_failure?.cause != null) {
+        buffer.write(inRed('cause: ${failure.cause} - '));
       }
-      buffer.write('${inRed("${error.message}> ")}| ');
+      buffer.write('${inRed("${failure.message}> ")}| ');
     }
 
     if (operation == Operation.none) {
@@ -316,8 +316,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
 
     buffer.writeln(' }');
 
-    if (_error != null) {
-      buffer.write('$error');
+    if (_failure != null) {
+      buffer.write('$failure');
     }
 
     return buffer.toString();
@@ -328,7 +328,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     if (other is! Data<T>) return false;
 
     return other.runtimeType == runtimeType &&
-        _error == other._error &&
+        _failure == other._failure &&
         _value == other._value &&
         _operation == other._operation;
   }

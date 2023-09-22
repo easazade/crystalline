@@ -1,5 +1,4 @@
 import 'package:crystalline/crystalline.dart';
-import 'package:crystalline/src/data_types/extensions.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -22,7 +21,7 @@ void main() {
   });
 
   test(
-    'Should throw Error when value of Data is null and getter value is called',
+    'Should throw Failure when value of Data is null and getter value is called',
     () {
       expect(data.valueOrNull, isNull);
       expect(() => data.value, throwsA(isA<ValueNotAvailableException>()));
@@ -37,38 +36,38 @@ void main() {
     expect(testObserver.timesUpdated, 1);
   });
 
-  test('Should set error', () {
-    expect(data.hasError, isFalse);
-    final expectedError = Failure('message');
-    data.error = expectedError;
-    expect(data.error, expectedError);
+  test('Should set failure', () {
+    expect(data.hasFailure, isFalse);
+    final expectedFailure = Failure('message');
+    data.failure = expectedFailure;
+    expect(data.failure, expectedFailure);
     expect(testObserver.timesUpdated, 1);
   });
 
   test(
-      'Should throw Error when error of Data is null and getter error is called',
+      'Should throw Failure when failure of Data is null and getter failure is called',
       () {
-    expect(data.hasError, isFalse);
-    expect(() => data.error, throwsA(isA<ErrorIsNullException>()));
+    expect(data.hasFailure, isFalse);
+    expect(() => data.failure, throwsA(isA<FailureIsNullException>()));
   });
 
   test(
-    'Should return error and set error as null when data.consumeError is called',
+    'Should return failure and set failure as null when data.consumeFailure is called',
     () {
-      expect(data.hasError, isFalse);
-      data.error = Failure('oops!, something wrong');
-      expect(data.hasError, isTrue);
-      final error = data.consumeError;
-      expect(error.message, 'oops!, something wrong');
-      expect(data.hasError, isFalse);
+      expect(data.hasFailure, isFalse);
+      data.failure = Failure('oops!, something wrong');
+      expect(data.hasFailure, isTrue);
+      final failure = data.consumeFailure;
+      expect(failure.message, 'oops!, something wrong');
+      expect(data.hasFailure, isFalse);
     },
   );
 
   test(
-    'Should throw exception when data has no error and data.consumeError is called',
+    'Should throw exception when data has no failure and data.consumeFailure is called',
     () {
-      expect(data.hasError, isFalse);
-      expect(() => data.consumeError, throwsA(isA<ErrorIsNullException>()));
+      expect(data.hasFailure, isFalse);
+      expect(() => data.consumeFailure, throwsA(isA<FailureIsNullException>()));
     },
   );
 
@@ -77,7 +76,7 @@ void main() {
       data.value = 'apple';
       data.value = 'orage';
       data.operation = Operation.create;
-      data.error = Failure('message');
+      data.failure = Failure('message');
     });
 
     expect(testObserver.timesUpdated, 1);
@@ -90,7 +89,7 @@ void main() {
         data.value = 'apple';
         data.value = 'orage';
         data.operation = Operation.create;
-        data.error = Failure('message');
+        data.failure = Failure('message');
       });
 
       expect(testObserver.timesUpdated, 1);
@@ -101,9 +100,9 @@ void main() {
     'Should udpateData from another data',
     () async {
       final otherData = Data(value: 'subway');
-      expect(data , isNot(otherData));
+      expect(data, isNot(otherData));
       data.updateFrom(otherData);
-      expect(data ,otherData);
+      expect(data, otherData);
 
       expect(testObserver.timesUpdated, 1);
     },
@@ -219,22 +218,22 @@ void main() {
       } catch (e, stacktrace) {
         data.value = 'cat';
         data.operation = Operation.create;
-        data.error =
+        data.failure =
             Failure('oops!', id: 'ID-2', exception: e, stacktrace: stacktrace);
 
         final string = data.toString();
         expect(string, contains(data.operation.name));
         expect(string, contains(data.value.toString()));
-        expect(string, contains(data.error.id));
-        expect(string, contains(data.error.message));
-        expect(string, contains(data.error.stacktrace.toString()));
-        expect(string, contains(data.error.exception.toString()));
+        expect(string, contains(data.failure.id));
+        expect(string, contains(data.failure.message));
+        expect(string, contains(data.failure.stacktrace.toString()));
+        expect(string, contains(data.failure.exception.toString()));
       }
     },
   );
 
   test(
-    'data.toString() should return expected info for a data without any errors or value',
+    'data.toString() should return expected info for a data without any failures or value',
     () {
       final string = data.toString();
       expect(string, contains(data.operation.name));

@@ -5,14 +5,14 @@ import 'package:crystalline/src/exceptions.dart';
 class ContextData<T, C> extends Data<T> {
   ContextData({
     T? value,
-    Failure? error,
+    Failure? failure,
     Operation operation = Operation.none,
     List<dynamic>? sideEffects,
     C? context,
   })  : _context = context,
         super(
           value: value,
-          error: error,
+          failure: failure,
           operation: operation,
           sideEffects: sideEffects,
         );
@@ -55,7 +55,7 @@ class ContextData<T, C> extends Data<T> {
     disallowNotifyObservers();
     value = data.valueOrNull;
     operation = data.operation;
-    error = data.errorOrNull;
+    failure = data.failureOrNull;
     context = data.context;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects);
@@ -66,7 +66,7 @@ class ContextData<T, C> extends Data<T> {
   @override
   ContextData<T, C> copy() => ContextData(
         value: valueOrNull,
-        error: errorOrNull,
+        failure: failureOrNull,
         operation: operation,
         context: contextOrNull,
       );

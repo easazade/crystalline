@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                 'on of required data in Home Store'
                 ' has null value aka not available',
               ),
-              onError: (context, _) => Text(homeStore.error.message),
+              onFailure: (context, _) => Text(homeStore.failure.message),
             ),
           ],
         ),

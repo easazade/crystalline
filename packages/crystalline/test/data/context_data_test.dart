@@ -47,7 +47,7 @@ void main() {
   });
 
   test(
-    'Should throw Error when value of Data is null and getter value is called',
+    'Should throw Failure when value of Data is null and getter value is called',
     () {
       expect(contextData.valueOrNull, isNull);
       expect(
@@ -56,7 +56,7 @@ void main() {
   );
 
   test(
-    'Should throw Error when context of Data is null and getter context is called',
+    'Should throw Failure when context of Data is null and getter context is called',
     () {
       expect(contextData.contextOrNull, isNull);
       expect(() => contextData.context, throwsA(isA<ContextIsNullException>()));
@@ -79,18 +79,18 @@ void main() {
     expect(contextData.operation, expectedOperation);
   });
 
-  test('Should set error', () {
-    expect(contextData.errorOrNull, isNull);
-    final expectedError = Failure('message');
-    contextData.error = expectedError;
-    expect(contextData.error, expectedError);
+  test('Should set failure', () {
+    expect(contextData.failureOrNull, isNull);
+    final expectedFailure = Failure('message');
+    contextData.failure = expectedFailure;
+    expect(contextData.failure, expectedFailure);
   });
 
   test(
-      'Should throw Error when error of Data is null and getter error is called',
+      'Should throw Failure when failure of Data is null and getter failure is called',
       () {
-    expect(contextData.errorOrNull, isNull);
-    expect(() => contextData.error, throwsA(isA<ErrorIsNullException>()));
+    expect(contextData.failureOrNull, isNull);
+    expect(() => contextData.failure, throwsA(isA<FailureIsNullException>()));
   });
 
   test('Should modify context-data and call observers only once', () {
@@ -98,7 +98,7 @@ void main() {
       data.value = 'apple';
       data.value = 'orage';
       data.operation = Operation.create;
-      data.error = Failure('message');
+      data.failure = Failure('message');
     });
 
     expect(testObserver.timesUpdated, 1);
@@ -111,7 +111,7 @@ void main() {
         data.value = 'apple';
         data.value = 'orage';
         data.operation = Operation.create;
-        data.error = Failure('message');
+        data.failure = Failure('message');
       });
 
       expect(testObserver.timesUpdated, 1);
@@ -125,9 +125,9 @@ void main() {
         value: 'alireza',
         context: (job: 'programmer', car: 'pars 96'),
       );
-      expect(contextData  ,isNot(otherData));
+      expect(contextData, isNot(otherData));
       contextData.updateFrom(otherData);
-      expect(contextData ,otherData);
+      expect(contextData, otherData);
 
       expect(testObserver.timesUpdated, 1);
     },

@@ -49,7 +49,7 @@ class Authenticated extends AuthState {
   Authenticated(this.user, this.isAnonymous);
 }
 
-class Error extends AuthState {}
+class Failure extends AuthState {}
 
 // ####################################################################################
 // ####################################################################################
@@ -57,16 +57,15 @@ class Error extends AuthState {}
 // ####################################################################################
 
 class AuthStore extends Store {
-
   // we can run operations on user and it will be distinguished from other operations
   // we can access this data while operations are running, ( assuming it is ok to since this is auth store)
-  // we can have custom operations if we needed to 
+  // we can have custom operations if we needed to
   final Data<User> user = Data();
 
   // we can easily distinguish between operations. operations even can run at the same time
   // we can have custom operations in OperationData if we needed to
   // in fact we can have a single login OperationData with custom Operation('loggingInAnonymously')
-  // assuming we would show error the same way for both operations
+  // assuming we would show failure the same way for both operations
   final OperationData login = OperationData();
   final OperationData anonymousLogin = OperationData();
 
