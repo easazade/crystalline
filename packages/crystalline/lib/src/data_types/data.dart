@@ -114,6 +114,8 @@ abstract class ObservableData<T> {
 
   bool get hasObservers;
 
+  bool get hasEventListeners;
+
   void addEventListener(bool Function(Event event) listener);
 
   void removeEventListener(bool Function(Event event) listener);
@@ -345,6 +347,9 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
 
   @override
   bool get hasObservers => observers.isNotEmpty;
+
+    @override
+  bool get hasEventListeners => eventListeners.isNotEmpty;
 
   @override
   void allowNotifyObservers() {

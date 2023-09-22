@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
@@ -6,10 +7,12 @@ import '../utils.dart';
 void main() {
   late Data<String> data;
   late DataTestObserver<String, Data<String>> testObserver;
+  late DataTestListener<String, Data<String>> testListener;
 
   setUp(() {
     data = Data();
     testObserver = DataTestObserver(data);
+    testListener = DataTestListener(data);
   });
 
   test('Should set value', () {
@@ -300,6 +303,29 @@ void main() {
   );
 
   test(
+    'data.toString() should call toString method without any errors and '
+    'should show the correct data in the printed string',
+    () {
+      final value = 'hello';
+      final errorMsg = 'some error message';
+      final errorId = 'ERR-10';
+      final causeOfError = Operation.delete;
+      final operation = Operation.operating;
+
+      data.value = value;
+      data.failure = Failure(errorMsg, id: errorId, cause: causeOfError);
+      data.operation = operation;
+      final string = data.toString();
+      expect(string, isNotEmpty);
+      expect(string, contains(value));
+      expect(string, contains(errorId));
+      expect(string, contains(errorMsg));
+      expect(string, contains(causeOfError.name));
+      expect(string, contains(operation.name));
+    },
+  );
+
+  test(
     'data.unModifiable() extension should convert Data to UnModifiableData',
     () {
       expect(data.unModifiable(), isA<UnModifiableData<String>>());
@@ -307,9 +333,57 @@ void main() {
   );
 
   test(
+    'data.mapToData extension should convert an Iterable<T> to a List<Data<T>>',
+    () {
+      final list = ['alireza', 'mohammad', 'sobhan', 'reza'];
+      final dataList = list.mapToData;
+
+      expect(list.length, dataList.length);
+      final backToList = dataList.map((d) => d.value).toList();
+      expect(ListEquality<String>().equals(list, backToList), isTrue);
+    },
+  );
+
+  test(
     'data.toOperationData() extension should convert Data to an OperationData',
     () {
       expect(data.toOperationData(), isA<OperationData>());
+    },
+  );
+
+  test(
+    'data.addEventListener() should add/remove event listener successfully',
+    () {
+      final someData = Data<String>();
+      expect(someData.hasEventListeners, isFalse);
+
+      final listener = (event) => false;
+
+      someData.addEventListener(listener);
+
+      expect(someData.hasEventListeners, isTrue);
+      expect(someData.eventListeners.length, equals(1));
+
+      someData.removeEventListener(listener);
+
+      expect(someData.hasEventListeners, isFalse);
+    },
+  );
+
+  test(
+    'data.dispatchEvent() should dispatch all events successfully and in order',
+    () {
+      final event1 = Event('1');
+      final event2 = Event('2');
+      final event3 = Event('3');
+
+      data.dispatchEvent(event1);
+      data.dispatchEvent(event2);
+      data.dispatchEvent(event3);
+
+      testListener.expectNthDispatch(1, (event) => event == event1);
+      testListener.expectNthDispatch(1, (event) => event == event2);
+      testListener.expectNthDispatch(1, (event) => event == event3);
     },
   );
 }

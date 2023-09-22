@@ -22,6 +22,30 @@ class DataTestObserver<T, D extends Data<T>> {
   }
 }
 
+class DataTestListener<T, D extends Data<T>> {
+  DataTestListener(this.data) {
+    data.addEventListener((event) {
+      records.add(event);
+      return false;
+    });
+  }
+
+  final D data;
+  List<Event> records = [];
+
+  int get timesDispatched => records.length;
+
+  void expectNthDispatch(int n, void Function(Event event) fn) {
+    if (n <= 0) {
+      throw Exception('n cannot start from 0 or be less than 0');
+    }
+    if (n > records.length) {
+      throw Exception('this data has not had a ${n}th event dispatched');
+    }
+    fn(records[n - 1]);
+  }
+}
+
 typedef ListDataTestObserver<T> = DataTestObserver<List<Data<T>>, ListData<T>>;
 typedef CollectionDataTestObserver<T>
     = DataTestObserver<List<Data<T>>, CollectionData<T>>;

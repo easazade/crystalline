@@ -274,7 +274,7 @@ void main() {
   );
 
   test(
-    'Should udpate list-data from another list-data',
+    'Should update list-data from another list-data',
     () async {
       final otherData =
           ListData<String>([Data(value: 'shapoor'), Data(value: 'chancho')]);
@@ -386,7 +386,7 @@ void main() {
   );
 
   test(
-    'operation flag methods for ListData should behave as overrided '
+    'operation flag methods for ListData should behave as overridden '
     'and return false at all time since the override function just returns false',
     () {
       bool overrideFunc(
