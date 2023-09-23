@@ -96,7 +96,7 @@ void main() {
   test('Should modify context-data and call observers only once', () {
     contextData.modify((data) {
       data.value = 'apple';
-      data.value = 'orage';
+      data.value = 'orange';
       data.operation = Operation.create;
       data.failure = Failure('message');
     });
@@ -109,7 +109,7 @@ void main() {
     () async {
       await contextData.modifyAsync((data) async {
         data.value = 'apple';
-        data.value = 'orage';
+        data.value = 'orange';
         data.operation = Operation.create;
         data.failure = Failure('message');
       });
@@ -119,7 +119,7 @@ void main() {
   );
 
   test(
-    'Should udpate data from another data',
+    'Should update data from another data',
     () async {
       final otherData = ContextData<String, ({String job, String car})>(
         value: 'alireza',
@@ -134,7 +134,7 @@ void main() {
   );
 
   test(
-    'Should not udpateData from another data beucase they are different types',
+    'Should not updateData from another data because they are different types',
     () async {
       final otherData = ContextData<String, ({String job, int age})>(
         value: 'alireza',
