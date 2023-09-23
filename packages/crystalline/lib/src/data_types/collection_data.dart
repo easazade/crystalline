@@ -89,25 +89,25 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   }
 
   void modifyItems(Iterable<Data<T>> Function(List<Data<T>> items) modifier) {
-    disallowNotifyObservers();
+    disallowNotify();
     final newItems = modifier(items).toList();
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
     items.forEach((e) => _addObserversToItem(e));
-    allowNotifyObservers();
+    allowNotify();
     notifyObservers();
   }
 
   Future<void> modifyItemsAsync(
       Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
-    disallowNotifyObservers();
+    disallowNotify();
     final newItems = await modifier(items).then((e) => e.toList());
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
     items.forEach((e) => _addObserversToItem(e));
-    allowNotifyObservers();
+    allowNotify();
     notifyObservers();
   }
 
@@ -118,7 +118,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   @override
   void updateFrom(ReadableData<List<Data<T>>> data) {
-    disallowNotifyObservers();
+    disallowNotify();
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(data.value.toList());
@@ -127,7 +127,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects);
-    allowNotifyObservers();
+    allowNotify();
     notifyObservers();
   }
 

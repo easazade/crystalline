@@ -52,14 +52,14 @@ class ContextData<T, C> extends Data<T> {
     if (data is! ContextData<T, C>) {
       throw CannotUpdateFromTypeException(this, data);
     }
-    disallowNotifyObservers();
+    disallowNotify();
     value = data.valueOrNull;
     operation = data.operation;
     failure = data.failureOrNull;
     context = data.context;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects);
-    allowNotifyObservers();
+    allowNotify();
     notifyObservers();
   }
 

@@ -11,9 +11,9 @@ class _Mapper<T1, T2, D1 extends UnModifiableData<T1>, D2 extends Data<T2>> {
   ) {
     mapper(origin, mutated);
     origin.addObserver(() {
-      mutated.disallowNotifyObservers();
+      mutated.disallowNotify();
       mapper(origin, mutated);
-      mutated.allowNotifyObservers();
+      mutated.allowNotify();
       mutated.notifyObservers();
     });
   }

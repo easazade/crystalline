@@ -146,10 +146,10 @@ abstract class ModifiableData<T> {
   Future<void> modifyAsync(Future<void> Function(Data<T> data) fn);
 
   @mustCallSuper
-  void allowNotifyObservers();
+  void allowNotify();
 
   @mustCallSuper
-  void disallowNotifyObservers();
+  void disallowNotify();
 
   @mustCallSuper
   void notifyObservers();
@@ -181,7 +181,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   Failure? _failure;
   Operation _operation;
 
-  bool _allowedToNotifyObservers = true;
+  bool _allowedToNotify = true;
 
   final List<void Function()> observers = [];
   final List<bool Function(Event event)> eventListeners = [];
@@ -329,31 +329,74 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
 
   @override
   void modify(void Function(Data<T> data) fn) {
-    disallowNotifyObservers();
-    final clone = copy();
+    disallowNotify();
+    final old = copy();
     fn(this);
-    
-    allowNotifyObservers();
+    allowNotify();
+
+    if (old._value != _value && _value != null) {
+      dispatchEvent(ValueEvent(_value));
+    }
+    if (old.operation != operation) {
+      dispatchEvent(OperationEvent(operation));
+    }
+    if (old._failure != _failure && _failure != null) {
+      dispatchEvent(FailureEvent(_failure!));
+    }
+    if (old.sideEffects != sideEffects) {
+      dispatchEvent(SideEffectsUpdated(sideEffects));
+    }
+
     notifyObservers();
   }
 
   @override
   Future<void> modifyAsync(Future<void> Function(Data<T> data) fn) async {
-    disallowNotifyObservers();
+    disallowNotify();
+    final old = copy();
     await fn(this);
-    allowNotifyObservers();
+    allowNotify();
+
+    if (old._value != _value && _value != null) {
+      dispatchEvent(ValueEvent(_value));
+    }
+    if (old.operation != operation) {
+      dispatchEvent(OperationEvent(operation));
+    }
+    if (old._failure != _failure && _failure != null) {
+      dispatchEvent(FailureEvent(_failure!));
+    }
+    if (old.sideEffects != sideEffects) {
+      dispatchEvent(SideEffectsUpdated(sideEffects));
+    }
+
     notifyObservers();
   }
 
   @override
   void updateFrom(ReadableData<T> data) {
-    disallowNotifyObservers();
+    disallowNotify();
+    final old = copy();
     value = data.valueOrNull;
     operation = data.operation;
     failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects);
-    allowNotifyObservers();
+    allowNotify();
+
+    if (old._value != _value && _value != null) {
+      dispatchEvent(ValueEvent(_value));
+    }
+    if (old.operation != operation) {
+      dispatchEvent(OperationEvent(operation));
+    }
+    if (old._failure != _failure && _failure != null) {
+      dispatchEvent(FailureEvent(_failure!));
+    }
+    if (old.sideEffects != sideEffects) {
+      dispatchEvent(SideEffectsUpdated(sideEffects));
+    }
+
     notifyObservers();
   }
 
@@ -425,18 +468,18 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   bool get hasEventListeners => eventListeners.isNotEmpty;
 
   @override
-  void allowNotifyObservers() {
-    _allowedToNotifyObservers = true;
+  void allowNotify() {
+    _allowedToNotify = true;
   }
 
   @override
-  void disallowNotifyObservers() {
-    _allowedToNotifyObservers = false;
+  void disallowNotify() {
+    _allowedToNotify = false;
   }
 
   @override
   void notifyObservers() {
-    if (_allowedToNotifyObservers) observers.forEach((observer) => observer());
+    if (_allowedToNotify) observers.forEach((observer) => observer());
   }
 
   @override
@@ -451,7 +494,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
 
   @override
   void dispatchEvent(Event event) {
-    if (_allowedToNotifyObservers) {
+    if (_allowedToNotify) {
       for (var callback in eventListeners) {
         final eventConsumed = callback(event);
         if (eventConsumed) {

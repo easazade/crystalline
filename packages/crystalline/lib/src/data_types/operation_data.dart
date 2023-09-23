@@ -24,12 +24,12 @@ class OperationData extends Data<void> {
 
   @override
   void updateFrom(ReadableData<dynamic> data) {
-    disallowNotifyObservers();
+    disallowNotify();
     operation = data.operation;
     failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects);
-    allowNotifyObservers();
+    allowNotify();
     notifyObservers();
   }
 
