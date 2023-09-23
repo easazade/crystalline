@@ -449,5 +449,42 @@ void main() {
         expect(testListener.timesDispatched, 1);
       },
     );
+
+    test(
+      'should dispatch a SideEffectsUpdated event and AddSideEffectEvent '
+      'and then a RemoveSideEffectEvent when side effect is removed',
+      () {
+        data.addSideEffect('effect');
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(
+            event,
+            AddSideEffectEvent(
+                newSideEffect: 'effect', sideEffects: ['effect']),
+          ),
+        );
+
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, SideEffectsUpdated(['effect'])),
+        );
+
+        data.removeSideEffect('effect');
+
+        testListener.expectNthDispatch(
+          3,
+          (event) => expect(
+            event,
+            RemoveSideEffectEvent(removedSideEffect: 'effect', sideEffects: []),
+          ),
+        );
+
+        testListener.expectNthDispatch(
+          4,
+          (event) => expect(event, SideEffectsUpdated([])),
+        );
+      },
+    );
   });
 }
