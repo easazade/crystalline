@@ -192,6 +192,7 @@ void main() {
     test(
       'data.toString() should return expected info for a data without any failures or value',
       () {
+        data = Data(name: 'varName');
         final string = data.toString();
         expect(string, contains(data.operation.name));
         expect(string, contains(data.valueOrNull.toString()));
