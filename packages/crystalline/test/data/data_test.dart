@@ -398,4 +398,55 @@ void main() {
       },
     );
   });
+
+  group('semantic event -', () {
+    test('should dispatch a ValueEvent with new value set', () {
+      final newValue = 'new value';
+      data.value = newValue;
+
+      expect(testListener.timesDispatched, 1);
+      testListener.expectNthDispatch(
+        1,
+        (event) => expect(event, ValueEvent(newValue)),
+      );
+    });
+
+    test('should NOT dispatch a ValueEvent when new value is null', () {
+      data.value = 'meow';
+      expect(testListener.timesDispatched, 1);
+
+      data.value = null;
+      expect(testListener.timesDispatched, 1);
+    });
+
+    test('should dispatch an OperationEvent when operation updated', () {
+      final newOperation = Operation.operating;
+      data.operation = newOperation;
+
+      expect(testListener.timesDispatched, 1);
+      testListener.expectNthDispatch(
+        1,
+        (event) => expect(event, OperationEvent(newOperation)),
+      );
+    });
+
+    test(
+      'should dispatch an FailureEvent with new failure set and should not dispatch another event when '
+      'failure is set to null afterwards',
+      () {
+        final newFailure = Failure('message');
+        data.failure = newFailure;
+
+        expect(testListener.timesDispatched, 1);
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, FailureEvent(newFailure)),
+        );
+
+        data.failure = null;
+
+        expect(testListener.timesDispatched, 1);
+      },
+    );
+  });
 }
