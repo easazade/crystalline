@@ -36,6 +36,58 @@ class Event {
   final String name;
 }
 
+class OperationEvent extends Event {
+  OperationEvent(this.operation) : super(operation.name);
+
+  final Operation operation;
+}
+
+class ValueEvent<T> extends Event {
+  ValueEvent(this.value)
+      : super((value.toString().length > 20)
+            ? '${value.toString().substring(0, 20)}...'
+            : value.toString());
+
+  final T value;
+}
+
+class FailureEvent extends Event {
+  FailureEvent(this.failure)
+      : super((failure.message.length > 20)
+            ? '${failure.message.substring(0, 20)}...'
+            : failure.message);
+
+  final Failure failure;
+}
+
+class SideEffectsUpdated extends Event {
+  final List<dynamic> sideEffects;
+
+  SideEffectsUpdated(this.sideEffects)
+      : super('sideEffects: ${sideEffects.length}');
+}
+
+class AddSideEffectEvent extends Event {
+  final dynamic newSideEffect;
+  final List<dynamic> sideEffects;
+
+  AddSideEffectEvent({required this.newSideEffect, required this.sideEffects})
+      : super((newSideEffect.toString().length > 20)
+            ? '${newSideEffect.toString().substring(0, 20)}...'
+            : newSideEffect.toString());
+}
+
+class RemoveSideEffectEvent extends Event {
+  final dynamic removedSideEffect;
+  final List<dynamic> sideEffects;
+
+  RemoveSideEffectEvent(
+      {required this.removedSideEffect, required this.sideEffects})
+      : super((removedSideEffect.toString().length > 20)
+            ? '${removedSideEffect.toString().substring(0, 20)}...'
+            : removedSideEffect.toString());
+}
+
 abstract class ReadableData<T> {
   T get value;
 
@@ -179,24 +231,36 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   @override
   void addSideEffect(dynamic sideEffect) {
     _sideEffects.add(sideEffect);
+    dispatchEvent(AddSideEffectEvent(
+      newSideEffect: sideEffect,
+      sideEffects: _sideEffects,
+    ));
+    dispatchEvent(SideEffectsUpdated(_sideEffects));
     notifyObservers();
   }
 
   @override
   void addAllSideEffects(Iterable<dynamic> sideEffects) {
     _sideEffects.addAll(sideEffects);
+    dispatchEvent(SideEffectsUpdated(_sideEffects));
     notifyObservers();
   }
 
   @override
   void removeSideEffect(dynamic sideEffect) {
     _sideEffects.remove(sideEffect);
+    dispatchEvent(RemoveSideEffectEvent(
+      removedSideEffect: sideEffect,
+      sideEffects: _sideEffects,
+    ));
+    dispatchEvent(SideEffectsUpdated(_sideEffects));
     notifyObservers();
   }
 
   @override
   void clearAllSideEffects() {
     _sideEffects.clear();
+    dispatchEvent(SideEffectsUpdated(_sideEffects));
     notifyObservers();
   }
 
@@ -237,29 +301,38 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   bool valueEqualsTo(T? otherValue) => _value == otherValue;
 
   @override
-  void set failure(Failure? failure) {
+  void set failure(final Failure? failure) {
     _failure = failure;
+    if (failure != null) {
+      dispatchEvent(FailureEvent(failure));
+    }
     notifyObservers();
   }
 
   @override
-  void set operation(Operation operation) {
+  void set operation(final Operation operation) {
     _operation = operation;
+    dispatchEvent(OperationEvent(operation));
     notifyObservers();
   }
 
   Operation get operation => _operation;
 
   @override
-  set value(T? value) {
+  set value(final T? value) {
     _value = value;
+    if (value != null) {
+      dispatchEvent(ValueEvent(value));
+    }
     notifyObservers();
   }
 
   @override
   void modify(void Function(Data<T> data) fn) {
     disallowNotifyObservers();
+    final clone = copy();
     fn(this);
+    
     allowNotifyObservers();
     notifyObservers();
   }
@@ -348,7 +421,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   @override
   bool get hasObservers => observers.isNotEmpty;
 
-    @override
+  @override
   bool get hasEventListeners => eventListeners.isNotEmpty;
 
   @override
