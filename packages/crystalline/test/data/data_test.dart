@@ -486,5 +486,104 @@ void main() {
         );
       },
     );
+
+    test(
+      'should dispatch correct events after data.modify is called',
+      () {
+        data.modify((data) {
+          data.value = 'meow';
+          data.operation = Operation.delete;
+          data.failure = Failure('message');
+          data.addSideEffect('effect');
+        });
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, ValueEvent('meow')),
+        );
+
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, OperationEvent(Operation.delete)),
+        );
+
+        testListener.expectNthDispatch(
+          3,
+          (event) => expect(event, FailureEvent(Failure('message'))),
+        );
+
+        testListener.expectNthDispatch(
+          4,
+          (event) => expect(event, SideEffectsUpdated(['effect'])),
+        );
+      },
+    );
+
+    test(
+      'should dispatch correct events after data.modifyAsync is called',
+      () async {
+        await data.modifyAsync((data) async {
+          data.value = 'meow';
+          data.operation = Operation.delete;
+          data.failure = Failure('message');
+          data.addSideEffect('effect');
+        });
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, ValueEvent('meow')),
+        );
+
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, OperationEvent(Operation.delete)),
+        );
+
+        testListener.expectNthDispatch(
+          3,
+          (event) => expect(event, FailureEvent(Failure('message'))),
+        );
+
+        testListener.expectNthDispatch(
+          4,
+          (event) => expect(event, SideEffectsUpdated(['effect'])),
+        );
+      },
+    );
+
+    test(
+      'should dispatch correct events after data.updateFrom is called',
+      () async {
+        data.value = 'meow';
+        data.operation = Operation.delete;
+        data.failure = Failure('message');
+        data.addSideEffect('effect');
+
+        final data2 = Data<String>();
+        final testListener2 = DataTestListener<String, Data<String>>(data2);
+
+        data2.updateFrom(data);
+
+        testListener2.expectNthDispatch(
+          1,
+          (event) => expect(event, ValueEvent('meow')),
+        );
+
+        testListener2.expectNthDispatch(
+          2,
+          (event) => expect(event, OperationEvent(Operation.delete)),
+        );
+
+        testListener2.expectNthDispatch(
+          3,
+          (event) => expect(event, FailureEvent(Failure('message'))),
+        );
+
+        testListener2.expectNthDispatch(
+          4,
+          (event) => expect(event, SideEffectsUpdated(['effect'])),
+        );
+      },
+    );
   });
 }

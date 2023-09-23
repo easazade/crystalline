@@ -340,8 +340,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     fn(this);
     allowNotify();
 
-    if (old._value != _value && _value != null) {
-      dispatchEvent(ValueEvent(_value));
+    if (old._value != _value && hasValue) {
+      dispatchEvent(ValueEvent(value));
     }
     if (old.operation != operation) {
       dispatchEvent(OperationEvent(operation));
@@ -363,8 +363,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     await fn(this);
     allowNotify();
 
-    if (old._value != _value && _value != null) {
-      dispatchEvent(ValueEvent(_value));
+    if (old._value != _value && hasValue) {
+      dispatchEvent(ValueEvent(value));
     }
     if (old.operation != operation) {
       dispatchEvent(OperationEvent(operation));
@@ -390,8 +390,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     _sideEffects.addAll(data.sideEffects);
     allowNotify();
 
-    if (old._value != _value && _value != null) {
-      dispatchEvent(ValueEvent(_value));
+    if (old._value != _value && hasValue) {
+      dispatchEvent(ValueEvent(value));
     }
     if (old.operation != operation) {
       dispatchEvent(OperationEvent(operation));
