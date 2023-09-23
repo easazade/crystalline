@@ -65,21 +65,20 @@ class AddSideEffectEvent extends Event {
   final dynamic newSideEffect;
   final List<dynamic> sideEffects;
 
-  AddSideEffectEvent({required this.newSideEffect, required this.sideEffects})
-      : super((newSideEffect.toString().length > 20)
-            ? '${newSideEffect.toString().substring(0, 20)}...'
-            : newSideEffect.toString());
+  AddSideEffectEvent({
+    required this.newSideEffect,
+    required this.sideEffects,
+  }) : super(ellipsize(newSideEffect.toString(), maxSize: 20));
 }
 
 class RemoveSideEffectEvent extends Event {
   final dynamic removedSideEffect;
   final List<dynamic> sideEffects;
 
-  RemoveSideEffectEvent(
-      {required this.removedSideEffect, required this.sideEffects})
-      : super((removedSideEffect.toString().length > 20)
-            ? '${removedSideEffect.toString().substring(0, 20)}...'
-            : removedSideEffect.toString());
+  RemoveSideEffectEvent({
+    required this.removedSideEffect,
+    required this.sideEffects,
+  }) : super(ellipsize(removedSideEffect.toString(), maxSize: 20));
 }
 
 abstract class ReadableData<T> {

@@ -397,4 +397,6 @@ void main() {
       },
     );
   });
+
+  group('semantic event -', () {});
 }
