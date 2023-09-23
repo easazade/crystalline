@@ -391,12 +391,11 @@ void main() {
         data.dispatchEvent(event2);
         data.dispatchEvent(event3);
 
-        testListener.expectNthDispatch(1, (event) => event == event1);
-        testListener.expectNthDispatch(1, (event) => event == event2);
-        testListener.expectNthDispatch(1, (event) => event == event3);
+        expect(testListener.timesDispatched, 3);
+        testListener.expectNthDispatch(1, (event) => expect(event, event1));
+        testListener.expectNthDispatch(2, (event) => expect(event, event2));
+        testListener.expectNthDispatch(3, (event) => expect(event, event3));
       },
     );
   });
-
-  group('semantic event -', () {});
 }

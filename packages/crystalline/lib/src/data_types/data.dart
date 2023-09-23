@@ -34,6 +34,17 @@ class Event {
   const Event(this.name);
 
   final String name;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Event) return false;
+
+    final m = other.runtimeType == runtimeType &&
+        hashCode == other.hashCode &&
+        name == other.name;
+
+    return m;
+  }
 }
 
 class OperationEvent extends Event {
