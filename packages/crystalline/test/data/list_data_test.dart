@@ -478,6 +478,41 @@ void main() {
       },
     );
 
-    
+    test(
+      'should dispatch a SideEffectsUpdated event and AddSideEffectEvent '
+      'and then a RemoveSideEffectEvent when side effect is removed from ListData',
+      () {
+        listData.addSideEffect('effect');
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(
+            event,
+            AddSideEffectEvent(
+                newSideEffect: 'effect', sideEffects: ['effect']),
+          ),
+        );
+
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, SideEffectsUpdated(['effect'])),
+        );
+
+        listData.removeSideEffect('effect');
+
+        testListener.expectNthDispatch(
+          3,
+          (event) => expect(
+            event,
+            RemoveSideEffectEvent(removedSideEffect: 'effect', sideEffects: []),
+          ),
+        );
+
+        testListener.expectNthDispatch(
+          4,
+          (event) => expect(event, SideEffectsUpdated([])),
+        );
+      },
+    );
   });
 }
