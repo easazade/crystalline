@@ -1,9 +1,32 @@
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:collection/collection.dart';
+import 'package:crystalline/src/utils.dart';
 
 typedef _DataPredicate<T> = bool Function(
     List<Data<T>> value, Operation operation, Failure? failure)?;
+
+class AddItemEvent<T> extends Event {
+  AddItemEvent(this.newItem, this.items)
+      : super(ellipsize(newItem.toString(), maxSize: 20));
+
+  final Data<T> newItem;
+  final Iterable<Data<T>> items;
+}
+
+class RemoveItemEvent<T> extends Event {
+  RemoveItemEvent(this.removedItem, this.items)
+      : super(ellipsize(removedItem.toString(), maxSize: 20));
+
+  final Data<T> removedItem;
+  final Iterable<Data<T>> items;
+}
+
+class ItemsUpdated<T> extends Event {
+  ItemsUpdated(this.items) : super('${items.runtimeType} = ${items.length}');
+
+  final Iterable<Data<T>> items;
+}
 
 abstract class CollectionData<T> extends Data<List<Data<T>>>
     with Iterable<Data<T>> {
@@ -44,12 +67,15 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   void operator []=(int index, Data<T> value) {
     items[index] = value;
+    _addObserversToItem(value);
+    dispatchEvent(AddItemEvent(value, items));
     notifyObservers();
   }
 
   Data<T> removeAt(int index) {
     final removedItem = items.removeAt(index);
     _removeObserversFromItem(removedItem);
+    dispatchEvent(RemoveItemEvent(removedItem, items));
     notifyObservers();
     return removedItem;
   }
@@ -57,18 +83,21 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   void removeAll() {
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
+    dispatchEvent(ItemsUpdated(items));
     notifyObservers();
   }
 
   void add(Data<T> data) {
     items.add(data);
     _addObserversToItem(data);
+    dispatchEvent(AddItemEvent(data, items));
     notifyObservers();
   }
 
   void insert(int index, Data<T> data) {
     items.insert(index, data);
     _addObserversToItem(data);
+    dispatchEvent(AddItemEvent(data, items));
     notifyObservers();
   }
 
@@ -77,6 +106,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     for (var item in list) {
       _addObserversToItem(item);
     }
+    dispatchEvent(ItemsUpdated(items));
     notifyObservers();
   }
 
@@ -85,29 +115,56 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
       _removeObserversFromItem(item);
     }
     items.removeWhere(test);
+    dispatchEvent(ItemsUpdated(items));
     notifyObservers();
   }
 
   void modifyItems(Iterable<Data<T>> Function(List<Data<T>> items) modifier) {
     disallowNotify();
+    final old = copy();
     final newItems = modifier(items).toList();
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
     items.forEach((e) => _addObserversToItem(e));
     allowNotify();
+    if (old.items != items) {
+      dispatchEvent(ItemsUpdated(items));
+    }
+    if (old.operation != operation) {
+      dispatchEvent(OperationEvent(operation));
+    }
+    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
+      dispatchEvent(FailureEvent(failure));
+    }
+    if (old.sideEffects != sideEffects) {
+      dispatchEvent(SideEffectsUpdated(sideEffects));
+    }
     notifyObservers();
   }
 
   Future<void> modifyItemsAsync(
       Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
     disallowNotify();
+    final old = copy();
     final newItems = await modifier(items).then((e) => e.toList());
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
     items.forEach((e) => _addObserversToItem(e));
     allowNotify();
+    if (old.items != items) {
+      dispatchEvent(ItemsUpdated(items));
+    }
+    if (old.operation != operation) {
+      dispatchEvent(OperationEvent(operation));
+    }
+    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
+      dispatchEvent(FailureEvent(failure));
+    }
+    if (old.sideEffects != sideEffects) {
+      dispatchEvent(SideEffectsUpdated(sideEffects));
+    }
     notifyObservers();
   }
 
@@ -119,6 +176,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   @override
   void updateFrom(ReadableData<List<Data<T>>> data) {
     disallowNotify();
+    final old = copy();
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(data.value.toList());
@@ -128,6 +186,18 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     clearAllSideEffects();
     addAllSideEffects(data.sideEffects);
     allowNotify();
+    if (old.items != items) {
+      dispatchEvent(ItemsUpdated(items));
+    }
+    if (old.operation != operation) {
+      dispatchEvent(OperationEvent(operation));
+    }
+    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
+      dispatchEvent(FailureEvent(failure));
+    }
+    if (old.sideEffects != sideEffects) {
+      dispatchEvent(SideEffectsUpdated(sideEffects));
+    }
     notifyObservers();
   }
 
