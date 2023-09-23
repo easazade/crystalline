@@ -218,6 +218,18 @@ void main() {
       },
     );
 
+    test(
+      'Should add observer to new item after it is added using [] operator',
+      () {
+        expect(singleItem.observers, isEmpty);
+        listData.addAll(items1);
+        listData.addObserver(observer);
+        listData[0] = singleItem;
+        expect(singleItem.observers, contains(observer));
+        expect(testObserver.timesUpdated, 2);
+      },
+    );
+
     test('Should remove observer from removed item', () {
       listData.addObserver(observer);
       listData.add(singleItem);
