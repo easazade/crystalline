@@ -125,8 +125,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.forEach((e) => _addObserversToItem(e));
     operation = data.operation;
     failure = data.failureOrNull;
-    sideEffects.clear();
-    sideEffects.addAll(data.sideEffects);
+    clearAllSideEffects();
+    addAllSideEffects(data.sideEffects);
     allowNotify();
     notifyObservers();
   }

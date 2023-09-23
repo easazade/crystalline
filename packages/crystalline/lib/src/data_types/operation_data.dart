@@ -5,7 +5,7 @@ import 'package:crystalline/src/mutators/mutators.dart';
 class OperationData extends Data<void> {
   OperationData({
     Operation operation = Operation.none,
-    List<dynamic>? sideEffects,
+    Iterable<dynamic>? sideEffects,
     Failure? failure,
   }) : super(
           operation: operation,
@@ -27,8 +27,8 @@ class OperationData extends Data<void> {
     disallowNotify();
     operation = data.operation;
     failure = data.failureOrNull;
-    sideEffects.clear();
-    sideEffects.addAll(data.sideEffects);
+    clearAllSideEffects();
+    addAllSideEffects(data.sideEffects);
     allowNotify();
     notifyObservers();
   }

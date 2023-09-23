@@ -61,7 +61,7 @@ class FailureEvent extends Event {
 }
 
 class SideEffectsUpdated extends Event {
-  final List<dynamic> sideEffects;
+  final Iterable<dynamic> sideEffects;
 
   SideEffectsUpdated(this.sideEffects)
       : super('sideEffects: ${sideEffects.length}');
@@ -196,11 +196,11 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     T? value,
     Failure? failure,
     Operation operation = Operation.none,
-    List<dynamic>? sideEffects,
+    Iterable<dynamic>? sideEffects,
     this.name,
   })  : _value = value,
         _failure = failure,
-        _sideEffects = sideEffects ?? [],
+        _sideEffects = sideEffects?.toList() ?? [],
         _operation = operation;
 
   @override
@@ -232,7 +232,7 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   }
 
   @override
-  List<dynamic> get sideEffects => _sideEffects;
+  Iterable<dynamic> get sideEffects => _sideEffects;
 
   @override
   void addSideEffect(dynamic sideEffect) {
@@ -386,8 +386,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     value = data.valueOrNull;
     operation = data.operation;
     failure = data.failureOrNull;
-    sideEffects.clear();
-    sideEffects.addAll(data.sideEffects);
+    _sideEffects.clear();
+    _sideEffects.addAll(data.sideEffects);
     allowNotify();
 
     if (old._value != _value && _value != null) {
