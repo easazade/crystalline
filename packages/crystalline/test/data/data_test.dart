@@ -76,43 +76,6 @@ void main() {
       },
     );
 
-    test('Should modify data and call observers only once', () {
-      data.modify((data) {
-        data.value = 'apple';
-        data.value = 'orage';
-        data.operation = Operation.create;
-        data.failure = Failure('message');
-      });
-
-      expect(testObserver.timesUpdated, 1);
-    });
-
-    test(
-      'Should modify data asynchronously and call observers only once',
-      () async {
-        await data.modifyAsync((data) async {
-          data.value = 'apple';
-          data.value = 'orage';
-          data.operation = Operation.create;
-          data.failure = Failure('message');
-        });
-
-        expect(testObserver.timesUpdated, 1);
-      },
-    );
-
-    test(
-      'Should udpateData from another data',
-      () async {
-        final otherData = Data(value: 'subway');
-        expect(data, isNot(otherData));
-        data.updateFrom(otherData);
-        expect(data, otherData);
-
-        expect(testObserver.timesUpdated, 1);
-      },
-    );
-
     test(
       'Should return true on data.operation.isCustom when a custom '
       'operation is set on data and vise versa',
@@ -280,6 +243,46 @@ void main() {
       },
     );
   });
+
+  group('bulk -', () {
+    test('Should modify data and call observers only once', () {
+      data.modify((data) {
+        data.value = 'apple';
+        data.value = 'orange';
+        data.operation = Operation.create;
+        data.failure = Failure('message');
+      });
+
+      expect(testObserver.timesUpdated, 1);
+    });
+
+    test(
+      'Should modify data asynchronously and call observers only once',
+      () async {
+        await data.modifyAsync((data) async {
+          data.value = 'apple';
+          data.value = 'orange';
+          data.operation = Operation.create;
+          data.failure = Failure('message');
+        });
+
+        expect(testObserver.timesUpdated, 1);
+      },
+    );
+
+    test(
+      'Should updateData from another data',
+      () async {
+        final otherData = Data(value: 'subway');
+        expect(data, isNot(otherData));
+        data.updateFrom(otherData);
+        expect(data, otherData);
+
+        expect(testObserver.timesUpdated, 1);
+      },
+    );
+  });
+
   group('sideEffects -', () {
     test('Should add a side effect', () {
       final sideEffect = 'effect on the side';
