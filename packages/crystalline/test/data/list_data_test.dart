@@ -7,6 +7,7 @@ void main() {
   late List<Data<String>> items2;
   late Data<String> singleItem;
   late ListDataTestObserver<String> testObserver;
+  late ListDataTestEventListener<String> testListener;
   final observer = () {};
 
   setUp(() {
@@ -17,6 +18,7 @@ void main() {
     items2 = ['book', 'pencil', 'eraser'].map((e) => Data(value: e)).toList();
     singleItem = Data(value: 'tomato');
     testObserver = DataTestObserver(listData);
+    testListener = DataTestListener(listData);
   });
 
   group('basic -', () {
@@ -436,5 +438,46 @@ void main() {
         expect(listData.hasCustomOperation, isFalse);
       },
     );
+  });
+
+  group('events -', () {
+    test(
+      'ListData should dispatch correct event when operation updated',
+      () {
+        listData.operation = Operation.fetch;
+        listData.operation = Operation.operating;
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, OperationEvent(Operation.fetch)),
+        );
+
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, OperationEvent(Operation.operating)),
+        );
+
+        expect(testListener.timesDispatched, 2);
+      },
+    );
+
+    test(
+      'ListData should dispatch correct event when failure set and '
+      'should not dispatch any event when failure set to null',
+      () {
+        listData.failure = Failure('message');
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, FailureEvent(Failure('message'))),
+        );
+
+        listData.failure = null;
+
+        expect(testListener.timesDispatched, 1);
+      },
+    );
+
+    
   });
 }

@@ -47,5 +47,6 @@ class DataTestListener<T, D extends Data<T>> {
 }
 
 typedef ListDataTestObserver<T> = DataTestObserver<List<Data<T>>, ListData<T>>;
+typedef ListDataTestEventListener<T> = DataTestListener<List<Data<T>>, ListData<T>>;
 typedef CollectionDataTestObserver<T>
     = DataTestObserver<List<Data<T>>, CollectionData<T>>;
