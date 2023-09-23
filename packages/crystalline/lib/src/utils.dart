@@ -53,10 +53,18 @@ String inBlinkingFast(dynamic object) {
   return "\x1B[6m${object}\x1B[0m";
 }
 
-/// prints all ANSI colors and effets that can be shown
+/// prints all ANSI colors and effects that can be shown
 /// this method is just for testing to see what colors/effects we can use
 void printAllColorsAndEffects() {
   for (var i = 0; i < 110; i++) {
     print("$i -> \x1B[${i}m${'Hello'}\x1B[0m");
+  }
+}
+
+String ellipsize(String text, {required int maxSize}) {
+  if (text.length <= maxSize) {
+    return text;
+  } else {
+    return '${text.substring(0, maxSize)}...';
   }
 }

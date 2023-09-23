@@ -43,19 +43,13 @@ class OperationEvent extends Event {
 }
 
 class ValueEvent<T> extends Event {
-  ValueEvent(this.value)
-      : super((value.toString().length > 20)
-            ? '${value.toString().substring(0, 20)}...'
-            : value.toString());
+  ValueEvent(this.value) : super(ellipsize(value.toString(), maxSize: 20));
 
   final T value;
 }
 
 class FailureEvent extends Event {
-  FailureEvent(this.failure)
-      : super((failure.message.length > 20)
-            ? '${failure.message.substring(0, 20)}...'
-            : failure.message);
+  FailureEvent(this.failure) : super(ellipsize(failure.message, maxSize: 20));
 
   final Failure failure;
 }
@@ -187,11 +181,14 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   final List<bool Function(Event event)> eventListeners = [];
   final List<dynamic> _sideEffects;
 
+  final String? name;
+
   Data({
     T? value,
     Failure? failure,
     Operation operation = Operation.none,
     List<dynamic>? sideEffects,
+    this.name,
   })  : _value = value,
         _failure = failure,
         _sideEffects = sideEffects ?? [],
@@ -408,7 +405,10 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   String toString() {
     final buffer = StringBuffer();
     buffer.write('{ ');
-    buffer.write('$runtimeType = ');
+    if (name != null) {
+      buffer.write('${inYellow(name)}:');
+    }
+    buffer.write('${inYellow(runtimeType)} = ');
     if (hasFailure) {
       buffer.write("failure: ${inRed('<')}");
       if (_failure?.id != null) {
@@ -417,7 +417,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
       if (_failure?.cause != null) {
         buffer.write(inRed('cause: ${failure.cause} - '));
       }
-      buffer.write('${inRed("${failure.message}> ")}| ');
+      buffer
+          .write('${inRed("${ellipsize(failure.message, maxSize: 20)}> ")}| ');
     }
 
     if (operation == Operation.none) {
