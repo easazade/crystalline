@@ -526,5 +526,70 @@ void main() {
         );
       },
     );
+
+    test(
+      'should dispatch AddItemEvent when an item added using [] operator',
+      () {},
+    );
+
+    test(
+      'should dispatch AddItemEvent when an item added using add() method',
+      () {},
+    );
+
+    test(
+      'should dispatch RemoveItemEvent when an item removed using removeAt() method',
+      () {},
+    );
+
+    test(
+      'should dispatch ItemsUpdatedEvent when all items removed using removeAll() method',
+      () {},
+    );
+
+    test(
+      'should dispatch ItemsUpdatedEvent when items added using addAll() method',
+      () {},
+    );
+
+    test(
+      'should dispatch ItemsUpdatedEvent when items removed using removeWhere() method',
+      () {},
+    );
+
+    test(
+      'should dispatch AddItemEvent when an item added using insert() method',
+      () {},
+    );
+
+    test(
+      'should dispatch ItemsUpdatedEvent when items added using addAll() method',
+      () {},
+    );
+
+    test(
+      'should dispatch correct semantic events when items modified using modifyItems',
+      () {},
+    );
+
+    test(
+      'should dispatch correct semantic events when items modified using modifyItemsAsync',
+      () {},
+    );
+
+    test(
+      'should dispatch correct semantic events when items modified using modify',
+      () {},
+    );
+
+    test(
+      'should dispatch correct semantic events when items modified using modifyAsync',
+      () {},
+    );
+
+    test(
+      'should dispatch correct semantic events when items modified using updateFrom',
+      () {},
+    );
   });
 }

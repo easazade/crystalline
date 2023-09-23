@@ -22,8 +22,8 @@ class RemoveItemEvent<T> extends Event {
   final Iterable<Data<T>> items;
 }
 
-class ItemsUpdated<T> extends Event {
-  ItemsUpdated(this.items) : super('${items.runtimeType} = ${items.length}');
+class ItemsUpdatedEvent<T> extends Event {
+  ItemsUpdatedEvent(this.items) : super('${items.runtimeType} = ${items.length}');
 
   final Iterable<Data<T>> items;
 }
@@ -83,7 +83,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   void removeAll() {
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
-    dispatchEvent(ItemsUpdated(items));
+    dispatchEvent(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
@@ -106,7 +106,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     for (var item in list) {
       _addObserversToItem(item);
     }
-    dispatchEvent(ItemsUpdated(items));
+    dispatchEvent(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
@@ -115,7 +115,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
       _removeObserversFromItem(item);
     }
     items.removeWhere(test);
-    dispatchEvent(ItemsUpdated(items));
+    dispatchEvent(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
@@ -129,7 +129,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.forEach((e) => _addObserversToItem(e));
     allowNotify();
     if (old.items != items) {
-      dispatchEvent(ItemsUpdated(items));
+      dispatchEvent(ItemsUpdatedEvent(items));
     }
     if (old.operation != operation) {
       dispatchEvent(OperationEvent(operation));
@@ -154,7 +154,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.forEach((e) => _addObserversToItem(e));
     allowNotify();
     if (old.items != items) {
-      dispatchEvent(ItemsUpdated(items));
+      dispatchEvent(ItemsUpdatedEvent(items));
     }
     if (old.operation != operation) {
       dispatchEvent(OperationEvent(operation));
@@ -187,7 +187,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     addAllSideEffects(data.sideEffects);
     allowNotify();
     if (old.items != items) {
-      dispatchEvent(ItemsUpdated(items));
+      dispatchEvent(ItemsUpdatedEvent(items));
     }
     if (old.operation != operation) {
       dispatchEvent(OperationEvent(operation));
