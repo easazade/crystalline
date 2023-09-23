@@ -100,7 +100,7 @@ abstract class ReadableData<T> {
 
   Failure get consumeFailure;
 
-  List<dynamic> get sideEffects;
+  Iterable<dynamic> get sideEffects;
 
   bool get hasSideEffects;
 
@@ -165,6 +165,10 @@ abstract class ObservableData<T> {
 
   bool get hasObservers;
 
+  Iterable<void Function()> get observers;
+
+  Iterable<bool Function(Event event)> get eventListeners;
+
   bool get hasEventListeners;
 
   void addEventListener(bool Function(Event event) listener);
@@ -182,8 +186,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
 
   bool _allowedToNotify = true;
 
-  final List<void Function()> observers = [];
-  final List<bool Function(Event event)> eventListeners = [];
+  final List<void Function()> _observers = [];
+  final List<bool Function(Event event)> _eventListeners = [];
   final List<dynamic> _sideEffects;
 
   final String? name;
@@ -458,13 +462,16 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   }
 
   @override
+  Iterable<void Function()> get observers => _observers;
+
+  @override
   void addObserver(void Function() observer) {
-    observers.add(observer);
+    _observers.add(observer);
   }
 
   @override
   void removeObserver(void Function() observer) {
-    observers.remove(observer);
+    _observers.remove(observer);
   }
 
   @override
@@ -489,13 +496,16 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   }
 
   @override
+  Iterable<bool Function(Event event)> get eventListeners => _eventListeners;
+
+  @override
   void addEventListener(bool Function(Event event) listener) {
-    eventListeners.add(listener);
+    _eventListeners.add(listener);
   }
 
   @override
   void removeEventListener(bool Function(Event event) listener) {
-    eventListeners.remove(listener);
+    _eventListeners.remove(listener);
   }
 
   @override
