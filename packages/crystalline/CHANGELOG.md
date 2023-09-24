@@ -1,3 +1,11 @@
+## 0.5.1
+
+- Add name to Data type for debugging
+- Add semantic events
+- Improve test coverage to 100% and add relevant groups in test suites
+- Fix observers, eventListeners & sideEffects could have been mutated manually
+- Fix CollectionData & ListData not updating when added item using [] operator
+
 ## 0.5.0
 
 - Move test observers from crystalline/test to crystalline/lib & Add tests for them
@@ -11,6 +19,7 @@
 - Refactor term error to failure in all packages
 
 ## 0.4.0
+
 - Add sideEffects to Data types
 - Add OperationData
 - Data.updateFrom() method can now read from ReadableData instead of just Data
@@ -28,6 +37,7 @@
 - Fix builders not updating from new data when data object instance changes
 - Fix bug in WhenBuilder sometimes not calling onCustomOperation callback when needed to && Add more tests for WhenBuilder
 - Add extension methods toOperationData() and unModifiable() on Data<T>
+
 ## 0.3.0
 
 - Add ContextData type
@@ -37,10 +47,11 @@
 - Add updateFrom() to Data types
 - Update toString() method on Data for better logging
 - Change name of type ReadableObservableData to UnModifiableData
+
 ## 0.2.3
 
 - Refactor Operation class and add support for custom operations
-- Override copy() method for CollectionData and ListData 
+- Override copy() method for CollectionData and ListData
 - Update example
 - Update dart/flutter sdk version
 - Replace term available with hasValue for clarity
@@ -49,6 +60,7 @@
 - Update and fixes CollectionData class
 - Add ListData class
 - Change listeners names to observers
+
 ## 0.1.2
 
 - Update Data class
