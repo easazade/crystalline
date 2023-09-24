@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
 import 'package:crystalline/src/utils.dart';
@@ -40,6 +41,9 @@ class Event {
     if (other is! Event) return false;
     return other.runtimeType == runtimeType && name == other.name;
   }
+
+  @override
+  String toString() => name;
 }
 
 class OperationEvent extends Event {
@@ -349,7 +353,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     if (old._failure != _failure && _failure != null) {
       dispatchEvent(FailureEvent(_failure!));
     }
-    if (old.sideEffects != sideEffects) {
+    if (!ListEquality<dynamic>()
+        .equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdated(sideEffects));
     }
 
@@ -372,7 +377,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     if (old._failure != _failure && _failure != null) {
       dispatchEvent(FailureEvent(_failure!));
     }
-    if (old.sideEffects != sideEffects) {
+    if (!ListEquality<dynamic>()
+        .equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdated(sideEffects));
     }
 
@@ -399,7 +405,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
     if (old._failure != _failure && _failure != null) {
       dispatchEvent(FailureEvent(_failure!));
     }
-    if (old.sideEffects != sideEffects) {
+    if (!ListEquality<dynamic>()
+        .equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdated(sideEffects));
     }
 

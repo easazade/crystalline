@@ -23,7 +23,8 @@ class RemoveItemEvent<T> extends Event {
 }
 
 class ItemsUpdatedEvent<T> extends Event {
-  ItemsUpdatedEvent(this.items) : super('${items.runtimeType} = ${items.length}');
+  ItemsUpdatedEvent(this.items)
+      : super('${items.runtimeType} = ${items.length}');
 
   final Iterable<Data<T>> items;
 }
@@ -69,6 +70,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items[index] = value;
     _addObserversToItem(value);
     dispatchEvent(AddItemEvent(value, items));
+    dispatchEvent(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
@@ -76,6 +78,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     final removedItem = items.removeAt(index);
     _removeObserversFromItem(removedItem);
     dispatchEvent(RemoveItemEvent(removedItem, items));
+    dispatchEvent(ItemsUpdatedEvent(items));
     notifyObservers();
     return removedItem;
   }
@@ -91,6 +94,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.add(data);
     _addObserversToItem(data);
     dispatchEvent(AddItemEvent(data, items));
+    dispatchEvent(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
@@ -98,6 +102,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     items.insert(index, data);
     _addObserversToItem(data);
     dispatchEvent(AddItemEvent(data, items));
+    dispatchEvent(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
@@ -137,7 +142,9 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       dispatchEvent(FailureEvent(failure));
     }
-    if (old.sideEffects != sideEffects) {
+
+    if (!ListEquality<dynamic>()
+        .equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdated(sideEffects));
     }
     notifyObservers();
@@ -162,7 +169,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       dispatchEvent(FailureEvent(failure));
     }
-    if (old.sideEffects != sideEffects) {
+    if (!ListEquality<dynamic>()
+        .equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdated(sideEffects));
     }
     notifyObservers();
@@ -170,7 +178,48 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   @override
   void modify(void Function(CollectionData<T> data) fn) {
-    super.modify((data) => fn(data as CollectionData<T>));
+    disallowNotify();
+    final old = copy();
+    fn(this);
+    allowNotify();
+    if (old.items != items) {
+      dispatchEvent(ItemsUpdatedEvent(items));
+    }
+    if (old.operation != operation) {
+      dispatchEvent(OperationEvent(operation));
+    }
+    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
+      dispatchEvent(FailureEvent(failure));
+    }
+    if (!ListEquality<dynamic>()
+        .equals(old.sideEffects.toList(), sideEffects.toList())) {
+      dispatchEvent(SideEffectsUpdated(sideEffects));
+    }
+    notifyObservers();
+  }
+
+  @override
+  Future<void> modifyAsync(
+    Future<void> Function(CollectionData<T> data) fn,
+  ) async {
+    disallowNotify();
+    final old = copy();
+    await fn(this);
+    allowNotify();
+    if (old.items != items) {
+      dispatchEvent(ItemsUpdatedEvent(items));
+    }
+    if (old.operation != operation) {
+      dispatchEvent(OperationEvent(operation));
+    }
+    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
+      dispatchEvent(FailureEvent(failure));
+    }
+    if (!ListEquality<dynamic>()
+        .equals(old.sideEffects.toList(), sideEffects.toList())) {
+      dispatchEvent(SideEffectsUpdated(sideEffects));
+    }
+    notifyObservers();
   }
 
   @override
@@ -195,17 +244,11 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       dispatchEvent(FailureEvent(failure));
     }
-    if (old.sideEffects != sideEffects) {
+    if (!ListEquality<dynamic>()
+        .equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdated(sideEffects));
     }
     notifyObservers();
-  }
-
-  @override
-  Future<void> modifyAsync(
-    Future<void> Function(CollectionData<T> data) fn,
-  ) {
-    return super.modifyAsync((data) => fn(data as CollectionData<T>));
   }
 
   void _removeObserversFromItem(Data<T> item) {
@@ -225,6 +268,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
         items.toList().map((data) => data.copy()).toList(),
         operation: this.operation,
         failure: this.failureOrNull,
+        sideEffects: sideEffects.toList(),
       );
 
   @override
@@ -333,6 +377,16 @@ class ListData<T> extends CollectionData<T> {
         items.toList().map((data) => data.copy()).toList(),
         operation: this.operation,
         failure: this.failureOrNull,
+        sideEffects: sideEffects.toList(),
+        isOperatingStrategy: isOperatingStrategy,
+        hasFailureStrategy: hasFailureStrategy,
+        hasValueStrategy: hasValueStrategy,
+        hasNoValueStrategy: hasNoValueStrategy,
+        isCreatingStrategy: isCreatingStrategy,
+        isDeletingStrategy: isDeletingStrategy,
+        isFetchingStrategy: isFetchingStrategy,
+        isUpdatingStrategy: isUpdatingStrategy,
+        hasCustomOperationStrategy: hasCustomOperationStrategy,
       );
 
   @override
