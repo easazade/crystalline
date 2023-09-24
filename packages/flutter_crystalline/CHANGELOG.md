@@ -1,3 +1,7 @@
+## 0.5.1
+
+- Update crystalline version to to v0.5.1
+
 ## 0.5.0
 
 - Update crystalline version to to v0.5.0
