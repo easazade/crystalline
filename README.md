@@ -5,7 +5,7 @@ create a doc for scenarios and use cases added in example
 define crystal-clear state objects across all state management libraries.
 
 TODO: add badges including coverage badge. checkout faker_x
-TODO: refer to built in events as semantic events as they are semantics.
+TODO: refer to built in events as semantic events as they are semantics. create a table for all semantic events
 
 State definition library that makes your states, reflective and crystally clear, no matter what state management library you use.
 

@@ -2,23 +2,36 @@ import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
 void main() {
-  late ListData<String> listData;
   late List<Data<String>> items1;
   late List<Data<String>> items2;
   late Data<String> singleItem;
-  late ListDataTestObserver<String> testObserver;
-  late ListDataTestEventListener<String> testListener;
   final observer = () {};
 
+  late ListData<String> listData;
+  late ListDataTestObserver<String> testObserver;
+  late ListDataTestEventListener<String> testListener;
+
+  late ListData<String> prefilledListData;
+  late List<Data<String>> prefilledItems;
+  // ignore: unused_local_variable
+  late ListDataTestObserver<String> prefilledTestObserver;
+  late ListDataTestEventListener<String> prefilledTestListener;
+
   setUp(() {
-    listData = ListData([]);
-    items1 = ['apple', 'orange', 'ananas', 'banana']
+    items1 = ['apple', 'orange', 'ananas', 'banana', 'pen', 'cat']
         .map((e) => Data(value: e))
         .toList();
     items2 = ['book', 'pencil', 'eraser'].map((e) => Data(value: e)).toList();
     singleItem = Data(value: 'tomato');
+
+    listData = ListData([]);
     testObserver = DataTestObserver(listData);
     testListener = DataTestListener(listData);
+
+    prefilledListData = ListData<String>(items1.toList());
+    prefilledTestObserver = DataTestObserver(prefilledListData);
+    prefilledTestListener = DataTestListener(prefilledListData);
+    prefilledItems = items1;
   });
 
   group('basic -', () {
@@ -529,67 +542,256 @@ void main() {
 
     test(
       'should dispatch AddItemEvent when an item added using [] operator',
-      () {},
+      () {
+        final newItem = Data(value: 'something');
+        listData = ListData([singleItem]);
+        testListener = DataTestListener(listData);
+        listData[0] = newItem;
+
+        expect(testListener.timesDispatched, 2);
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, AddItemEvent(newItem, [newItem])),
+        );
+
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, ItemsUpdatedEvent([newItem])),
+        );
+      },
     );
 
     test(
       'should dispatch AddItemEvent when an item added using add() method',
-      () {},
-    );
+      () {
+        final newItem = Data(value: 'something');
+        listData.add(newItem);
 
-    test(
-      'should dispatch RemoveItemEvent when an item removed using removeAt() method',
-      () {},
-    );
+        expect(testListener.timesDispatched, 2);
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, AddItemEvent(newItem, [newItem])),
+        );
 
-    test(
-      'should dispatch ItemsUpdatedEvent when all items removed using removeAll() method',
-      () {},
-    );
-
-    test(
-      'should dispatch ItemsUpdatedEvent when items added using addAll() method',
-      () {},
-    );
-
-    test(
-      'should dispatch ItemsUpdatedEvent when items removed using removeWhere() method',
-      () {},
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, ItemsUpdatedEvent([newItem])),
+        );
+      },
     );
 
     test(
       'should dispatch AddItemEvent when an item added using insert() method',
-      () {},
+      () {
+        final newItem = Data(value: 'something');
+        listData.insert(0, newItem);
+
+        expect(testListener.timesDispatched, 2);
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, AddItemEvent(newItem, [newItem])),
+        );
+
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, ItemsUpdatedEvent([newItem])),
+        );
+      },
     );
 
     test(
-      'should dispatch ItemsUpdatedEvent when items added using addAll() method',
-      () {},
+      'should dispatch RemoveItemEvent when an item removed using removeAt() method',
+      () {
+        final expectedItemsAfterRemove = prefilledItems..removeAt(0);
+
+        final removedItem = prefilledListData.removeAt(0);
+
+        expect(prefilledTestListener.timesDispatched, 2);
+
+        prefilledTestListener.expectNthDispatch(
+          1,
+          (event) => expect(
+            event,
+            RemoveItemEvent(removedItem, expectedItemsAfterRemove),
+          ),
+        );
+
+        prefilledTestListener.expectNthDispatch(
+          2,
+          (event) => expect(event, ItemsUpdatedEvent(expectedItemsAfterRemove)),
+        );
+      },
+    );
+
+    test(
+      'should dispatch ItemsUpdatedEvent when all items removed using removeAll() method',
+      () {
+        prefilledListData.removeAll();
+
+        expect(prefilledTestListener.timesDispatched, 1);
+
+        prefilledTestListener.expectNthDispatch(
+          1,
+          (event) => expect(event, ItemsUpdatedEvent(<Data<String>>[])),
+        );
+      },
+    );
+
+    test(
+      'should dispatch ItemsUpdatedEvent when items added using addAll() method.',
+      () {
+        listData.addAll(items2);
+
+        expect(testListener.timesDispatched, 1);
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, ItemsUpdatedEvent(items2)),
+        );
+      },
+    );
+
+    test(
+      'should dispatch ItemsUpdatedEvent when items removed using removeWhere() method',
+      () {
+        final removeWhere = (Data<String> data) => data.value.length <= 3;
+        prefilledListData.removeWhere(removeWhere);
+        final expectedList = prefilledItems..removeWhere(removeWhere);
+
+        expect(prefilledTestListener.timesDispatched, 1);
+
+        prefilledTestListener.expectNthDispatch(
+          1,
+          (event) => expect(event, ItemsUpdatedEvent(expectedList)),
+        );
+      },
     );
 
     test(
       'should dispatch correct semantic events when items modified using modifyItems',
-      () {},
+      () {
+        listData.modifyItems((items) => items2);
+
+        expect(testListener.timesDispatched, 1);
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, ItemsUpdatedEvent(items2)),
+        );
+      },
     );
 
     test(
       'should dispatch correct semantic events when items modified using modifyItemsAsync',
-      () {},
+      () async {
+        await listData.modifyItemsAsync((items) async => items2);
+
+        expect(testListener.timesDispatched, 1);
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, ItemsUpdatedEvent(items2)),
+        );
+      },
     );
 
     test(
       'should dispatch correct semantic events when items modified using modify',
-      () {},
+      () {
+        listData.modify((list) {
+          list.value.add(Data(value: 'meow'));
+          list.operation = Operation.delete;
+          list.failure = Failure('message');
+          list.addSideEffect('effect');
+        });
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, ItemsUpdatedEvent([Data(value: 'meow')])),
+        );
+
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, OperationEvent(Operation.delete)),
+        );
+
+        testListener.expectNthDispatch(
+          3,
+          (event) => expect(event, FailureEvent(Failure('message'))),
+        );
+
+        testListener.expectNthDispatch(
+          4,
+          (event) => expect(event, SideEffectsUpdated(['effect'])),
+        );
+      },
     );
 
     test(
       'should dispatch correct semantic events when items modified using modifyAsync',
-      () {},
+      () async {
+        await listData.modifyAsync((list) async {
+          list.value.add(Data(value: 'meow'));
+          list.operation = Operation.delete;
+          list.failure = Failure('message');
+          list.addSideEffect('effect');
+        });
+
+        testListener.expectNthDispatch(
+          1,
+          (event) => expect(event, ItemsUpdatedEvent([Data(value: 'meow')])),
+        );
+
+        testListener.expectNthDispatch(
+          2,
+          (event) => expect(event, OperationEvent(Operation.delete)),
+        );
+
+        testListener.expectNthDispatch(
+          3,
+          (event) => expect(event, FailureEvent(Failure('message'))),
+        );
+
+        testListener.expectNthDispatch(
+          4,
+          (event) => expect(event, SideEffectsUpdated(['effect'])),
+        );
+      },
     );
 
     test(
       'should dispatch correct semantic events when items modified using updateFrom',
-      () {},
+      () {
+        listData.add(Data(value: 'meow'));
+        listData.operation = Operation.delete;
+        listData.failure = Failure('message');
+        listData.addSideEffect('effect');
+
+        final newListData = ListData<String>([]);
+        final testListener2 = ListDataTestEventListener(newListData);
+
+        newListData.updateFrom(listData);
+
+        testListener2.expectNthDispatch(
+          1,
+          (event) => expect(event, ItemsUpdatedEvent([Data(value: 'meow')])),
+        );
+
+        testListener2.expectNthDispatch(
+          2,
+          (event) => expect(event, OperationEvent(Operation.delete)),
+        );
+
+        testListener2.expectNthDispatch(
+          3,
+          (event) => expect(event, FailureEvent(Failure('message'))),
+        );
+
+        testListener2.expectNthDispatch(
+          4,
+          (event) => expect(event, SideEffectsUpdated(['effect'])),
+        );
+      },
     );
   });
 }

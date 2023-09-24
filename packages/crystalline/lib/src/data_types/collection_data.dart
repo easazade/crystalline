@@ -126,26 +126,15 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   void modifyItems(Iterable<Data<T>> Function(List<Data<T>> items) modifier) {
     disallowNotify();
-    final old = copy();
+    final oldItems = items.toList();
     final newItems = modifier(items).toList();
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
     items.forEach((e) => _addObserversToItem(e));
     allowNotify();
-    if (old.items != items) {
+    if (oldItems != items) {
       dispatchEvent(ItemsUpdatedEvent(items));
-    }
-    if (old.operation != operation) {
-      dispatchEvent(OperationEvent(operation));
-    }
-    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
-      dispatchEvent(FailureEvent(failure));
-    }
-
-    if (!ListEquality<dynamic>()
-        .equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdated(sideEffects));
     }
     notifyObservers();
   }
@@ -153,25 +142,15 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   Future<void> modifyItemsAsync(
       Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
     disallowNotify();
-    final old = copy();
+    final oldItems = items.toList();
     final newItems = await modifier(items).then((e) => e.toList());
     items.forEach((e) => _removeObserversFromItem(e));
     items.clear();
     items.addAll(newItems);
     items.forEach((e) => _addObserversToItem(e));
     allowNotify();
-    if (old.items != items) {
+    if (oldItems != items) {
       dispatchEvent(ItemsUpdatedEvent(items));
-    }
-    if (old.operation != operation) {
-      dispatchEvent(OperationEvent(operation));
-    }
-    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
-      dispatchEvent(FailureEvent(failure));
-    }
-    if (!ListEquality<dynamic>()
-        .equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdated(sideEffects));
     }
     notifyObservers();
   }

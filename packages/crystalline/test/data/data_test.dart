@@ -408,7 +408,12 @@ void main() {
       expect(testListener.timesDispatched, 1);
       testListener.expectNthDispatch(
         1,
-        (event) => expect(event, ValueEvent(newValue)),
+        (event) {
+          final expected = ValueEvent(newValue);
+          expect(event, expected);
+          expect(event.name, expected.name);
+          expect(event.toString(), expected.toString());
+        },
       );
     });
 
