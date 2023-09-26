@@ -69,5 +69,6 @@ class ContextData<T, C> extends Data<T> {
         failure: failureOrNull,
         operation: operation,
         context: contextOrNull,
+        sideEffects: sideEffects.toList(),
       );
 }
