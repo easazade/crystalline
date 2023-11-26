@@ -6,6 +6,11 @@ class _Mirror<T1, D1 extends Data<T1>> {
     origin.addObserver(() {
       mirror.updateFrom(origin);
     });
+
+    origin.addEventListener((event) {
+      mirror.dispatchEvent(event);
+      return false;
+    });
   }
 
   final D1 origin;
