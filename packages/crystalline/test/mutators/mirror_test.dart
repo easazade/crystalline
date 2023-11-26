@@ -2,14 +2,10 @@ import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
 void main() {
-  late Data<int> data1;
-
-  setUp(() => data1 = Data());
-
   test(
     'Should create a mirror data that updates every time origin data has been updated',
     () {
-      final original = data1;
+      final original = Data<int>();
       final mirror = original.mirror();
 
       final DataTestObserver<int, Data<int>> mirrorTestObserver =

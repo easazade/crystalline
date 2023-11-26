@@ -2,14 +2,10 @@ import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
 void main() {
-  late Data<int> data1;
-
-  setUp(() => data1 = Data());
-
   test(
     'Should create a distinct data that only updates when origin data has changed distinctively',
     () {
-      final original = data1;
+      final original = Data<int>();
       final distinct = original.distinct();
 
       final DataTestObserver<int, Data<int>> distinctTestObserver =
@@ -51,9 +47,7 @@ void main() {
       ]);
 
       final newListData = stringListData.distinct();
-
       expect(newListData, isA<ListData<String>>());
-
       expect(stringListData, newListData);
     },
   );

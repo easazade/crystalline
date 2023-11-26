@@ -2,25 +2,22 @@ import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
 void main() {
-  late Data<int> data1;
-
-  setUp(() => data1 = Data());
-
   test(
     'Should map Data<int> to Data<String> and Data<String>',
     () {
-      data1.value = 30;
-      final data2 = data1.mapTo<String, Data<String>>(
+      final intData = Data<int>();
+      intData.value = 30;
+      final stringData = intData.mapTo<String, Data<String>>(
         Data<String>(),
         (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
       );
 
       final DataTestObserver<String, Data<String>> data2TestObserver =
-          DataTestObserver(data2);
+          DataTestObserver(stringData);
 
-      expect(data2, isA<Data<String>>());
-      expect(data2.valueOrNull, isNotNull);
-      expect(data2.value, data1.value.toString());
+      expect(stringData, isA<Data<String>>());
+      expect(stringData.valueOrNull, isNotNull);
+      expect(stringData.value, intData.value.toString());
       expect(data2TestObserver.timesUpdated, 0);
     },
   );
@@ -29,18 +26,19 @@ void main() {
     'Should map Data<int> to Data<String> and Data<String> should '
     'be updated whenever Data<int> updates',
     () {
-      final data2 = data1.mapTo<String, Data<String>>(
+      final intData = Data<int>();
+      final stringData = intData.mapTo<String, Data<String>>(
         Data<String>(),
         (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
       );
 
       final DataTestObserver<String, Data<String>> testObserver =
-          DataTestObserver(data2);
+          DataTestObserver(stringData);
 
-      data1.value = 20;
-      expect(data2, isA<Data<String>>());
-      expect(data2.value, isNotNull);
-      expect(data2.value, data1.value.toString());
+      intData.value = 20;
+      expect(stringData, isA<Data<String>>());
+      expect(stringData.value, isNotNull);
+      expect(stringData.value, intData.value.toString());
       expect(testObserver.timesUpdated, 1);
     },
   );
