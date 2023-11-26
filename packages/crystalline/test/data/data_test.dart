@@ -437,7 +437,7 @@ void main() {
     });
 
     test(
-      'should dispatch an FailureEvent with new failure set and should not dispatch another event when '
+      'should dispatch a FailureEvent with new failure set and should not dispatch another event when '
       'failure is set to null afterwards',
       () {
         final newFailure = Failure('message');
