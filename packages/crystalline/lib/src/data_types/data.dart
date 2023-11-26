@@ -519,8 +519,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   void dispatchEvent(Event event) {
     if (_allowedToNotify) {
       for (var callback in eventListeners) {
-        final eventConsumed = callback(event);
-        if (eventConsumed) {
+        final isEventConsumed = callback(event);
+        if (isEventConsumed) {
           break;
         }
       }
