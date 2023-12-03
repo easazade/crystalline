@@ -19,7 +19,7 @@ void main() {
   });
 
   testWidgets(
-    'Should observe data and udpate builder when data updated',
+    'Should observe data and update builder when data updated',
     (tester) async {
       await tester.pumpWidget(
         Testable(
@@ -53,7 +53,7 @@ void main() {
   );
 
   testWidgets(
-    'Should observe data and udpate builder when data updated '
+    'Should observe data and update builder when data updated '
     'then when data objects changes should remove observer from old data '
     'and observe the new data instead.',
     (tester) async {
@@ -111,7 +111,7 @@ void main() {
   );
 
   testWidgets(
-    'Should not udpate builder when ever data updated and observe property of DataBuilder is not set to true',
+    'Should not update builder when ever data updated and observe property of DataBuilder is not set to true',
     (tester) async {
       await tester.pumpWidget(
         Testable(

@@ -55,7 +55,7 @@ void main() {
   );
 
   testWidgets(
-    'Should observe data and udpate WhenDataBuilder &'
+    'Should observe data and update WhenDataBuilder &'
     'Also the correct callbacks from WhenDataBuilders should be called',
     (tester) async {
       await tester.pumpWidget(
@@ -115,7 +115,7 @@ void main() {
   );
 
   testWidgets(
-    'Should note observe data and but udpate WhenDataBuilder '
+    'Should note observe data and but update WhenDataBuilder '
     'when parent widget rebuilds'
     'Also the correct callbacks from WhenDataBuilders should be called',
     (tester) async {
@@ -195,7 +195,7 @@ void main() {
   );
 
   testWidgets(
-    'Should not udpate WhenDataBuilder when ever data updated and '
+    'Should not update WhenDataBuilder when ever data updated and '
     'observe property of WhenDataBuilder is not set to true',
     (tester) async {
       await tester.pumpWidget(
