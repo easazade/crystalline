@@ -1,6 +1,6 @@
 ## Crystalline
 
-create a doc for scenarios and use cases added in example
+- [] create a doc for scenarios and use cases added in example
 
 define crystal-clear state objects across all state management libraries.
 
