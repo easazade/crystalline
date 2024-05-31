@@ -8,6 +8,7 @@ packages:
   - packages/**
   - example
 
+# use flutter version set in .fvmrc for development and running melos scripts
 scripts:
   all:
     run: |
