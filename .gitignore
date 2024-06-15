@@ -57,3 +57,4 @@ script.dart
 
 # FVM Version Cache
 **/.fvm/
+**/.fvmrc
