@@ -1,6 +1,9 @@
+import 'package:meta/meta.dart';
+
 import 'data_types/collection_data.dart';
 import 'data_types/data.dart';
 
+@visibleForTesting
 class DataTestObserver<T, D extends Data<T>> {
   DataTestObserver(this.data) {
     data.addObserver(() => records.add(data.copy() as D));
@@ -22,6 +25,7 @@ class DataTestObserver<T, D extends Data<T>> {
   }
 }
 
+@visibleForTesting
 class DataTestListener<T, D extends Data<T>> {
   DataTestListener(this.data) {
     data.addEventListener((event) {
@@ -46,8 +50,11 @@ class DataTestListener<T, D extends Data<T>> {
   }
 }
 
+@visibleForTesting
 typedef ListDataTestObserver<T> = DataTestObserver<List<Data<T>>, ListData<T>>;
+@visibleForTesting
 typedef ListDataTestEventListener<T>
     = DataTestListener<List<Data<T>>, ListData<T>>;
+@visibleForTesting
 typedef CollectionDataTestObserver<T>
     = DataTestObserver<List<Data<T>>, CollectionData<T>>;

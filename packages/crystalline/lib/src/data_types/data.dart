@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
-import 'package:crystalline/src/utils.dart';
 import 'package:meta/meta.dart';
 
 class Operation {
@@ -53,13 +53,17 @@ class OperationEvent extends Event {
 }
 
 class ValueEvent<T> extends Event {
-  ValueEvent(this.value) : super(ellipsize(value.toString(), maxSize: 20));
+  ValueEvent(this.value)
+      : super(CrystallineGlobalConfig.logger
+            .ellipsize(value.toString(), maxSize: 20));
 
   final T value;
 }
 
 class FailureEvent extends Event {
-  FailureEvent(this.failure) : super(ellipsize(failure.message, maxSize: 20));
+  FailureEvent(this.failure)
+      : super(CrystallineGlobalConfig.logger
+            .ellipsize(failure.message, maxSize: 20));
 
   final Failure failure;
 }
@@ -78,7 +82,8 @@ class AddSideEffectEvent extends Event {
   AddSideEffectEvent({
     required this.newSideEffect,
     required this.sideEffects,
-  }) : super(ellipsize(newSideEffect.toString(), maxSize: 20));
+  }) : super(CrystallineGlobalConfig.logger
+            .ellipsize(newSideEffect.toString(), maxSize: 20));
 }
 
 class RemoveSideEffectEvent extends Event {
@@ -88,7 +93,8 @@ class RemoveSideEffectEvent extends Event {
   RemoveSideEffectEvent({
     required this.removedSideEffect,
     required this.sideEffects,
-  }) : super(ellipsize(removedSideEffect.toString(), maxSize: 20));
+  }) : super(CrystallineGlobalConfig.logger
+            .ellipsize(removedSideEffect.toString(), maxSize: 20));
 }
 
 abstract class ReadableData<T> {
@@ -418,45 +424,8 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
       Data<T>(value: _value, failure: _failure, operation: _operation);
 
   @override
-  String toString() {
-    final buffer = StringBuffer();
-    buffer.write('{ ');
-    if (name != null) {
-      buffer.write('${inYellow(name)}:');
-    }
-    buffer.write('${inYellow(runtimeType)} = ');
-    if (hasFailure) {
-      buffer.write("failure: ${inRed('<')}");
-      if (_failure?.id != null) {
-        buffer.write(inRed('id: ${failure.id} - '));
-      }
-      if (_failure?.cause != null) {
-        buffer.write(inRed('cause: ${failure.cause} - '));
-      }
-      buffer
-          .write('${inRed("${ellipsize(failure.message, maxSize: 20)}> ")}| ');
-    }
-
-    if (operation == Operation.none) {
-      buffer.write('operation: ${operation.name}');
-    } else {
-      buffer.write('operation: ${inBlinking(inMagenta(operation.name))}');
-    }
-
-    if (hasValue) {
-      buffer.write(' | value: ${inGreen(_value)}');
-    } else {
-      buffer.write(' | value: ${_value}');
-    }
-
-    buffer.writeln(' }');
-
-    if (_failure != null) {
-      buffer.write('$failure');
-    }
-
-    return buffer.toString();
-  }
+  String toString() =>
+      CrystallineGlobalConfig.logger.generateToStringForData(this);
 
   @override
   bool operator ==(Object other) {
