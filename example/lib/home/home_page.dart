@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
           observe: true,
           data: homeStore.title,
           onValue: (context, data) => Text(data.value),
-          onOperate: (context, data) => SizedBox(
+          onOperate: (context, data) => const SizedBox(
             height: 14,
             width: 14,
             child: CircularProgressIndicator(
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text('${data.value}'),
               ),
             ),
-            onOperate: (context, data) => SizedBox(
+            onOperate: (context, data) => const SizedBox(
               height: 54,
               width: 54,
               child: Row(
@@ -61,11 +61,11 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             ElevatedButton(
-              child: Text('Change Title'),
+              child: const Text('Change Title'),
               onPressed: () => homeStore.changeTitle(),
             ),
             ElevatedButton(
-              child: Text('Change Number'),
+              child: const Text('Change Number'),
               onPressed: () => homeStore.changeNumber(),
             ),
             WhenDataBuilder(
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                   child: Text('${data.value}'),
                 ),
               ),
-              onOperate: (context, data) => SizedBox(
+              onOperate: (context, data) => const SizedBox(
                 height: 54,
                 width: 54,
                 child: Row(
@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                   child: Text('${data.value}'),
                 ),
               ),
-              onOperate: (context, data) => SizedBox(
+              onOperate: (context, data) => const SizedBox(
                 height: 54,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -129,19 +129,19 @@ class _HomePageState extends State<HomePage> {
               builder: (context, _) {
                 print('home store being rebuilt');
                 if (homeStore.isOperating) {
-                  return Text(
+                  return const Text(
                     'on of required data in Home Store'
                     ' has null value aka not available',
                   );
                 }
-                return Text('home store available');
+                return const Text('home store available');
               },
             ),
             WhenDataBuilder(
               observe: true,
               data: homeStore,
-              onValue: (context, _) => Text('home store available'),
-              onOperate: (context, _) => Text(
+              onValue: (context, _) => const Text('home store available'),
+              onOperate: (context, _) => const Text(
                 'on of required data in Home Store'
                 ' has null value aka not available',
               ),
