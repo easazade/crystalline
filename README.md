@@ -1,4 +1,4 @@
-## Crystalline
+# Crystalline
 
 **Crystalline:** A Universal State Definition Library
 
@@ -8,12 +8,14 @@ Enhance your project's state management with Crystalline. Regardless of your pre
 
 #### Key Benefits
 
-**Enhanced Code Clarity:** Crystalline streamlines state management code and state objects for improved readability.
-**Comprehensive State Definition:** Define all necessary elements within your state, including data, status, operations, errors, and events, using a unified and efficient approach.
-**Simplified Testing:** Testability of your state management classes is significantly improved with Crystalline.
-**State Composition:** Compose states from smaller, more manageable components.
-**Shared State:** Seamlessly share states or parts of states across multiple state management classes without compromising loose coupling or testability.
+- **Enhanced Code Clarity:** Crystalline streamlines state management code and state objects for improved readability.
+- **Comprehensive State Definition:** Define all necessary elements within your state, including data, status, operations, errors, and events, using a unified and efficient approach.
+- **Simplified Testing:** Testability of your state management classes is significantly improved with Crystalline.
+- **State Composition:** Compose states from smaller, more manageable components.
+- **Shared State:** Seamlessly share states or parts of states across multiple state management classes without compromising loose coupling or testability.
 
+
+# For Docs
 - [ ] create a doc for scenarios and use cases added in example
 
 - [ ] define crystal-clear state objects across all state management libraries.
