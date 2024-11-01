@@ -13,11 +13,11 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('profile')),
+      appBar: AppBar(title: const Text('profile')),
       body: ListView(
         children: [
           ElevatedButton(
-            child: Text('Update profile'),
+            child: const Text('Update profile'),
             onPressed: () {
               profileStore.update();
             },
@@ -25,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
           DataBuilder(
             data: profileStore,
             observe: true,
+
             builder: (context, _) {
               print('updating profile page widget');
               return Text(profileStore.toString());

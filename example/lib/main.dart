@@ -1,7 +1,9 @@
 import 'package:example/profile/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_crystalline/flutter_crystalline.dart';
 
 void main() {
+  CrystallineGlobalConfig.logger = FlutterCrystallineLogger();
   runApp(const MyApp());
 }
 
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(),
-      home: ProfilePage(),
+      home: const ProfilePage(),
     );
   }
 }
