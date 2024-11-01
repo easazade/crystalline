@@ -157,7 +157,7 @@ abstract class ModifiableData<T> {
   void updateFrom(ReadableData<T> data);
 }
 
-abstract class ObservableData<T> implements ReadableData<T>{
+abstract class ObservableData<T> implements ReadableData<T> {
   void addObserver(void Function() observer);
 
   void removeObserver(void Function() observer);
@@ -470,6 +470,10 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
 
   @mustCallSuper
   void notifyObservers() {
+    final stateChangeLog = CrystallineGlobalConfig.logger.globalLogFilter(this);
+    if (stateChangeLog != null) {
+      CrystallineGlobalConfig.logger.log(stateChangeLog);
+    }
     if (isAllowedToNotify) observers.forEach((observer) => observer());
   }
 

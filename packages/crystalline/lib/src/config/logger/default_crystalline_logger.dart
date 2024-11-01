@@ -103,4 +103,12 @@ class DefaultCrystallineLogger extends CrystallineLogger {
 
     return buffer.toString();
   }
+
+  @override
+  String? globalLogFilter(Data<dynamic> data) => null;
+
+  @override
+  void log(dynamic object) {
+    print(object);
+  }
 }

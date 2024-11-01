@@ -93,4 +93,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
       return super.inYellow(object.toString());
     }
   }
+
+  @override
+  String? globalLogFilter(Data<dynamic> data) => data.toString();
 }

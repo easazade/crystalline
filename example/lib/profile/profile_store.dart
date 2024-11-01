@@ -6,15 +6,13 @@ class ProfileStore extends Store {
   final profileImage = Data<String>();
 
   Future update() async {
-    print('updating profile');
-    print(this);
-
     operation = Operation.operating;
     failure = Failure('This is an error message');
-    print(this);
+    profileImage.value = 'image url 1';
 
-    await Future.delayed(const Duration(seconds: 8));
+    await Future.delayed(const Duration(seconds: 3));
 
+    profileImage.value = 'image url 2';
     operation = Operation.none;
     failure = null;
   }
