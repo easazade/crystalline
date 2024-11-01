@@ -20,6 +20,7 @@ void main() {
       expect(data.valueOrNull, isNull);
       final expectedValue = 'Some String';
       data.value = expectedValue;
+      print(data);
       expect(data.value, expectedValue);
       expect(testObserver.timesUpdated, 1);
     });
@@ -335,9 +336,9 @@ void main() {
 
   group('extension -', () {
     test(
-      'data.unModifiable() extension should convert Data to UnModifiableData',
+      'data.unModifiable() extension should convert Data to ObservableData',
       () {
-        expect(data.unModifiable(), isA<UnModifiableData<String>>());
+        expect(data.unModifiable(), isA<ObservableData<String>>());
       },
     );
 

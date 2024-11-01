@@ -154,21 +154,10 @@ abstract class ModifiableData<T> {
 
   Future<void> modifyAsync(Future<void> Function(Data<T> data) fn);
 
-  @mustCallSuper
-  void allowNotify();
-
-  @mustCallSuper
-  void disallowNotify();
-
-  @mustCallSuper
-  void notifyObservers();
-
   void updateFrom(ReadableData<T> data);
-
-  void dispatchEvent(Event event);
 }
 
-abstract class ObservableData<T> {
+abstract class ObservableData<T> implements ReadableData<T>{
   void addObserver(void Function() observer);
 
   void removeObserver(void Function() observer);
@@ -184,12 +173,22 @@ abstract class ObservableData<T> {
   void addEventListener(bool Function(Event event) listener);
 
   void removeEventListener(bool Function(Event event) listener);
+
+  void dispatchEvent(Event event);
+
+  bool get isAllowedToNotify;
+
+  @mustCallSuper
+  void allowNotify();
+
+  @mustCallSuper
+  void disallowNotify();
+
+  @mustCallSuper
+  void notifyObservers();
 }
 
-abstract class UnModifiableData<T>
-    implements ReadableData<T>, ObservableData<T> {}
-
-class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
+class Data<T> implements ObservableData<T>, ModifiableData<T> {
   T? _value;
   Failure? _failure;
   Operation _operation;
@@ -467,8 +466,11 @@ class Data<T> implements UnModifiableData<T>, ModifiableData<T> {
   }
 
   @override
+  bool get isAllowedToNotify => _allowedToNotify;
+
+  @mustCallSuper
   void notifyObservers() {
-    if (_allowedToNotify) observers.forEach((observer) => observer());
+    if (isAllowedToNotify) observers.forEach((observer) => observer());
   }
 
   @override
