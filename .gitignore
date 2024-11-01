@@ -25,6 +25,7 @@ coverage/
 .history
 .svn/
 coverage.lcov
+ignored
 
 # IntelliJ related
 *.iml
@@ -58,3 +59,4 @@ script.dart
 # FVM Version Cache
 **/.fvm/
 **/.fvmrc
+

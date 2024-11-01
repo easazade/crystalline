@@ -1,25 +1,29 @@
 # Crystalline
 
-**Crystalline:** A Universal State Definition Library
+**Crystalline:** Simple yet Powerful state management solution
 
-Enhance your project's state management with Crystalline. Regardless of your preferred state management library (BLoc, Mobx, Redux, Riverpod, or others), Crystalline provides a clean and efficient approach to defining state objects.
+Crystalline is a comprehensive state management library designed to simplify and enhance your state management practices. By providing a structured approach to defining state objects, Crystalline helps you build more robust, maintainable, and testable applications.
 
 ### Why Use Crystalline?
 
 #### Key Benefits
 
 - **Enhanced Code Clarity:** Crystalline streamlines state management code and state objects for improved readability.
+
 - **Comprehensive State Definition:** Define all necessary elements within your state, including data, status, operations, errors, and events, using a unified and efficient approach.
-- **Simplified Testing:** Testability of your state management classes is significantly improved with Crystalline.
-- **State Composition:** Compose states from smaller, more manageable components.
-- **Shared State:** Seamlessly share states or parts of states across multiple state management classes without compromising loose coupling or testability.
+
+- **Comprehensive State Tracking:** Crystalline empowers you to represent the entire lifecycle of a `Store` within your state. Whether an operation is in progress, completed successfully, or has encountered an error, you can explicitly define these states using Crystalline data types designed for defining state objects. This level of granularity can be applied to the entire state or only specific parts of it.
+
+- **State Composition:** Compose a state from smaller, more manageable states.
+
+- **Shared State:** Seamlessly share states or parts of states across multiple `Stores` without compromising loose coupling or testability.
+
+- **Custom Operations:** Crystalline supports generic operations like update, delete, operating, create and none. However, it also allows you to easily define any custom operations tailored to specific scenarios, such as "request access right", "apply coupon" and so forth.
 
 ## Some examples
 
-
-
-
 # For Docs
+
 - [ ] create a doc for scenarios and use cases added in example
 
 - [ ] define crystal-clear state objects across all state management libraries.

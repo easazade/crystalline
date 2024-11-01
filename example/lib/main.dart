@@ -1,4 +1,4 @@
-import 'package:example/flutter_crystalline_example/profile/profile_page.dart';
+import 'package:example/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {

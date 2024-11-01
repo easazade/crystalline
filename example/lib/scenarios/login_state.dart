@@ -1,4 +1,4 @@
-import 'package:example/flutter_crystalline_example/scenarios/models/user.dart';
+import 'package:example/scenarios/models/user.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 
 /// problem with this state are:

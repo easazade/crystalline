@@ -1,4 +1,4 @@
-import 'package:example/flutter_crystalline_example/home/home_store.dart';
+import 'package:example/home/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 

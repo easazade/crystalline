@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
+  bloc: ^8.1.4
+  dart_mappable: ^4.3.0
 
 dev_dependencies:
   flutter_test:
@@ -18,6 +20,8 @@ dev_dependencies:
   very_good_analysis: ^4.0.0+1
   flutter_lints: ^2.0.0
   flutter_crystalline: ^0.4.0
+  build_runner: ^2.4.13
+  dart_mappable_builder: ^4.3.0
 
 flutter:
 
