@@ -1,7 +1,11 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:flutter/widgets.dart';
 
-typedef Store = ChangeNotifierData;
 
-abstract class ChangeNotifierData extends CollectionData<Object?>
-    with ChangeNotifier {}
+abstract class Store extends CollectionData<Object?>
+    with ChangeNotifier {
+  @override
+  List<Data<Object?>> get items => states;
+
+  List<Data<Object?>> get states;
+}

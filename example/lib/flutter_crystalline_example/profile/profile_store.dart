@@ -2,7 +2,7 @@ import 'package:flutter_crystalline/flutter_crystalline.dart';
 
 final profileStore = ProfileStore();
 
-class ProfileStore extends ChangeNotifierData {
+class ProfileStore extends Store {
   Future update() async {
     print('updating profile');
 
@@ -16,5 +16,5 @@ class ProfileStore extends ChangeNotifierData {
   }
 
   @override
-  List<Data<Object?>> get items => [];
+  List<Data<Object?>> get states => [];
 }

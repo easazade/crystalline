@@ -14,6 +14,10 @@ Enhance your project's state management with Crystalline. Regardless of your pre
 - **State Composition:** Compose states from smaller, more manageable components.
 - **Shared State:** Seamlessly share states or parts of states across multiple state management classes without compromising loose coupling or testability.
 
+## Some examples
+
+
+
 
 # For Docs
 - [ ] create a doc for scenarios and use cases added in example

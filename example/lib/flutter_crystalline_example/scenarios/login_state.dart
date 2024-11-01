@@ -94,5 +94,5 @@ class AuthStore extends Store {
   }
 
   @override
-  List<Data<Object?>> get items => [user, login, anonymousLogin];
+  List<Data<Object?>> get states => [user, login, anonymousLogin];
 }
