@@ -7,14 +7,20 @@ abstract class Store extends CollectionData<Object?> with ChangeNotifier {
 
   List<Data<Object?>> get states;
 
+  void publish() {
+    notifyListeners();
+  }
+
   @override
   String toString() {
     final buffer = StringBuffer();
     buffer.writeln(
         '${this.runtimeType}: ${CrystallineGlobalConfig.logger.generateToStringForData(this)}');
+
     if (states.isNotEmpty) {
       buffer.writeln();
     }
+
     for (final state in states) {
       buffer.writeln(state.toString());
     }
