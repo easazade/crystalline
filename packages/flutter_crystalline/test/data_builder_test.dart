@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
-import 'package:flutter_crystalline/src/data_binder/data_binder.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_test/src/matchers.dart' as matchers;
 
