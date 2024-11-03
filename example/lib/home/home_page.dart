@@ -14,8 +14,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: WhenDataBuilder(
-          observe: true,
+        title: WhenDataBinder(
           data: homeStore.title,
           onValue: (context, data) => Text(data.value),
           onOperate: (context, data) => const SizedBox(
@@ -28,9 +27,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         actions: [
-          WhenDataBuilder(
+          WhenDataBinder(
             data: homeStore.number,
-            observe: true,
             onValue: (context, data) => SizedBox(
               width: 54,
               height: 54,
@@ -68,9 +66,8 @@ class _HomePageState extends State<HomePage> {
               child: const Text('Change Number'),
               onPressed: () => homeStore.changeNumber(),
             ),
-            WhenDataBuilder(
+            WhenDataBinder(
               data: homeStore.number,
-              observe: true,
               onValue: (context, data) => SizedBox(
                 width: 54,
                 height: 54,
@@ -95,9 +92,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            WhenDataBuilder(
+            WhenDataBinder(
               data: homeStore.number,
-              observe: true,
               onValue: (context, data) => SizedBox(
                 width: 54,
                 height: 54,
@@ -125,7 +121,6 @@ class _HomePageState extends State<HomePage> {
             ),
             DataBuilder(
               data: homeStore,
-              observe: true,
               builder: (context, _) {
                 print('home store being rebuilt');
                 if (homeStore.isOperating) {
@@ -137,8 +132,7 @@ class _HomePageState extends State<HomePage> {
                 return const Text('home store available');
               },
             ),
-            WhenDataBuilder(
-              observe: true,
+            WhenDataBinder(
               data: homeStore,
               onValue: (context, _) => const Text('home store available'),
               onOperate: (context, _) => const Text(
