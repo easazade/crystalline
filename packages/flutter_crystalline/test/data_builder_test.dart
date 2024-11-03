@@ -1,10 +1,13 @@
+// ignore_for_file: inference_failure_on_instance_creation
+
 import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
+import 'package:flutter_crystalline/src/data_binder/data_binder.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_test/src/matchers.dart' as matchers;
 
-import 'testable.dart';
 import 'utils.dart';
+import 'utils/testable.dart';
 
 void main() {
   late Data<String> data1;
@@ -23,14 +26,18 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBuilder<String, Data<String>>(
+          child: DataBinder(
             data: data,
-            observe: true,
             builder: (context, data) {
-              if (data.hasValue)
-                return Text(data.value);
-              else
-                return Container();
+              return DataBuilder(
+                data: data,
+                builder: (context, data) {
+                  if (data.hasValue)
+                    return Text(data.value);
+                  else
+                    return Container();
+                },
+              );
             },
           ),
         ),
@@ -67,14 +74,18 @@ void main() {
           rebuild = () => setState(() {});
 
           return Testable(
-            child: DataBuilder<String, Data<String>>(
+            child: DataBinder(
               data: getData(),
-              observe: true,
               builder: (context, data) {
-                if (data.hasValue)
-                  return Text(data.value);
-                else
-                  return Container();
+                return DataBuilder(
+                  data: getData(),
+                  builder: (context, data) {
+                    if (data.hasValue)
+                      return Text(data.value);
+                    else
+                      return Container();
+                  },
+                );
               },
             ),
           );
@@ -111,13 +122,12 @@ void main() {
   );
 
   testWidgets(
-    'Should not update builder when ever data updated and observe property of DataBuilder is not set to true',
+    'DataBuilder should not watch data by itself and rebuild',
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBuilder<String, Data<String>>(
+          child: DataBuilder(
             data: data,
-            // observe: true,
             builder: (context, data) {
               if (data.hasValue)
                 return Text(data.value);
@@ -135,6 +145,8 @@ void main() {
 
       // when data value changes
       data.value = 'text';
+      data.operation = Operation.create;
+      data.failure = Failure('Something Went wrong !!!');
 
       await tester.pumpAndSettle();
 
@@ -153,13 +165,16 @@ void main() {
 
       await tester.pumpWidget(
         Testable(
-          child: DataBuilder<String, Data<String>>(
-            data: data,
-            observe: true,
-            builder: (context, data) {
-              return Text(data.operation.name);
-            },
-          ),
+          child: DataBinder(
+              data: data,
+              builder: (context, data) {
+                return DataBuilder(
+                  data: data,
+                  builder: (context, data) {
+                    return Text(data.operation.name);
+                  },
+                );
+              }),
         ),
       );
 
@@ -178,40 +193,6 @@ void main() {
   );
 
   testWidgets(
-    'Builder should NOT update widget when operation is '
-    'updated on data and observe is NOT set to true on DataBuilder',
-    (tester) async {
-      final Operation operation = Operation.defaultOperations
-          .randomItem(exceptionValues: [Operation.none]);
-
-      await tester.pumpWidget(
-        Testable(
-          child: DataBuilder<String, Data<String>>(
-            data: data,
-            // observe: true,
-            builder: (context, data) {
-              return Text(data.operation.name);
-            },
-          ),
-        ),
-      );
-
-      await tester.pumpAndSettle();
-
-      expect(find.text(Operation.none.name), matchers.findsOneWidget);
-
-      // when data value changes
-      data.operation = operation;
-
-      await tester.pumpAndSettle();
-
-      // expect
-      expect(find.text(operation.name), matchers.findsNothing);
-      expect(find.text(Operation.none.name), matchers.findsOneWidget);
-    },
-  );
-
-  testWidgets(
     'Builder should update widget when failure is '
     'updated on data and observe is set to true on DataBuilder',
     (tester) async {
@@ -219,16 +200,19 @@ void main() {
 
       await tester.pumpWidget(
         Testable(
-          child: DataBuilder<String, Data<String>>(
-            data: data,
-            observe: true,
-            builder: (context, data) {
-              if (data.hasFailure)
-                return Text(data.failure.message);
-              else
-                return Text('no failure');
-            },
-          ),
+          child: DataBinder(
+              data: data,
+              builder: (context, data) {
+                return DataBuilder(
+                  data: data,
+                  builder: (context, data) {
+                    if (data.hasFailure)
+                      return Text(data.failure.message);
+                    else
+                      return Text('no failure');
+                  },
+                );
+              }),
         ),
       );
 
@@ -244,42 +228,6 @@ void main() {
 
       // expect
       expect(find.text(failure.message), matchers.findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    'Builder should NOT update widget when failure is '
-    'updated on data and observe is NOT set to true on DataBuilder',
-    (tester) async {
-      final failure = Failure('failure message');
-
-      await tester.pumpWidget(
-        Testable(
-          child: DataBuilder<String, Data<String>>(
-            data: data,
-            // observe: true,
-            builder: (context, data) {
-              if (data.hasFailure)
-                return Text(data.failure.message);
-              else
-                return Text('no failure');
-            },
-          ),
-        ),
-      );
-
-      await tester.pumpAndSettle();
-
-      expect(find.text('no failure'), matchers.findsOneWidget);
-      expect(find.text(failure.message), matchers.findsNothing);
-
-      // when data value changes
-      data.failure = failure;
-
-      await tester.pumpAndSettle();
-
-      // expect
-      expect(find.text(failure.message), matchers.findsNothing);
     },
   );
 }

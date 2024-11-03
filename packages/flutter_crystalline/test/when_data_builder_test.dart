@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
+import 'package:flutter_crystalline/src/data_binder/data_binder.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_test/src/matchers.dart' as matchers;
 
-import 'testable.dart';
+import 'utils/testable.dart';
 
 void main() {
   late Data<String> data;
@@ -19,7 +20,6 @@ void main() {
     'observe/update from new the new data instance',
     (tester) async {
       Data<String> Function() getData = () => data;
-      final newData = Data<String>();
 
       late Function rebuild;
 
@@ -29,10 +29,14 @@ void main() {
             rebuild = () => setState(() {});
 
             return Testable(
-              child: WhenDataBuilder<String, Data<String>>(
-                observe: true,
+              child: DataBinder(
                 data: getData(),
-                onValue: (context, data) => Text(data.value),
+                builder: (context, data) {
+                  return WhenDataBuilder<String, Data<String>>(
+                    data: getData(),
+                    onValue: (context, data) => Text(data.value),
+                  );
+                },
               ),
             );
           },
@@ -45,7 +49,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('value from data'), matchers.findsOneWidget);
 
+      final newData = Data<String>();
       getData = () => newData;
+
       newData.value = 'value from new data';
 
       rebuild();
@@ -60,19 +66,23 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBuilder<String, Data<String>>(
+          child: DataBinder(
             data: data,
-            observe: true,
-            onValue: (context, data) => Text(data.value),
-            onNoValue: (context, data) => Text('data has no value'),
-            onCreate: (context, data) => Text(data.operation.name),
-            onOperate: (context, data) => Text(data.operation.name),
-            onFetch: (context, data) => Text(data.operation.name),
-            onDelete: (context, data) => Text(data.operation.name),
-            onFailure: (context, data) => Text(data.failure.message),
-            onUpdate: (context, data) => Text(data.operation.name),
-            onCustomOperation: (context, data) => Text(data.operation.name),
-            orElse: (context, data) => Text('or else'),
+            builder: (context, data) {
+              return WhenDataBuilder<String, Data<String>>(
+                data: data,
+                onValue: (context, data) => Text(data.value),
+                onNoValue: (context, data) => Text('data has no value'),
+                onCreate: (context, data) => Text(data.operation.name),
+                onOperate: (context, data) => Text(data.operation.name),
+                onFetch: (context, data) => Text(data.operation.name),
+                onDelete: (context, data) => Text(data.operation.name),
+                onFailure: (context, data) => Text(data.failure.message),
+                onUpdate: (context, data) => Text(data.operation.name),
+                onCustomOperation: (context, data) => Text(data.operation.name),
+                orElse: (context, data) => Text('or else'),
+              );
+            },
           ),
         ),
       );
@@ -115,33 +125,33 @@ void main() {
   );
 
   testWidgets(
-    'Should note observe data and but update WhenDataBuilder '
-    'when parent widget rebuilds'
+    'Should update WhenDataBuilder when parent widget rebuilds'
     'Also the correct callbacks from WhenDataBuilders should be called',
     (tester) async {
       late Function rebuildParent;
 
       await tester.pumpWidget(
-        StatefulBuilder(builder: (context, setState) {
-          rebuildParent = () => setState(() {});
+        StatefulBuilder(
+          builder: (context, setState) {
+            rebuildParent = () => setState(() {});
 
-          return Testable(
-            child: WhenDataBuilder<String, Data<String>>(
-              data: data,
-              // observe: true,
-              onValue: (context, data) => Text(data.value),
-              onNoValue: (context, data) => Text('data has no value'),
-              onCreate: (context, data) => Text(data.operation.name),
-              onOperate: (context, data) => Text(data.operation.name),
-              onFetch: (context, data) => Text(data.operation.name),
-              onDelete: (context, data) => Text(data.operation.name),
-              onFailure: (context, data) => Text(data.failure.message),
-              onUpdate: (context, data) => Text(data.operation.name),
-              onCustomOperation: (context, data) => Text(data.operation.name),
-              orElse: (context, data) => Text('or else'),
-            ),
-          );
-        }),
+            return Testable(
+              child: WhenDataBuilder<String, Data<String>>(
+                data: data,
+                onValue: (context, data) => Text(data.value),
+                onNoValue: (context, data) => Text('data has no value'),
+                onCreate: (context, data) => Text(data.operation.name),
+                onOperate: (context, data) => Text(data.operation.name),
+                onFetch: (context, data) => Text(data.operation.name),
+                onDelete: (context, data) => Text(data.operation.name),
+                onFailure: (context, data) => Text(data.failure.message),
+                onUpdate: (context, data) => Text(data.operation.name),
+                onCustomOperation: (context, data) => Text(data.operation.name),
+                orElse: (context, data) => Text('or else'),
+              ),
+            );
+          },
+        ),
       );
 
       await tester.pumpAndSettle();
@@ -195,14 +205,13 @@ void main() {
   );
 
   testWidgets(
-    'Should not update WhenDataBuilder when ever data updated and '
-    'observe property of WhenDataBuilder is not set to true',
+    'WhenDataBuilder Should not have the responsibility to observe data and '
+    'rebuild when ever data updated',
     (tester) async {
       await tester.pumpWidget(
         Testable(
           child: WhenDataBuilder<String, Data<String>>(
             data: data,
-            // observe: true,
             onValue: (context, data) => Text(data.value),
             onNoValue: (context, data) => Text('data has no value'),
             onCreate: (context, data) => Text(data.operation.name),
@@ -255,18 +264,22 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBuilder<String, Data<String>>(
+          child: DataBinder(
             data: data,
-            observe: true,
-            onValue: (context, data) => Text(data.value),
-            onNoValue: (context, data) => Text('data has no value'),
-            onOperate: (context, data) => Text('operating'),
-            orElse: (context, data) => Text('or else'),
-            // onCreate: (context, data) => Text(data.operation.name),
-            // onFetch: (context, data) => Text(data.operation.name),
-            // onDelete: (context, data) => Text(data.operation.name),
-            // onFailure: (context, data) => Text(data.failure.message),
-            // onUpdate: (context, data) => Text(data.operation.name),
+            builder: (context, data) {
+              return WhenDataBuilder<String, Data<String>>(
+                data: data,
+                onValue: (context, data) => Text(data.value),
+                onNoValue: (context, data) => Text('data has no value'),
+                onOperate: (context, data) => Text('operating'),
+                orElse: (context, data) => Text('or else'),
+                // onCreate: (context, data) => Text(data.operation.name),
+                // onFetch: (context, data) => Text(data.operation.name),
+                // onDelete: (context, data) => Text(data.operation.name),
+                // onFailure: (context, data) => Text(data.failure.message),
+                // onUpdate: (context, data) => Text(data.operation.name),
+              );
+            },
           ),
         ),
       );
@@ -310,12 +323,16 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBuilder<String, Data<String>>(
+          child: DataBinder(
             data: data,
-            observe: true,
-            onValue: (context, data) => Text(data.value),
-            onOperate: (context, data) => Text('operating'),
-            orElse: (context, data) => Text('or else'),
+            builder: (context, data) {
+              return WhenDataBuilder<String, Data<String>>(
+                data: data,
+                onValue: (context, data) => Text(data.value),
+                onOperate: (context, data) => Text('operating'),
+                orElse: (context, data) => Text('or else'),
+              );
+            },
           ),
         ),
       );
@@ -363,12 +380,16 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBuilder<String, Data<String>>(
+          child: DataBinder(
             data: data,
-            observe: true,
-            onValue: (context, data) => Text(data.value),
-            onOperate: (context, data) => Text('operating'),
-            orElse: (context, data) => Text('or else'),
+            builder: (context, data) {
+              return WhenDataBuilder<String, Data<String>>(
+                data: data,
+                onValue: (context, data) => Text(data.value),
+                onOperate: (context, data) => Text('operating'),
+                orElse: (context, data) => Text('or else'),
+              );
+            },
           ),
         ),
       );
@@ -418,13 +439,17 @@ void main() {
 
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBuilder<String, Data<String>>(
+          child: DataBinder(
             data: data,
-            observe: true,
-            onValue: (context, data) => Text(data.value),
-            onOperate: (context, data) => Text('operating'),
-            orElse: (context, data) => Text('or else'),
-            onFailure: (context, data) => Text(data.failure.message),
+            builder: (context, data) {
+              return WhenDataBuilder<String, Data<String>>(
+                data: data,
+                onValue: (context, data) => Text(data.value),
+                onOperate: (context, data) => Text('operating'),
+                orElse: (context, data) => Text('or else'),
+                onFailure: (context, data) => Text(data.failure.message),
+              );
+            },
           ),
         ),
       );
@@ -452,14 +477,18 @@ void main() {
 
   testWidgets(
     'Should user fallback widget when data has no value and '
-    'onNoValue() and orElse() callbacks arenot provided',
+    'onNoValue() and orElse() callbacks are not provided',
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBuilder<String, Data<String>>(
+          child: DataBinder(
             data: data,
-            observe: true,
-            onValue: (context, data) => Text(data.value),
+            builder: (context, data) {
+              return WhenDataBuilder<String, Data<String>>(
+                data: data,
+                onValue: (context, data) => Text(data.value),
+              );
+            },
           ),
         ),
       );
@@ -474,12 +503,15 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBuilder<String, Data<String>>(
-            data: data,
-            observe: true,
-            onValue: (context, data) => Text(data.value),
-            orElse: (context, data) => Text('or else'),
-          ),
+          child: DataBinder(
+              data: data,
+              builder: (context, data) {
+                return WhenDataBuilder<String, Data<String>>(
+                  data: data,
+                  onValue: (context, data) => Text(data.value),
+                  orElse: (context, data) => Text('or else'),
+                );
+              }),
         ),
       );
 
@@ -489,7 +521,8 @@ void main() {
   );
 
   testWidgets(
-    'Should orElse when data has no value and onNoValue() callback not provided',
+    'orElse should be called when data has no value and onNoValue()'
+    ' callback not provided',
     (tester) async {
       late Function rebuild;
 
