@@ -9,7 +9,7 @@ void main() async {
   late ListData<String> listData;
 
   setUp(() async {
-    items = ['Ali', 'Reza', 'Hasan', 'Mohsen', 'Mohammad'];
+    items = ['Kian', 'Reza', 'Hasan', 'Mohsen', 'Mohammad'];
     listData = ListData<String>(items.mapToData);
   });
 
@@ -18,24 +18,19 @@ void main() async {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: WhenDataBinder(
             data: listData,
-            builder: (context, list) {
-              return WhenDataBuilder(
-                data: list,
-                onValue: (context, items) {
-                  return Column(
-                    children: [
-                      if (items.sideEffects.isNotEmpty)
-                        Text(items.sideEffects.first.toString()),
-                      ...items.map((item) => Text(item.value)).toList(),
-                    ],
-                  );
-                },
-                onCreate: (context, data) => CircularProgressIndicator(),
-                onFailure: (context, data) => Text(data.failure.message),
+            onValue: (context, items) {
+              return Column(
+                children: [
+                  if (items.sideEffects.isNotEmpty)
+                    Text(items.sideEffects.first.toString()),
+                  ...items.map((item) => Text(item.value)).toList(),
+                ],
               );
             },
+            onCreate: (context, data) => CircularProgressIndicator(),
+            onFailure: (context, data) => Text(data.failure.message),
           ),
         ),
       );
@@ -80,23 +75,18 @@ void main() async {
         Testable(
           child: DataBinder(
             data: listData,
-            builder: (context, list) {
-              return WhenDataBuilder(
-                data: list,
-                onValue: (context, items) {
-                  return Column(
-                    children: [
-                      if (items.sideEffects.isNotEmpty)
-                        Text(items.sideEffects.first.toString()),
-                      ...items.map((item) {
-                        if (item.isOperating)
-                          return CircularProgressIndicator();
-                        else
-                          return Text(item.value);
-                      }).toList(),
-                    ],
-                  );
-                },
+            builder: (context, items) {
+              return Column(
+                children: [
+                  if (items.sideEffects.isNotEmpty)
+                    Text(items.sideEffects.first.toString()),
+                  ...items.map((item) {
+                    if (item.isOperating)
+                      return CircularProgressIndicator();
+                    else
+                      return Text(item.value);
+                  }).toList(),
+                ],
               );
             },
           ),
