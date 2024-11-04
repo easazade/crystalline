@@ -14,13 +14,15 @@ class OperationData extends Data<void> {
         );
 
   factory OperationData.from(Data<dynamic> data) {
-    return data.mapTo<dynamic, OperationData>(OperationData(),
-        (origin, mutated) {
-      mutated.failure = origin.failureOrNull;
-      mutated.operation = origin.operation;
-      mutated.clearAllSideEffects();
-      mutated.addAllSideEffects(origin.sideEffects);
-    });
+    return data.mapTo<dynamic, OperationData>(
+      OperationData(),
+      (origin, mutated) {
+        mutated.failure = origin.failureOrNull;
+        mutated.operation = origin.operation;
+        mutated.clearAllSideEffects();
+        mutated.addAllSideEffects(origin.sideEffects);
+      },
+    );
   }
 
   @override

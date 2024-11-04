@@ -7,7 +7,7 @@ void main() {
     () {
       final intData = Data<int>();
       intData.value = 30;
-      final stringData = intData.mapTo<String, Data<String>>(
+      final stringData = intData.mapTo(
         Data<String>(),
         (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
       );
