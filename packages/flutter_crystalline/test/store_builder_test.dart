@@ -103,6 +103,35 @@ void main() {
       expect(find.text('10.0'), findsNothing);
     },
   );
+
+  testWidgets(
+    'When a non Data state property of Store is changed and store calls publish. '
+    'ui should be updated',
+    (tester) async {
+      await tester.pumpWidget(
+        Testable(
+          child: StoreBuilder(
+            store: testStore,
+            builder: (context, store, child) {
+              return Column(
+                children: [
+                  Text(store.nonData),
+                ],
+              );
+            },
+          ),
+        ),
+      );
+
+      expect(find.text(testStore.nonData), findsOneWidget);
+
+      testStore.nonData = 'something else';
+      testStore.publish();
+      await tester.pumpAndSettle();
+
+      expect(find.text('something else'), findsOneWidget);
+    },
+  );
 }
 
 class TestStore extends Store {
@@ -111,7 +140,7 @@ class TestStore extends Store {
   final points = Data<double>();
 
   // this field should not cause a rebuild, since it is not part of the states
-  final nonData = 'something';
+  var nonData = 'something';
 
   @override
   List<Data<Object?>> get states => [userName, age, points];
