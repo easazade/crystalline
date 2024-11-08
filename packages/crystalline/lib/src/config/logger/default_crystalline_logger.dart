@@ -4,25 +4,25 @@ import 'package:crystalline/src/data_types/failure.dart';
 import 'package:meta/meta.dart';
 
 class DefaultCrystallineLogger extends CrystallineLogger {
-  String inRed(dynamic object) => "\x1B[31m${object}\x1B[0m";
+  String redText(dynamic object) => "\x1B[31m${object}\x1B[0m";
 
-  String inGreen(dynamic object) => "\x1B[32m${object}\x1B[0m";
+  String greenText(dynamic object) => "\x1B[32m${object}\x1B[0m";
 
-  String inYellow(dynamic object) => "\x1B[33m${object}\x1B[0m";
+  String yellowText(dynamic object) => "\x1B[33m${object}\x1B[0m";
 
-  String inOrange(dynamic object) => "\x1B[34m${object}\x1B[0m";
+  String orangeText(dynamic object) => "\x1B[34m${object}\x1B[0m";
 
-  String inMagenta(dynamic object) => "\x1B[35m${object}\x1B[0m";
+  String magentaText(dynamic object) => "\x1B[35m${object}\x1B[0m";
 
-  String inCyan(dynamic object) => "\x1B[36m${object}\x1B[0m";
+  String cyanText(dynamic object) => "\x1B[36m${object}\x1B[0m";
 
-  String inWhite(dynamic object) => "\x1B[37m${object}\x1B[0m";
+  String whiteText(dynamic object) => "\x1B[37m${object}\x1B[0m";
 
-  String inReset(dynamic object) => "\x1B[0m${object}\x1B[0m";
+  String whiteTextRedBg(dynamic object) => '\x1B[41m\x1B[37m${object}\x1B[0m';
 
-  String inBlinking(dynamic object) => "\x1B[5m${object}\x1B[0m";
+  String whiteTextBlueBg(dynamic object) => '\x1B[44m\x1B[37m${object}\x1B[0m';
 
-  String inBlinkingFast(dynamic object) => "\x1B[6m${object}\x1B[0m";
+  String resetTextColors(dynamic object) => "\x1B[0m${object}\x1B[0m";
 
   /// prints all ANSI colors and effects that can be shown
   /// this method is just for testing to see what colors/effects we can use
@@ -45,29 +45,30 @@ class DefaultCrystallineLogger extends CrystallineLogger {
     final buffer = StringBuffer();
     buffer.write('{ ');
     if (data.name != null) {
-      buffer.write('${inYellow(data.name)}:');
+      buffer.write('${yellowText(data.name)}:');
     }
-    buffer.write('${inYellow(data.runtimeType)} = ');
+    buffer.write('${data.runtimeType} = ');
     if (data.hasFailure) {
-      buffer.write("failure: ${inRed('<')}");
+      buffer.write("failure: ${redText('<')}");
       if (data.failureOrNull?.id != null) {
-        buffer.write(inRed('id: ${data.failure.id} - '));
+        buffer.write(redText('id: ${data.failure.id} - '));
       }
       if (data.failureOrNull?.cause != null) {
-        buffer.write(inRed('cause: ${data.failure.cause} - '));
+        buffer.write(redText('cause: ${data.failure.cause} - '));
       }
       buffer.write(
-          '${inRed("${ellipsize(data.failure.message, maxSize: 20)}> ")}| ');
+        '${redText("${ellipsize(data.failure.message, maxSize: 20)}> ")}| ',
+      );
     }
 
     if (data.operation == Operation.none) {
       buffer.write('operation: ${data.operation.name}');
     } else {
-      buffer.write('operation: ${inBlinking(inMagenta(data.operation.name))}');
+      buffer.write('operation: ${whiteTextBlueBg(data.operation.name)}');
     }
 
     if (data.hasValue) {
-      buffer.write(' | value: ${inGreen(data.valueOrNull)}');
+      buffer.write(' | value: ${greenText(data.valueOrNull)}');
     } else {
       buffer.write(' | value: ${data.valueOrNull}');
     }
@@ -85,20 +86,20 @@ class DefaultCrystallineLogger extends CrystallineLogger {
   String generateToStringForFailure(Failure failure) {
     final buffer = StringBuffer();
 
-    buffer.write(inRed('Failure: '));
+    buffer.write(redText('Failure: '));
 
     if (failure.id != null) {
-      buffer.write(inRed('id: ${failure.id},'));
+      buffer.write(redText('id: ${failure.id},'));
     }
 
-    buffer.writeln(inRed(' message: ${failure.message}'));
+    buffer.writeln(whiteTextRedBg(' message: ${failure.message}'));
 
     if (failure.exception != null) {
-      buffer.writeln(inRed(failure.exception));
+      buffer.writeln(redText(failure.exception));
     }
 
     if (failure.stacktrace != null) {
-      buffer.writeln(inRed(failure.stacktrace));
+      buffer.writeln(redText(failure.stacktrace));
     }
 
     return buffer.toString();

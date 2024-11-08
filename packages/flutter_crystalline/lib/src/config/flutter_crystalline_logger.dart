@@ -5,95 +5,92 @@ import 'package:flutter/foundation.dart';
 
 class FlutterCrystallineLogger extends DefaultCrystallineLogger {
   @override
-  String inBlinking(object) {
+  String cyanText(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inBlinking(object.toString());
+      return super.cyanText(object.toString());
     }
   }
 
   @override
-  String inBlinkingFast(object) {
+  String greenText(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inBlinkingFast(object.toString());
+      return super.greenText(object.toString());
     }
   }
 
   @override
-  String inCyan(object) {
+  String magentaText(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inCyan(object.toString());
+      return super.magentaText(object.toString());
     }
   }
 
   @override
-  String inGreen(object) {
+  String orangeText(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inGreen(object.toString());
+      return super.orangeText(object.toString());
     }
   }
 
   @override
-  String inMagenta(object) {
+  String redText(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inMagenta(object.toString());
+      return super.redText(object.toString());
     }
   }
 
   @override
-  String inOrange(object) {
+  String resetTextColors(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inOrange(object.toString());
+      return super.resetTextColors(object.toString());
     }
   }
 
   @override
-  String inRed(object) {
+  String whiteText(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inRed(object.toString());
+      return super.whiteText(object.toString());
     }
   }
 
   @override
-  String inReset(object) {
+  String whiteTextRedBg(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inReset(object.toString());
+      return super.cyanText(object.toString());
     }
   }
 
   @override
-  String inWhite(object) {
+  String whiteTextBlueBg(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inWhite(object.toString());
+      return super.cyanText(object.toString());
     }
   }
 
   @override
-  String inYellow(object) {
+  String yellowText(dynamic object) {
     if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
-      return super.inYellow(object.toString());
+      return super.yellowText(object.toString());
     }
   }
-
-  @override
-  String? globalLogFilter(Data<dynamic> data) => data.toString();
 }

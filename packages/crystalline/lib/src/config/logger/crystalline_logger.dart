@@ -2,25 +2,26 @@ import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 
 abstract class CrystallineLogger {
-  String inRed(dynamic object);
+  String redText(dynamic object);
 
-  String inGreen(dynamic object);
 
-  String inYellow(dynamic object);
+  String greenText(dynamic object);
 
-  String inOrange(dynamic object);
+  String yellowText(dynamic object);
 
-  String inMagenta(dynamic object);
+  String orangeText(dynamic object);
 
-  String inCyan(dynamic object);
+  String magentaText(dynamic object);
 
-  String inWhite(dynamic object);
+  String cyanText(dynamic object);
 
-  String inReset(dynamic object);
+  String whiteText(dynamic object);
 
-  String inBlinking(dynamic object);
+  String whiteTextRedBg(dynamic object);
 
-  String inBlinkingFast(dynamic object);
+  String whiteTextBlueBg(dynamic object);
+
+  String resetTextColors(dynamic object);
 
   String ellipsize(String text, {required int maxSize});
 

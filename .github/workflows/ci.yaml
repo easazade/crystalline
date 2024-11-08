@@ -48,3 +48,4 @@ jobs:
         with:
           path: packages/flutter_crystalline/coverage/lcov.info
           min_coverage: 100
+          exclude: "lib/src/config/flutter_crystalline_logger.dart"

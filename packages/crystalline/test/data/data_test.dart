@@ -43,7 +43,7 @@ void main() {
 
     test('Should set failure', () {
       expect(data.hasFailure, isFalse);
-      final expectedFailure = Failure('message');
+      final expectedFailure = Failure('This is ERROR message !!!');
       data.failure = expectedFailure;
       expect(data.failure, expectedFailure);
       expect(testObserver.timesUpdated, 1);
@@ -252,7 +252,7 @@ void main() {
         data.value = 'apple';
         data.value = 'orange';
         data.operation = Operation.create;
-        data.failure = Failure('message');
+        data.failure = Failure('This is ERROR message !!!');
       });
 
       expect(testObserver.timesUpdated, 1);
@@ -265,7 +265,7 @@ void main() {
           data.value = 'apple';
           data.value = 'orange';
           data.operation = Operation.create;
-          data.failure = Failure('message');
+          data.failure = Failure('This is ERROR message !!!');
         });
 
         expect(testObserver.timesUpdated, 1);
@@ -441,7 +441,7 @@ void main() {
       'should dispatch a FailureEvent with new failure set and should not dispatch another event when '
       'failure is set to null afterwards',
       () {
-        final newFailure = Failure('message');
+        final newFailure = Failure('This is ERROR message !!!');
         data.failure = newFailure;
 
         expect(testListener.timesDispatched, 1);
@@ -499,7 +499,7 @@ void main() {
         data.modify((data) {
           data.value = 'meow';
           data.operation = Operation.delete;
-          data.failure = Failure('message');
+          data.failure = Failure('This is ERROR message !!!');
           data.addSideEffect('effect');
         });
 
@@ -515,7 +515,8 @@ void main() {
 
         testListener.expectNthDispatch(
           3,
-          (event) => expect(event, FailureEvent(Failure('message'))),
+          (event) =>
+              expect(event, FailureEvent(Failure('This is ERROR message !!!'))),
         );
 
         testListener.expectNthDispatch(
@@ -531,7 +532,7 @@ void main() {
         await data.modifyAsync((data) async {
           data.value = 'meow';
           data.operation = Operation.delete;
-          data.failure = Failure('message');
+          data.failure = Failure('This is ERROR message !!!');
           data.addSideEffect('effect');
         });
 
@@ -547,7 +548,8 @@ void main() {
 
         testListener.expectNthDispatch(
           3,
-          (event) => expect(event, FailureEvent(Failure('message'))),
+          (event) =>
+              expect(event, FailureEvent(Failure('This is ERROR message !!!'))),
         );
 
         testListener.expectNthDispatch(
@@ -562,7 +564,7 @@ void main() {
       () async {
         data.value = 'meow';
         data.operation = Operation.delete;
-        data.failure = Failure('message');
+        data.failure = Failure('This is ERROR message !!!');
         data.addSideEffect('effect');
 
         final data2 = Data<String>();
@@ -582,13 +584,25 @@ void main() {
 
         testListener2.expectNthDispatch(
           3,
-          (event) => expect(event, FailureEvent(Failure('message'))),
+          (event) =>
+              expect(event, FailureEvent(Failure('This is ERROR message !!!'))),
         );
 
         testListener2.expectNthDispatch(
           4,
           (event) => expect(event, SideEffectsUpdated(['effect'])),
         );
+      },
+    );
+
+    test(
+      'Should create and name a data without any issues, the name '
+      'should be printed in toString() result as well',
+      () {
+        final data = Data<int>(name: 'date-of-birth');
+        print(data);
+        expect(data.name, equals('date-of-birth'));
+        expect(data.toString(), contains('date-of-birth'));
       },
     );
   });
