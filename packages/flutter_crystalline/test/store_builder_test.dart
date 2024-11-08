@@ -5,10 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'utils/testable.dart';
 
 void main() {
-  late TestStore testStore;
+  late _TestStore testStore;
 
   setUp(() {
-    testStore = TestStore();
+    testStore = _TestStore();
   });
 
   testWidgets(
@@ -134,7 +134,7 @@ void main() {
   );
 }
 
-class TestStore extends Store {
+class _TestStore extends Store {
   final userName = Data<String>(value: 'alireza');
   final age = Data<int>();
   final points = Data<double>();
