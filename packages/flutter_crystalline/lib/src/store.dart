@@ -8,7 +8,9 @@ abstract class Store extends CollectionData<Object?> with ChangeNotifier {
   List<Data<Object?>> get states;
 
   @override
-  String get name;
+  String? get name => storeName;
+
+  String get storeName;
 
   void publish() {
     notifyListeners();

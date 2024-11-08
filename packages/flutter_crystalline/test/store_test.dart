@@ -88,7 +88,7 @@ class _TestStore extends Store {
   var nonData = 'something';
 
   @override
-  String get name => 'TestStore';
+  String get storeName => 'TestStore';
 
   @override
   List<Data<Object?>> get states => [userName, age, points];

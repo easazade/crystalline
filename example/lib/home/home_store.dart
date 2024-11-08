@@ -36,4 +36,7 @@ class HomeStore extends Store {
 
   @override
   List<Data<Object?>> get states => [title, number];
+
+  @override
+  String get storeName => 'HomeStore';
 }

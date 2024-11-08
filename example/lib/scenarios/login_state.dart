@@ -94,5 +94,8 @@ class AuthStore extends Store {
   }
 
   @override
+  String get storeName => 'LoginStore';
+
+  @override
   List<Data<Object?>> get states => [user, login, anonymousLogin];
 }

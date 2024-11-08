@@ -18,5 +18,8 @@ class ProfileStore extends Store {
   }
 
   @override
-  List<Data<Object?>> get states => [];
+  List<Data<Object?>> get states => [profileImage];
+
+  @override
+  String get storeName => 'ProfileStore';
 }
