@@ -105,7 +105,7 @@ class DefaultCrystallineLogger extends CrystallineLogger {
   }
 
   @override
-  String? globalLogFilter(Data<dynamic> data) => null;
+  String? globalLogFilter(Data<dynamic> data) => data.toString();
 
   @override
   void log(dynamic object) {

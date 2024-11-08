@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 class FlutterCrystallineLogger extends DefaultCrystallineLogger {
   @override
   String inBlinking(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inBlinking(object.toString());
@@ -15,7 +15,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
 
   @override
   String inBlinkingFast(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inBlinkingFast(object.toString());
@@ -24,7 +24,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
 
   @override
   String inCyan(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inCyan(object.toString());
@@ -33,7 +33,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
 
   @override
   String inGreen(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inGreen(object.toString());
@@ -42,7 +42,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
 
   @override
   String inMagenta(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inMagenta(object.toString());
@@ -51,7 +51,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
 
   @override
   String inOrange(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inOrange(object.toString());
@@ -60,7 +60,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
 
   @override
   String inRed(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inRed(object.toString());
@@ -69,7 +69,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
 
   @override
   String inReset(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inReset(object.toString());
@@ -78,7 +78,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
 
   @override
   String inWhite(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inWhite(object.toString());
@@ -87,7 +87,7 @@ class FlutterCrystallineLogger extends DefaultCrystallineLogger {
 
   @override
   String inYellow(object) {
-    if (!kIsWeb && Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && Platform.isIOS) {
       return object.toString();
     } else {
       return super.inYellow(object.toString());
