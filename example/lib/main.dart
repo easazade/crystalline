@@ -1,4 +1,4 @@
-import 'package:example/profile/profile_page.dart';
+import 'package:example/cart/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(),
-      home: const ProfilePage(),
+      home: CartPage(),
     );
   }
 }
