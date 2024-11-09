@@ -13,7 +13,7 @@ void main() {
 
     data = Data(
       value: 'some value',
-      operation: Operation.fetch,
+      operation: Operation.read,
       sideEffects: ['side-effect'],
       failure: Failure('message'),
     );

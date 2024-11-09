@@ -412,8 +412,8 @@ void main() {
         listData.operation = Operation.delete;
         expect(listData.isDeleting, isTrue);
 
-        listData.operation = Operation.fetch;
-        expect(listData.isFetching, isTrue);
+        listData.operation = Operation.read;
+        expect(listData.isReading, isTrue);
 
         listData.operation = Operation.update;
         expect(listData.isUpdating, isTrue);
@@ -440,7 +440,7 @@ void main() {
           isCreatingStrategy: overrideFunc,
           isDeletingStrategy: overrideFunc,
           isUpdatingStrategy: overrideFunc,
-          isFetchingStrategy: overrideFunc,
+          isReadingStrategy: overrideFunc,
           isAnyOperationStrategy: overrideFunc,
           hasCustomOperationStrategy: overrideFunc,
         );
@@ -453,8 +453,8 @@ void main() {
         listData.operation = Operation.delete;
         expect(listData.isDeleting, isFalse);
 
-        listData.operation = Operation.fetch;
-        expect(listData.isFetching, isFalse);
+        listData.operation = Operation.read;
+        expect(listData.isReading, isFalse);
 
         listData.operation = Operation.update;
         expect(listData.isUpdating, isFalse);
@@ -469,12 +469,12 @@ void main() {
     test(
       'ListData should dispatch correct event when operation updated',
       () {
-        listData.operation = Operation.fetch;
+        listData.operation = Operation.read;
         listData.operation = Operation.update;
 
         testListener.expectNthDispatch(
           1,
-          (event) => expect(event, OperationEvent(Operation.fetch)),
+          (event) => expect(event, OperationEvent(Operation.read)),
         );
 
         testListener.expectNthDispatch(

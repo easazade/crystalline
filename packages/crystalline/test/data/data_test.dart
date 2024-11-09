@@ -135,11 +135,11 @@ void main() {
     );
 
     test(
-      'data.isFetching should return true when Operation.fetch is set',
+      'data.isReading should return true when Operation.read is set',
       () {
-        expect(data.isFetching, isFalse);
-        data.operation = Operation.fetch;
-        expect(data.isFetching, isTrue);
+        expect(data.isReading, isFalse);
+        data.operation = Operation.read;
+        expect(data.isReading, isTrue);
       },
     );
 

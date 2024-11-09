@@ -7,14 +7,14 @@ import 'package:meta/meta.dart';
 class Operation {
   static const Operation update = Operation('update');
   static const Operation delete = Operation('delete');
-  static const Operation fetch = Operation('fetch');
+  static const Operation read = Operation('read');
   static const Operation create = Operation('create');
   static const Operation none = Operation('none');
 
   static final defaultOperations = [
     update,
     delete,
-    fetch,
+    read,
     create,
     none,
   ];
@@ -122,7 +122,7 @@ abstract class ReadableData<T> {
 
   bool get isDeleting;
 
-  bool get isFetching;
+  bool get isReading;
 
   bool get isCreating;
 
@@ -299,7 +299,7 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
   bool get isDeleting => _operation == Operation.delete;
 
   @override
-  bool get isFetching => _operation == Operation.fetch;
+  bool get isReading => _operation == Operation.read;
 
   @override
   bool get isUpdating => _operation == Operation.update;

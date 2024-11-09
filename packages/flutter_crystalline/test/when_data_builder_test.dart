@@ -73,7 +73,7 @@ void main() {
                 onValue: (context, data) => Text(data.value),
                 onNoValue: (context, data) => Text('data has no value'),
                 onCreate: (context, data) => Text(data.operation.name),
-                onFetch: (context, data) => Text(data.operation.name),
+                onRead: (context, data) => Text(data.operation.name),
                 onDelete: (context, data) => Text(data.operation.name),
                 onFailure: (context, data) => Text(data.failure.message),
                 onUpdate: (context, data) => Text(data.operation.name),
@@ -104,9 +104,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(Operation.update.name), matchers.findsOneWidget);
 
-      data.operation = Operation.fetch;
+      data.operation = Operation.read;
       await tester.pumpAndSettle();
-      expect(find.text(Operation.fetch.name), matchers.findsOneWidget);
+      expect(find.text(Operation.read.name), matchers.findsOneWidget);
 
       data.operation = Operation('delete-photo');
       await tester.pumpAndSettle();
@@ -135,7 +135,7 @@ void main() {
                 onValue: (context, data) => Text(data.value),
                 onNoValue: (context, data) => Text('data has no value'),
                 onCreate: (context, data) => Text(data.operation.name),
-                onFetch: (context, data) => Text(data.operation.name),
+                onRead: (context, data) => Text(data.operation.name),
                 onDelete: (context, data) => Text(data.operation.name),
                 onFailure: (context, data) => Text(data.failure.message),
                 onUpdate: (context, data) => Text(data.operation.name),
@@ -170,10 +170,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(Operation.update.name), matchers.findsOneWidget);
 
-      data.operation = Operation.fetch;
+      data.operation = Operation.read;
       rebuildParent();
       await tester.pumpAndSettle();
-      expect(find.text(Operation.fetch.name), matchers.findsOneWidget);
+      expect(find.text(Operation.read.name), matchers.findsOneWidget);
 
       data.operation = Operation('update-user-profile');
       rebuildParent();
@@ -203,7 +203,7 @@ void main() {
             onValue: (context, data) => Text(data.value),
             onNoValue: (context, data) => Text('data has no value'),
             onCreate: (context, data) => Text(data.operation.name),
-            onFetch: (context, data) => Text(data.operation.name),
+            onRead: (context, data) => Text(data.operation.name),
             onDelete: (context, data) => Text(data.operation.name),
             onFailure: (context, data) => Text(data.failure.message),
             onUpdate: (context, data) => Text(data.operation.name),
@@ -231,7 +231,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('data has no value'), matchers.findsOneWidget);
 
-      data.operation = Operation.fetch;
+      data.operation = Operation.read;
       await tester.pumpAndSettle();
       expect(find.text('data has no value'), matchers.findsOneWidget);
 
@@ -257,7 +257,7 @@ void main() {
                 onAnyOperation: (context, data) => Text('operating'),
                 orElse: (context, data) => Text('or else'),
                 // onCreate: (context, data) => Text(data.operation.name),
-                // onFetch: (context, data) => Text(data.operation.name),
+                // onRead: (context, data) => Text(data.operation.name),
                 // onDelete: (context, data) => Text(data.operation.name),
                 // onFailure: (context, data) => Text(data.failure.message),
                 // onUpdate: (context, data) => Text(data.operation.name),
@@ -286,7 +286,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('operating'), matchers.findsOneWidget);
 
-      data.operation = Operation.fetch;
+      data.operation = Operation.read;
       await tester.pumpAndSettle();
       expect(find.text('operating'), matchers.findsOneWidget);
 
@@ -335,7 +335,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('operating'), matchers.findsOneWidget);
 
-      data.operation = Operation.fetch;
+      data.operation = Operation.read;
       await tester.pumpAndSettle();
       expect(find.text('operating'), matchers.findsOneWidget);
 
@@ -388,7 +388,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('operating'), matchers.findsOneWidget);
 
-      data.operation = Operation.fetch;
+      data.operation = Operation.read;
       await tester.pumpAndSettle();
       expect(find.text('operating'), matchers.findsOneWidget);
 

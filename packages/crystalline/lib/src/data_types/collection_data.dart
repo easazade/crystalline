@@ -279,8 +279,9 @@ class ListData<T> extends CollectionData<T> {
     this.hasNoValueStrategy,
     this.isCreatingStrategy,
     this.isDeletingStrategy,
-    this.isFetchingStrategy,
+    this.isReadingStrategy,
     this.isUpdatingStrategy,
+    this.hasCustomOperationStrategy,
   }) {
     this.operation = operation;
     this.failure = failure;
@@ -298,8 +299,9 @@ class ListData<T> extends CollectionData<T> {
   final _DataPredicate<T> hasNoValueStrategy;
   final _DataPredicate<T> isCreatingStrategy;
   final _DataPredicate<T> isDeletingStrategy;
-  final _DataPredicate<T> isFetchingStrategy;
+  final _DataPredicate<T> isReadingStrategy;
   final _DataPredicate<T> isUpdatingStrategy;
+  final _DataPredicate<T> hasCustomOperationStrategy;
 
   @override
   bool get isAnyOperation {
@@ -338,15 +340,21 @@ class ListData<T> extends CollectionData<T> {
   }
 
   @override
-  bool get isFetching {
-    return isFetchingStrategy?.call(value, operation, failureOrNull) ??
-        super.isFetching;
+  bool get isReading {
+    return isReadingStrategy?.call(value, operation, failureOrNull) ??
+        super.isReading;
   }
 
   @override
   bool get isUpdating {
     return isUpdatingStrategy?.call(value, operation, failureOrNull) ??
         super.isUpdating;
+  }
+
+  @override
+  bool get hasCustomOperation {
+    return hasCustomOperationStrategy?.call(value, operation, failureOrNull) ??
+        super.hasCustomOperation;
   }
 
   @override
@@ -361,8 +369,9 @@ class ListData<T> extends CollectionData<T> {
         hasNoValueStrategy: hasNoValueStrategy,
         isCreatingStrategy: isCreatingStrategy,
         isDeletingStrategy: isDeletingStrategy,
-        isFetchingStrategy: isFetchingStrategy,
+        isReadingStrategy: isReadingStrategy,
         isUpdatingStrategy: isUpdatingStrategy,
+        hasCustomOperationStrategy: hasCustomOperationStrategy,
       );
 
   @override

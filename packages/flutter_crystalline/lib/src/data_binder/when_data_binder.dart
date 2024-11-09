@@ -12,7 +12,7 @@ class WhenDataBinder<T, D extends Data<T>> extends StatefulWidget {
     this.onUpdate,
     this.onCreate,
     this.onDelete,
-    this.onFetch,
+    this.onRead,
     this.onFailure,
     this.orElse,
     this.fallback = const SizedBox(),
@@ -26,7 +26,7 @@ class WhenDataBinder<T, D extends Data<T>> extends StatefulWidget {
   final DataWidgetBuilder<T, D>? onAnyOperation;
   final DataWidgetBuilder<T, D>? onCreate;
   final DataWidgetBuilder<T, D>? onDelete;
-  final DataWidgetBuilder<T, D>? onFetch;
+  final DataWidgetBuilder<T, D>? onRead;
   final DataWidgetBuilder<T, D>? onUpdate;
 
   final DataWidgetBuilder<T, D>? onFailure;
@@ -69,8 +69,8 @@ class _WhenDataBinderState<T, D extends Data<T>>
     if (_data.isDeleting && widget.onDelete != null) {
       return widget.onDelete!(context, _data);
     }
-    if (_data.isFetching && widget.onFetch != null) {
-      return widget.onFetch!(context, _data);
+    if (_data.isReading && widget.onRead != null) {
+      return widget.onRead!(context, _data);
     }
     if (_data.isUpdating && widget.onUpdate != null) {
       return widget.onUpdate!(context, _data);

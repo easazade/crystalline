@@ -44,7 +44,7 @@ void main() {
             onValue: (context, data) => Text(data.value),
             onNoValue: (context, data) => Text('onNoValue'),
             onCreate: (context, data) => Text(data.operation.name),
-            onFetch: (context, data) => Text(data.operation.name),
+            onRead: (context, data) => Text(data.operation.name),
             onAnyOperation: (context, data) => Text(data.operation.name),
             onDelete: (context, data) => Text(data.operation.name),
             onUpdate: (context, data) => Text(data.operation.name),
@@ -65,15 +65,15 @@ void main() {
       expect(find.text('create'), findsOneWidget);
       expect(find.text('Ali'), findsNothing);
 
-      data.operation = Operation.fetch;
+      data.operation = Operation.read;
       await tester.pumpAndSettle();
-      expect(find.text('fetch'), findsOneWidget);
+      expect(find.text('read'), findsOneWidget);
       expect(find.text('create'), findsNothing);
 
       data.operation = Operation.delete;
       await tester.pumpAndSettle();
       expect(find.text('delete'), findsOneWidget);
-      expect(find.text('fetch'), findsNothing);
+      expect(find.text('read'), findsNothing);
 
       data.operation = Operation.update;
       await tester.pumpAndSettle();

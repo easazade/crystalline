@@ -11,7 +11,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     this.onUpdate,
     this.onCreate,
     this.onDelete,
-    this.onFetch,
+    this.onRead,
     this.onAnyOperation,
     this.onFailure,
     this.orElse,
@@ -25,7 +25,7 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
 
   final DataWidgetBuilder<T, D>? onCreate;
   final DataWidgetBuilder<T, D>? onDelete;
-  final DataWidgetBuilder<T, D>? onFetch;
+  final DataWidgetBuilder<T, D>? onRead;
   final DataWidgetBuilder<T, D>? onUpdate;
   final DataWidgetBuilder<T, D>? onAnyOperation;
 
@@ -45,8 +45,8 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     if (data.isDeleting && onDelete != null) {
       return onDelete!(context, data);
     }
-    if (data.isFetching && onFetch != null) {
-      return onFetch!(context, data);
+    if (data.isReading && onRead != null) {
+      return onRead!(context, data);
     }
     if (data.isUpdating && onUpdate != null) {
       return onUpdate!(context, data);

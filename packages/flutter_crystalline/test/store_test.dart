@@ -25,7 +25,7 @@ void main() {
       store.age.value = 0;
       store.operation = Operation.none;
       store.failure = Failure('some error message!!!!!');
-      store.userName.operation = Operation.fetch;
+      store.userName.operation = Operation.read;
       store.points.failure = Failure('failed to get points');
 
       expect(publishCallsCount, 0);
@@ -44,7 +44,7 @@ void main() {
       store.age.value = 0;
       store.operation = Operation.none;
       store.failure = Failure('some error message!!!!!');
-      store.userName.operation = Operation.fetch;
+      store.userName.operation = Operation.read;
       store.points.failure = Failure('failed to get points');
 
       expect(publishCallsCount, 0);
@@ -61,7 +61,7 @@ void main() {
       store.age.value = 0;
       store.operation = Operation.create;
       store.failure = Failure('some error message!!!!!');
-      store.userName.operation = Operation.fetch;
+      store.userName.operation = Operation.read;
       store.points.failure = Failure('failed to get points');
       // this should not be shown in Store.toString() result since it is
       // not part of state
@@ -72,7 +72,7 @@ void main() {
       expect(toString, contains('0'));
       expect(toString, contains('create'));
       expect(toString, contains('some error message!!!!!'));
-      expect(toString, contains('fetch'));
+      expect(toString, contains('read'));
       expect(toString, contains('failed to get points'));
       expect(toString, isNot(contains('Non data')));
     },

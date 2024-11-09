@@ -117,7 +117,7 @@ void main() async {
       }
 
       // check change of operation of the first item in the ListData is shown
-      listData.first.operation = Operation.fetch;
+      listData.first.operation = Operation.read;
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
