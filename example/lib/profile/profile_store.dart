@@ -6,7 +6,7 @@ class ProfileStore extends Store {
   final profileImage = Data<String>();
 
   Future update() async {
-    operation = Operation.operating;
+    operation = Operation.update;
     failure = Failure('This is an error message');
     profileImage.value = 'image url 1';
 

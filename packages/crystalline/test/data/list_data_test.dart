@@ -266,7 +266,7 @@ void main() {
     });
 
     test('Should notify observers when a single item operation is updated', () {
-      final expectedOperation = Operation.operating;
+      final expectedOperation = Operation.update;
 
       listData.add(singleItem);
 
@@ -404,7 +404,7 @@ void main() {
     test(
       'operation flag methods for ListData should behave as default expected',
       () {
-        expect(listData.isOperating, isFalse);
+        expect(listData.isAnyOperation, isFalse);
 
         listData.operation = Operation.create;
         expect(listData.isCreating, isTrue);
@@ -441,11 +441,11 @@ void main() {
           isDeletingStrategy: overrideFunc,
           isUpdatingStrategy: overrideFunc,
           isFetchingStrategy: overrideFunc,
-          isOperatingStrategy: overrideFunc,
+          isAnyOperationStrategy: overrideFunc,
           hasCustomOperationStrategy: overrideFunc,
         );
 
-        expect(listData.isOperating, isFalse);
+        expect(listData.isAnyOperation, isFalse);
 
         listData.operation = Operation.create;
         expect(listData.isCreating, isFalse);
@@ -470,7 +470,7 @@ void main() {
       'ListData should dispatch correct event when operation updated',
       () {
         listData.operation = Operation.fetch;
-        listData.operation = Operation.operating;
+        listData.operation = Operation.update;
 
         testListener.expectNthDispatch(
           1,
@@ -479,7 +479,7 @@ void main() {
 
         testListener.expectNthDispatch(
           2,
-          (event) => expect(event, OperationEvent(Operation.operating)),
+          (event) => expect(event, OperationEvent(Operation.update)),
         );
 
         expect(testListener.timesDispatched, 2);

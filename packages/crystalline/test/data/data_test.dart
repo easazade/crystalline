@@ -162,11 +162,11 @@ void main() {
     );
 
     test(
-      'data.isOperating should return true when operation is not Operation.none',
+      'data.isAnyOperation should return true when operation is not Operation.none',
       () {
-        expect(data.isOperating, isFalse);
+        expect(data.isAnyOperation, isFalse);
         data.operation = Operation('custom');
-        expect(data.isOperating, isTrue);
+        expect(data.isAnyOperation, isTrue);
       },
     );
 
@@ -230,7 +230,7 @@ void main() {
         final errorMsg = 'some error message';
         final errorId = 'ERR-10';
         final causeOfError = Operation.delete;
-        final operation = Operation.operating;
+        final operation = Operation.update;
 
         data.value = value;
         data.failure = Failure(errorMsg, id: errorId, cause: causeOfError);
@@ -427,13 +427,12 @@ void main() {
     });
 
     test('should dispatch an OperationEvent when operation updated', () {
-      final newOperation = Operation.operating;
-      data.operation = newOperation;
+      data.operation = Operation('upload-image');
 
       expect(testListener.timesDispatched, 1);
       testListener.expectNthDispatch(
         1,
-        (event) => expect(event, OperationEvent(newOperation)),
+        (event) => expect(event, OperationEvent(Operation('upload-image'))),
       );
     });
 

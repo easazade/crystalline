@@ -73,12 +73,11 @@ void main() {
                 onValue: (context, data) => Text(data.value),
                 onNoValue: (context, data) => Text('data has no value'),
                 onCreate: (context, data) => Text(data.operation.name),
-                onOperate: (context, data) => Text(data.operation.name),
                 onFetch: (context, data) => Text(data.operation.name),
                 onDelete: (context, data) => Text(data.operation.name),
                 onFailure: (context, data) => Text(data.failure.message),
                 onUpdate: (context, data) => Text(data.operation.name),
-                onCustomOperation: (context, data) => Text(data.operation.name),
+                onAnyOperation: (context, data) => Text(data.operation.name),
                 orElse: (context, data) => Text('or else'),
               );
             },
@@ -92,10 +91,6 @@ void main() {
       data.value = 'Hello';
       await tester.pumpAndSettle();
       expect(find.text('Hello'), matchers.findsOneWidget);
-
-      data.operation = Operation.operating;
-      await tester.pumpAndSettle();
-      expect(find.text(Operation.operating.name), matchers.findsOneWidget);
 
       data.operation = Operation.create;
       await tester.pumpAndSettle();
@@ -140,12 +135,11 @@ void main() {
                 onValue: (context, data) => Text(data.value),
                 onNoValue: (context, data) => Text('data has no value'),
                 onCreate: (context, data) => Text(data.operation.name),
-                onOperate: (context, data) => Text(data.operation.name),
                 onFetch: (context, data) => Text(data.operation.name),
                 onDelete: (context, data) => Text(data.operation.name),
                 onFailure: (context, data) => Text(data.failure.message),
                 onUpdate: (context, data) => Text(data.operation.name),
-                onCustomOperation: (context, data) => Text(data.operation.name),
+                onAnyOperation: (context, data) => Text(data.operation.name),
                 orElse: (context, data) => Text('or else'),
               ),
             );
@@ -160,11 +154,6 @@ void main() {
       rebuildParent();
       await tester.pumpAndSettle();
       expect(find.text('Hello'), matchers.findsOneWidget);
-
-      data.operation = Operation.operating;
-      rebuildParent();
-      await tester.pumpAndSettle();
-      expect(find.text(Operation.operating.name), matchers.findsOneWidget);
 
       data.operation = Operation.create;
       rebuildParent();
@@ -214,7 +203,6 @@ void main() {
             onValue: (context, data) => Text(data.value),
             onNoValue: (context, data) => Text('data has no value'),
             onCreate: (context, data) => Text(data.operation.name),
-            onOperate: (context, data) => Text(data.operation.name),
             onFetch: (context, data) => Text(data.operation.name),
             onDelete: (context, data) => Text(data.operation.name),
             onFailure: (context, data) => Text(data.failure.message),
@@ -228,10 +216,6 @@ void main() {
       expect(find.text('data has no value'), matchers.findsOneWidget);
 
       data.value = 'Hello';
-      await tester.pumpAndSettle();
-      expect(find.text('data has no value'), matchers.findsOneWidget);
-
-      data.operation = Operation.operating;
       await tester.pumpAndSettle();
       expect(find.text('data has no value'), matchers.findsOneWidget);
 
@@ -258,7 +242,7 @@ void main() {
   );
 
   testWidgets(
-    'WhenDataBuilder should update widget when operating when data.operation property is updated '
+    'WhenDataBuilder should update widget when data.operation property is updated '
     'and other operation callbacks are null',
     (tester) async {
       await tester.pumpWidget(
@@ -270,7 +254,7 @@ void main() {
                 data: data,
                 onValue: (context, data) => Text(data.value),
                 onNoValue: (context, data) => Text('data has no value'),
-                onOperate: (context, data) => Text('operating'),
+                onAnyOperation: (context, data) => Text('operating'),
                 orElse: (context, data) => Text('or else'),
                 // onCreate: (context, data) => Text(data.operation.name),
                 // onFetch: (context, data) => Text(data.operation.name),
@@ -289,10 +273,6 @@ void main() {
       data.value = 'Hello';
       await tester.pumpAndSettle();
       expect(find.text('Hello'), matchers.findsOneWidget);
-
-      data.operation = Operation.operating;
-      await tester.pumpAndSettle();
-      expect(find.text('operating'), matchers.findsOneWidget);
 
       data.operation = Operation.create;
       await tester.pumpAndSettle();
@@ -328,7 +308,7 @@ void main() {
               return WhenDataBuilder<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
-                onOperate: (context, data) => Text('operating'),
+                onAnyOperation: (context, data) => Text('operating'),
                 orElse: (context, data) => Text('or else'),
               );
             },
@@ -342,10 +322,6 @@ void main() {
       data.value = 'Hello';
       await tester.pumpAndSettle();
       expect(find.text('Hello'), matchers.findsOneWidget);
-
-      data.operation = Operation.operating;
-      await tester.pumpAndSettle();
-      expect(find.text('operating'), matchers.findsOneWidget);
 
       data.operation = Operation.create;
       await tester.pumpAndSettle();
@@ -385,7 +361,7 @@ void main() {
               return WhenDataBuilder<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
-                onOperate: (context, data) => Text('operating'),
+                onAnyOperation: (context, data) => Text('operating'),
                 orElse: (context, data) => Text('or else'),
               );
             },
@@ -399,10 +375,6 @@ void main() {
       data.value = 'Hello';
       await tester.pumpAndSettle();
       expect(find.text('Hello'), matchers.findsOneWidget);
-
-      data.operation = Operation.operating;
-      await tester.pumpAndSettle();
-      expect(find.text('operating'), matchers.findsOneWidget);
 
       data.operation = Operation.create;
       await tester.pumpAndSettle();
@@ -444,7 +416,7 @@ void main() {
               return WhenDataBuilder<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
-                onOperate: (context, data) => Text('operating'),
+                onAnyOperation: (context, data) => Text('operating'),
                 orElse: (context, data) => Text('or else'),
                 onFailure: (context, data) => Text(data.failure.message),
               );
@@ -463,10 +435,6 @@ void main() {
       data.failure = failure;
       await tester.pumpAndSettle();
       expect(find.text(failure.message), matchers.findsOneWidget);
-
-      data.operation = Operation.operating;
-      await tester.pumpAndSettle();
-      expect(find.text('operating'), matchers.findsOneWidget);
 
       data.operation = Operation.none;
       await tester.pumpAndSettle();

@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
         title: WhenDataBinder(
           data: homeStore.title,
           onValue: (context, data) => Text(data.value),
-          onOperate: (context, data) => const SizedBox(
+          onAnyOperation: (context, data) => const SizedBox(
             height: 14,
             width: 14,
             child: CircularProgressIndicator(
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text('${data.value}'),
               ),
             ),
-            onOperate: (context, data) => const SizedBox(
+            onAnyOperation: (context, data) => const SizedBox(
               height: 54,
               width: 54,
               child: Row(
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                   child: Text('${data.value}'),
                 ),
               ),
-              onOperate: (context, data) => const SizedBox(
+              onAnyOperation: (context, data) => const SizedBox(
                 height: 54,
                 width: 54,
                 child: Row(
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                   child: Text('${data.value}'),
                 ),
               ),
-              onOperate: (context, data) => const SizedBox(
+              onAnyOperation: (context, data) => const SizedBox(
                 height: 54,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
               data: homeStore,
               builder: (context, _) {
                 print('home store being rebuilt');
-                if (homeStore.isOperating) {
+                if (homeStore.isAnyOperation) {
                   return const Text(
                     'on of required data in Home Store'
                     ' has null value aka not available',
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             WhenDataBinder(
               data: homeStore,
               onValue: (context, _) => const Text('home store available'),
-              onOperate: (context, _) => const Text(
+              onAnyOperation: (context, _) => const Text(
                 'on of required data in Home Store'
                 ' has null value aka not available',
               ),

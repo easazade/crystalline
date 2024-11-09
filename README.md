@@ -18,7 +18,7 @@ Crystalline is a comprehensive state management library designed to simplify and
 
 - **Shared State:** Seamlessly share states or parts of states across multiple `Stores` without compromising loose coupling or testability.
 
-- **Custom Operations:** Crystalline supports generic operations like update, delete, operating, create and none. However, it also allows you to easily define any custom operations tailored to specific scenarios, such as "request access right", "apply coupon" and so forth.
+- **Custom Operations:** Crystalline supports generic operations CRUD operations. However, it also allows you to easily define any custom operations tailored to specific scenarios, such as "request access right", "apply coupon" and so forth.
 
 ## Some examples
 

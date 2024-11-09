@@ -9,7 +9,7 @@ class HomeStore extends Store {
   final Data<int> number = Data(value: 0);
 
   Future changeTitle() async {
-    title.operation = Operation.operating;
+    title.operation = Operation.update;
     notifyListeners();
 
     await Future.delayed(const Duration(seconds: 1));

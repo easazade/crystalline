@@ -8,12 +8,11 @@ class WhenDataBinder<T, D extends Data<T>> extends StatefulWidget {
     required this.data,
     required this.onValue,
     this.onNoValue,
-    this.onOperate,
+    this.onAnyOperation,
     this.onUpdate,
     this.onCreate,
     this.onDelete,
     this.onFetch,
-    this.onCustomOperation,
     this.onFailure,
     this.orElse,
     this.fallback = const SizedBox(),
@@ -24,12 +23,11 @@ class WhenDataBinder<T, D extends Data<T>> extends StatefulWidget {
   final DataWidgetBuilder<T, D> onValue;
   final DataWidgetBuilder<T, D>? onNoValue;
 
-  final DataWidgetBuilder<T, D>? onOperate;
+  final DataWidgetBuilder<T, D>? onAnyOperation;
   final DataWidgetBuilder<T, D>? onCreate;
   final DataWidgetBuilder<T, D>? onDelete;
   final DataWidgetBuilder<T, D>? onFetch;
   final DataWidgetBuilder<T, D>? onUpdate;
-  final DataWidgetBuilder<T, D>? onCustomOperation;
 
   final DataWidgetBuilder<T, D>? onFailure;
   final DataWidgetBuilder<T, D>? orElse;
@@ -37,8 +35,7 @@ class WhenDataBinder<T, D extends Data<T>> extends StatefulWidget {
   final Widget fallback;
 
   @override
-  State<WhenDataBinder<T, D>> createState() =>
-      _WhenDataBinderState<T, D>();
+  State<WhenDataBinder<T, D>> createState() => _WhenDataBinderState<T, D>();
 }
 
 class _WhenDataBinderState<T, D extends Data<T>>
@@ -78,11 +75,8 @@ class _WhenDataBinderState<T, D extends Data<T>>
     if (_data.isUpdating && widget.onUpdate != null) {
       return widget.onUpdate!(context, _data);
     }
-    if (_data.hasCustomOperation && widget.onCustomOperation != null) {
-      return widget.onCustomOperation!(context, _data);
-    }
-    if (_data.isOperating && widget.onOperate != null) {
-      return widget.onOperate!(context, _data);
+    if (_data.isAnyOperation && widget.onAnyOperation != null) {
+      return widget.onAnyOperation!(context, _data);
     }
     if (_data.hasFailure && widget.onFailure != null) {
       return widget.onFailure!(context, _data);

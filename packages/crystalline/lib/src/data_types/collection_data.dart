@@ -273,7 +273,7 @@ class ListData<T> extends CollectionData<T> {
     Operation operation = Operation.none,
     Failure? failure,
     List<dynamic>? sideEffects,
-    this.isOperatingStrategy,
+    this.isAnyOperationStrategy,
     this.hasFailureStrategy,
     this.hasValueStrategy,
     this.hasNoValueStrategy,
@@ -281,7 +281,6 @@ class ListData<T> extends CollectionData<T> {
     this.isDeletingStrategy,
     this.isFetchingStrategy,
     this.isUpdatingStrategy,
-    this.hasCustomOperationStrategy,
   }) {
     this.operation = operation;
     this.failure = failure;
@@ -293,7 +292,7 @@ class ListData<T> extends CollectionData<T> {
   @override
   final List<Data<T>> items;
 
-  final _DataPredicate<T> isOperatingStrategy;
+  final _DataPredicate<T> isAnyOperationStrategy;
   final _DataPredicate<T> hasFailureStrategy;
   final _DataPredicate<T> hasValueStrategy;
   final _DataPredicate<T> hasNoValueStrategy;
@@ -301,12 +300,11 @@ class ListData<T> extends CollectionData<T> {
   final _DataPredicate<T> isDeletingStrategy;
   final _DataPredicate<T> isFetchingStrategy;
   final _DataPredicate<T> isUpdatingStrategy;
-  final _DataPredicate<T> hasCustomOperationStrategy;
 
   @override
-  bool get isOperating {
-    return isOperatingStrategy?.call(value, operation, failureOrNull) ??
-        super.isOperating;
+  bool get isAnyOperation {
+    return isAnyOperationStrategy?.call(value, operation, failureOrNull) ??
+        super.isAnyOperation;
   }
 
   @override
@@ -352,18 +350,12 @@ class ListData<T> extends CollectionData<T> {
   }
 
   @override
-  bool get hasCustomOperation {
-    return hasCustomOperationStrategy?.call(value, operation, failureOrNull) ??
-        super.hasCustomOperation;
-  }
-
-  @override
   ListData<T> copy() => ListData(
         items.toList().map((data) => data.copy()).toList(),
         operation: this.operation,
         failure: this.failureOrNull,
         sideEffects: sideEffects.toList(),
-        isOperatingStrategy: isOperatingStrategy,
+        isAnyOperationStrategy: isAnyOperationStrategy,
         hasFailureStrategy: hasFailureStrategy,
         hasValueStrategy: hasValueStrategy,
         hasNoValueStrategy: hasNoValueStrategy,
@@ -371,7 +363,6 @@ class ListData<T> extends CollectionData<T> {
         isDeletingStrategy: isDeletingStrategy,
         isFetchingStrategy: isFetchingStrategy,
         isUpdatingStrategy: isUpdatingStrategy,
-        hasCustomOperationStrategy: hasCustomOperationStrategy,
       );
 
   @override

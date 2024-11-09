@@ -45,10 +45,9 @@ void main() {
             onNoValue: (context, data) => Text('onNoValue'),
             onCreate: (context, data) => Text(data.operation.name),
             onFetch: (context, data) => Text(data.operation.name),
-            onOperate: (context, data) => Text(data.operation.name),
+            onAnyOperation: (context, data) => Text(data.operation.name),
             onDelete: (context, data) => Text(data.operation.name),
             onUpdate: (context, data) => Text(data.operation.name),
-            onCustomOperation: (context, data) => Text(data.operation.name),
             onFailure: (context, data) => Text(data.failure.message),
           ),
         ),
@@ -71,15 +70,10 @@ void main() {
       expect(find.text('fetch'), findsOneWidget);
       expect(find.text('create'), findsNothing);
 
-      data.operation = Operation.operating;
-      await tester.pumpAndSettle();
-      expect(find.text('operating'), findsOneWidget);
-      expect(find.text('fetch'), findsNothing);
-
       data.operation = Operation.delete;
       await tester.pumpAndSettle();
       expect(find.text('delete'), findsOneWidget);
-      expect(find.text('operating'), findsNothing);
+      expect(find.text('fetch'), findsNothing);
 
       data.operation = Operation.update;
       await tester.pumpAndSettle();
@@ -110,7 +104,7 @@ void main() {
           child: WhenDataBinder(
             data: data,
             onValue: (context, data) => Text(data.value),
-            onOperate: (context, data) => Text(data.operation.name),
+            onAnyOperation: (context, data) => Text(data.operation.name),
           ),
         ),
       );

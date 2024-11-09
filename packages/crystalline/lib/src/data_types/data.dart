@@ -5,7 +5,6 @@ import 'package:crystalline/src/exceptions.dart';
 import 'package:meta/meta.dart';
 
 class Operation {
-  static const Operation operating = Operation('operating');
   static const Operation update = Operation('update');
   static const Operation delete = Operation('delete');
   static const Operation fetch = Operation('fetch');
@@ -13,7 +12,6 @@ class Operation {
   static const Operation none = Operation('none');
 
   static final defaultOperations = [
-    operating,
     update,
     delete,
     fetch,
@@ -118,7 +116,7 @@ abstract class ReadableData<T> {
 
   bool get hasNoValue;
 
-  bool get isOperating;
+  bool get isAnyOperation;
 
   bool get isUpdating;
 
@@ -310,7 +308,7 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
   bool get hasCustomOperation => _operation.isCustom;
 
   @override
-  bool get isOperating => _operation != Operation.none;
+  bool get isAnyOperation => _operation != Operation.none;
 
   @override
   bool valueEqualsTo(T? otherValue) => _value == otherValue;

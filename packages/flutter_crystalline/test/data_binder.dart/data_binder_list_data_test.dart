@@ -81,7 +81,7 @@ void main() async {
                   if (items.sideEffects.isNotEmpty)
                     Text(items.sideEffects.first.toString()),
                   ...items.map((item) {
-                    if (item.isOperating)
+                    if (item.isAnyOperation)
                       return CircularProgressIndicator();
                     else
                       return Text(item.value);

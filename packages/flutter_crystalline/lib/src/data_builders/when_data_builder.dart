@@ -8,12 +8,11 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     required this.data,
     required this.onValue,
     this.onNoValue,
-    this.onOperate,
     this.onUpdate,
     this.onCreate,
     this.onDelete,
     this.onFetch,
-    this.onCustomOperation,
+    this.onAnyOperation,
     this.onFailure,
     this.orElse,
     this.fallback = const SizedBox(),
@@ -24,12 +23,11 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
   final DataWidgetBuilder<T, D> onValue;
   final DataWidgetBuilder<T, D>? onNoValue;
 
-  final DataWidgetBuilder<T, D>? onOperate;
   final DataWidgetBuilder<T, D>? onCreate;
   final DataWidgetBuilder<T, D>? onDelete;
   final DataWidgetBuilder<T, D>? onFetch;
   final DataWidgetBuilder<T, D>? onUpdate;
-  final DataWidgetBuilder<T, D>? onCustomOperation;
+  final DataWidgetBuilder<T, D>? onAnyOperation;
 
   final DataWidgetBuilder<T, D>? onFailure;
 
@@ -53,11 +51,8 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
     if (data.isUpdating && onUpdate != null) {
       return onUpdate!(context, data);
     }
-    if (data.hasCustomOperation && onCustomOperation != null) {
-      return onCustomOperation!(context, data);
-    }
-    if (data.isOperating && onOperate != null) {
-      return onOperate!(context, data);
+    if (data.isAnyOperation && onAnyOperation != null) {
+      return onAnyOperation!(context, data);
     }
     if (data.hasFailure && onFailure != null) {
       return onFailure!(context, data);
