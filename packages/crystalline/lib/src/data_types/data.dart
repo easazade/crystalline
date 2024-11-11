@@ -146,7 +146,7 @@ abstract class ModifiableData<T> {
 
   void removeSideEffect(dynamic sideEffect);
 
-  void clearAllSideEffects();
+  void removeAllSideEffects();
 
   void modify(void Function(Data<T> data) fn);
 
@@ -271,7 +271,7 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
   }
 
   @override
-  void clearAllSideEffects() {
+  void removeAllSideEffects() {
     _sideEffects.clear();
     dispatchEvent(SideEffectsUpdated(_sideEffects));
     notifyObservers();

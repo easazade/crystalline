@@ -19,7 +19,7 @@ class OperationData extends Data<void> {
       (origin, mutated) {
         mutated.failure = origin.failureOrNull;
         mutated.operation = origin.operation;
-        mutated.clearAllSideEffects();
+        mutated.removeAllSideEffects();
         mutated.addAllSideEffects(origin.sideEffects);
       },
     );
@@ -30,7 +30,7 @@ class OperationData extends Data<void> {
     disallowNotify();
     operation = data.operation;
     failure = data.failureOrNull;
-    clearAllSideEffects();
+    removeAllSideEffects();
     addAllSideEffects(data.sideEffects);
     allowNotify();
     notifyObservers();

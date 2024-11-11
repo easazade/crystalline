@@ -319,7 +319,7 @@ void main() {
       data.addAllSideEffects(sideEffects);
       expect(data.sideEffects.length, 4);
 
-      data.clearAllSideEffects();
+      data.removeAllSideEffects();
       expect(data.sideEffects, isEmpty);
       expect(testObserver.timesUpdated, 2);
     });

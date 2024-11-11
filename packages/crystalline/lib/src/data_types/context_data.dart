@@ -57,7 +57,7 @@ class ContextData<T, C> extends Data<T> {
     operation = data.operation;
     failure = data.failureOrNull;
     context = data.context;
-    clearAllSideEffects();
+    removeAllSideEffects();
     addAllSideEffects(data.sideEffects);
     allowNotify();
     notifyObservers();
