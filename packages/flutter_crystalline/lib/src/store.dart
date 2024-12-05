@@ -1,9 +1,9 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:flutter/widgets.dart';
 
-abstract class Store extends CollectionData<Object?> with ChangeNotifier {
-  @override
-  List<Data<Object?>> get items => states;
+abstract class Store extends Data<void> with ChangeNotifier {
+  // ignore: unused_field
+  late final ListData<Object?> _statesList = ListData(states);
 
   List<Data<Object?>> get states;
 
