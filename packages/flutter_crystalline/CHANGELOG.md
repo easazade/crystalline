@@ -1,3 +1,20 @@
+## 0.6.0
+
+- **REFACTOR**(flutter_crystalline): Rewrite Store.
+- **REFACTOR**: Rename Operation.fetch to Operation.read to match associate with term CRUD.
+- **REFACTOR**(crystalline): Remove Operation.operating state to make Operation class cleaner.
+- **REFACTOR**(flutter_crystalline): Introduce DataBinder widgets.
+- **REFACTOR**(flutter_crystalline): Add states method to Store class.
+- **FIX**(flutter_crystalline): Fix lint issues.
+- **FIX**(flutter_crystalline): Fix missing exports & Update example.
+- **FEAT**(flutter_crystalline): Add more tests for WhenDataBinder.
+- **FEAT**(flutter_crystalline): Add tests for WhenDataBinder.
+- **FEAT**(flutter_crystalline): Add storeName getter to Store class.
+- **FEAT**(flutter_crystalline): Update tests.
+- **FEAT**(flutter_crystalline): Add StoreBuilder and Update Store.
+- **FEAT**(crystalline): Add global logging for all data objects changes.
+- **FEAT**: Add CrystallineGlobalConfig and CrystallineLogger.
+
 ## 0.5.1
 
 - Update crystalline version to to v0.5.1
