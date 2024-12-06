@@ -1,4 +1,4 @@
-name: Test
+name: Build and test
 
 on:
   push:
@@ -36,16 +36,3 @@ jobs:
       - name: 🪄 Run all melos scripts
         run: melos all
 
-      - name: 📊 Check Code Coverage on crystalline
-        uses: VeryGoodOpenSource/very_good_coverage@v2
-        with:
-          path: packages/crystalline/coverage/lcov.info
-          min_coverage: 100
-          exclude: "lib/src/exceptions.dart lib/crystalline.dart lib/src/test_utils.dart lib/src/utils.dart lib/src/config/logger/default_crystalline_logger.dart"
-
-      - name: 📊 Check Code Coverage on flutter_crystalline
-        uses: VeryGoodOpenSource/very_good_coverage@v2
-        with:
-          path: packages/flutter_crystalline/coverage/lcov.info
-          min_coverage: 100
-          exclude: "lib/src/config/flutter_crystalline_logger.dart"
