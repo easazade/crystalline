@@ -3,7 +3,7 @@ name: Test Coverage
 on:
   push:
   pull_request:
-    
+
 jobs:
   test:
     name: "${{ matrix.os }}"
@@ -28,6 +28,12 @@ jobs:
           flutter-version: 3.24.5
           cache: true
           channel: "stable"
+
+      - name: 🍏 Install melos
+        run: dart pub global activate melos 3.0.1
+  
+      - name: 🪄 Run all melos scripts
+        run: melos all
 
       - name: 📊 Check Code Coverage on crystalline
         uses: VeryGoodOpenSource/very_good_coverage@v2
