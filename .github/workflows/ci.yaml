@@ -26,7 +26,7 @@ jobs:
       - name: 🐦 Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: latest
+          flutter-version: 3.24.5
           cache: true
           channel: "stable"
 
