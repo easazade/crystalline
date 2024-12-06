@@ -28,7 +28,6 @@ Crystalline is a comprehensive state management library designed to simplify and
 
 - [ ] create a doc for scenarios and use cases added in example
 - [ ] define crystal-clear state objects across all state management libraries.
-- [ ] add badges including coverage badge. checkout crystalline
 - [ ] refer to built in events as semantic events as they are semantics. create a table for all semantic events
 - [ ] State definition library that makes your states, reflective and crystal clear, no matter what state management library you use.
 - [ ] Checkout actual use-cases in code where crystalline saves you
