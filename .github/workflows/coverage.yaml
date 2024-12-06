@@ -33,7 +33,10 @@ jobs:
         run: dart pub global activate melos 3.0.1
   
       - name: 🪄 Run all melos scripts
-        run: melos all
+        run: melos bootstrap
+
+      - name: 🪄 Run all melos scripts
+        run: melos test
 
       - name: 📊 Check Code Coverage on crystalline
         uses: VeryGoodOpenSource/very_good_coverage@v2
