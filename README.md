@@ -1,5 +1,7 @@
 # Crystalline
 
+<p align="center"> <img alt="CI Build Checks" src="https://img.shields.io/github/actions/workflow/status/easazade/crystalline/ci.yaml?branch=main&style=flat-square"> <img alt="Pub Version" src="https://img.shields.io/pub/v/crystalline?style=flat-square"> <img alt="Pub Popularity" src="https://img.shields.io/pub/popularity/crystalline?style=flat-square"> <img alt="Pub Points" src="https://img.shields.io/pub/points/crystalline?style=flat-square"> <img alt="Pub Likes" src="https://img.shields.io/pub/likes/crystalline?style=flat-square"> <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/easazade/crystalline?style=flat-square"> <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/easazade/crystalline?style=flat-square"> <img alt="Pub Publisher" src="https://img.shields.io/pub/publisher/crystalline?style=flat-square"> <img alt="GitHub" src="https://img.shields.io/github/license/easazade/crystalline?style=flat-square"> </p>
+
 **Crystalline:** Simple yet Powerful state management solution
 
 Crystalline is a comprehensive state management library designed to simplify and enhance your state management practices. By providing a structured approach to defining state objects, Crystalline helps you build more robust, maintainable, and testable applications.
@@ -26,7 +28,7 @@ Crystalline is a comprehensive state management library designed to simplify and
 
 - [ ] create a doc for scenarios and use cases added in example
 - [ ] define crystal-clear state objects across all state management libraries.
-- [ ] add badges including coverage badge. checkout faker_x
+- [ ] add badges including coverage badge. checkout crystalline
 - [ ] refer to built in events as semantic events as they are semantics. create a table for all semantic events
 - [ ] State definition library that makes your states, reflective and crystal clear, no matter what state management library you use.
 - [ ] Checkout actual use-cases in code where crystalline saves you
