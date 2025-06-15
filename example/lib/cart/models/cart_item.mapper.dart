@@ -59,7 +59,8 @@ mixin CartItemMappable {
   }
 
   CartItemCopyWith<CartItem, CartItem, CartItem> get copyWith =>
-      _CartItemCopyWithImpl(this as CartItem, $identity, $identity);
+      _CartItemCopyWithImpl<CartItem, CartItem>(
+          this as CartItem, $identity, $identity);
   @override
   String toString() {
     return CartItemMapper.ensureInitialized().stringifyValue(this as CartItem);
@@ -79,7 +80,7 @@ mixin CartItemMappable {
 
 extension CartItemValueCopy<$R, $Out> on ObjectCopyWith<$R, CartItem, $Out> {
   CartItemCopyWith<$R, CartItem, $Out> get $asCartItem =>
-      $base.as((v, t, t2) => _CartItemCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _CartItemCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class CartItemCopyWith<$R, $In extends CartItem, $Out>
@@ -106,5 +107,5 @@ class _CartItemCopyWithImpl<$R, $Out>
   @override
   CartItemCopyWith<$R2, CartItem, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _CartItemCopyWithImpl($value, $cast, t);
+      _CartItemCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
