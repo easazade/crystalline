@@ -1,9 +1,7 @@
 import 'package:example/cart/cart_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crystalline/flutter_crystalline.dart';
 
 void main() {
-  CrystallineGlobalConfig.logger = FlutterCrystallineLogger();
   runApp(const MyApp());
 }
 
