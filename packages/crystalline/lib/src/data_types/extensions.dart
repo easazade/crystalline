@@ -1,4 +1,3 @@
-
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/operation_data.dart';
 

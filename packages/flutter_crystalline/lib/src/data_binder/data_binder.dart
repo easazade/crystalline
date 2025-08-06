@@ -1,4 +1,3 @@
-
 import 'package:crystalline/crystalline.dart';
 import 'package:flutter/material.dart';
 
@@ -16,8 +15,7 @@ class DataBinder<T, D extends Data<T>> extends StatefulWidget {
   State<DataBinder<T, D>> createState() => DataBinderState<T, D>();
 }
 
-class DataBinderState<T, D extends Data<T>>
-    extends State<DataBinder<T, D>> {
+class DataBinderState<T, D extends Data<T>> extends State<DataBinder<T, D>> {
   late D _data;
 
   late void Function() _observer = () => setState(() {});

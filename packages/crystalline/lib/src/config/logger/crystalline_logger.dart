@@ -4,7 +4,6 @@ import 'package:crystalline/src/data_types/failure.dart';
 abstract class CrystallineLogger {
   String redText(dynamic object);
 
-
   String greenText(dynamic object);
 
   String yellowText(dynamic object);
