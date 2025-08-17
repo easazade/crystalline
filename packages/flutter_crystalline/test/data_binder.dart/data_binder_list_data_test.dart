@@ -10,7 +10,7 @@ void main() async {
 
   setUp(() async {
     items = ['Kian', 'Reza', 'Hasan', 'Mohsen', 'Mohammad'];
-    listData = ListData<String>(items.mapToData);
+    listData = ListData<String>(items.mapToDataList());
   });
 
   testWidgets(

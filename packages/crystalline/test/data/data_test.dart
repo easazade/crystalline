@@ -346,7 +346,7 @@ void main() {
       'data.mapToData extension should convert an Iterable<T> to a List<Data<T>>',
       () {
         final list = ['alireza', 'mohammad', 'sobhan', 'reza'];
-        final dataList = list.mapToData;
+        final dataList = list.mapToDataList();
 
         expect(list.length, dataList.length);
         final backToList = dataList.map((d) => d.value).toList();

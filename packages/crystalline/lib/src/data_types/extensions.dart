@@ -10,5 +10,5 @@ extension CrystallineDataX<T> on Data<T> {
 }
 
 extension CrystallineIterableX<T> on Iterable<T> {
-  List<Data<T>> get mapToData => map((e) => Data(value: e)).toList();
+  List<Data<T>> mapToDataList() => map((e) => Data(value: e)).toList();
 }
