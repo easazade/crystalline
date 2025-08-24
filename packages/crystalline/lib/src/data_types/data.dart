@@ -27,6 +27,15 @@ class Operation {
 
   @override
   String toString() => 'Operation.$name';
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Operation) {
+      return false;
+    } else {
+      return name == other.name;
+    }
+  }
 }
 
 class Event {

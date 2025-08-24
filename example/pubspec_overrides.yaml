@@ -1,5 +1,7 @@
 # melos_managed_dependency_overrides: crystalline,flutter_crystalline
 dependency_overrides:
+  crystalline_builder:
+    path: ../packages/crystalline_builder
   crystalline:
     path: ../packages/crystalline
   flutter_crystalline:

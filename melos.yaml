@@ -7,8 +7,8 @@ command:
     linkToCommits: false     # disables commit links in generated changelog
 
 packages:
-  - packages/**
   - example
+  - packages/**
 
 # use flutter version set in .fvmrc for development and running melos scripts
 scripts:
@@ -36,3 +36,6 @@ scripts:
     run: |
       melos exec --ignore="*example*" -c 1 -- flutter test --coverage
     description: Run all tests .
+
+  gen:
+    run: melos exec --scope="example" -c 1 -- dart run build_runner build

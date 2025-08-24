@@ -13,3 +13,4 @@ export 'src/data_types/operation_data.dart';
 export 'src/exceptions.dart';
 export 'src/mutators/mutators.dart';
 export 'src/test_utils.dart';
+export 'annotations.dart';

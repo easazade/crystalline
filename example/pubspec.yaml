@@ -4,24 +4,24 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.4 <3.0.0'
+  sdk: ^3.9.0
+  flutter: 3.35.1
 
 dependencies:
   flutter:
     sdk: flutter
 
   flutter_crystalline:
-  cupertino_icons: ^1.0.2
-  dart_mappable: ^4.3.0
+  cupertino_icons: ^1.0.8
+  dart_mappable: ^4.6.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  very_good_analysis: ^4.0.0+1
-  flutter_lints: ^2.0.0
   build_runner:
-  dart_mappable_builder: ^4.3.0
+  crystalline_builder:
+  flutter_lints: ^6.0.0
+  dart_mappable_builder: ^4.6.0
 
 flutter:
-
   uses-material-design: true
