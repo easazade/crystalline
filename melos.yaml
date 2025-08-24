@@ -2,7 +2,9 @@ name: crystalline_project
 
 command:
   bootstrap:
-    usePubspecOverrides: true
+    runPubGetInParallel: true
+  version:
+    linkToCommits: false     # disables commit links in generated changelog
 
 packages:
   - packages/**
