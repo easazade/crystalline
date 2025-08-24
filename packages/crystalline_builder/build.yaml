@@ -1,0 +1,14 @@
+builders:
+  crystalline:
+    import: "package:crystalline_builder/crystalline_builder.dart"
+    builder_factories: ["crystallineBuilder"]
+    auto_apply: dependents
+    build_to: source
+    build_extensions:
+      ".dart": [".crystalline.dart"]
+    applies_builders:
+      - source_gen|combining_builder
+    # defaults:
+    #   generate_for:
+    #     - "lib/**"
+

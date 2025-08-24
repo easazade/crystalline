@@ -1,15 +1,22 @@
 name: crystalline_builder
-description: A sample command-line application.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+description: builder for crystalline
+version: 0.6.0
 
 environment:
-  sdk: ^3.9.0
+  sdk: ">=3.0.3 <4.0.0"
 
-# Add regular dependencies here.
 dependencies:
-  path: ^1.9.0
+  crystalline:
+  flutter_crystalline:
+  analyzer: ^7.7.1
+  source_gen: ^3.0.0
+  build: ^3.0.0
+  dart_style: ^3.1.1
+  glob: ^2.1.2
+  recase: ^4.1.0
+  collection: ^1.19.1
 
 dev_dependencies:
-  lints: ^6.0.0
-  test: ^1.25.6
+  build_runner: ^2.6.0
+  lints: ^5.0.0
+  test: ^1.24.0
