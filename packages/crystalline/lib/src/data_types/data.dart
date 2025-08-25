@@ -100,8 +100,10 @@ class RemoveSideEffectEvent extends Event {
   RemoveSideEffectEvent({
     required this.removedSideEffect,
     required this.sideEffects,
-  }) : super(CrystallineGlobalConfig.logger
-            .ellipsize(removedSideEffect.toString(), maxSize: 20));
+  }) : super(CrystallineGlobalConfig.logger.ellipsize(
+          removedSideEffect.toString(),
+          maxSize: 20,
+        ));
 }
 
 abstract class ReadableData<T> {
