@@ -164,6 +164,8 @@ abstract class ModifiableData<T> {
   Future<void> modifyAsync(Future<void> Function(Data<T> data) fn);
 
   void updateFrom(ReadableData<T> data);
+
+  void reset();
 }
 
 abstract class ObservableData<T> implements ReadableData<T> {
@@ -425,6 +427,17 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     }
 
     notifyObservers();
+  }
+
+  /// Resets the Data by setting value & failure to null, sets operation to Operation.none and removes all side-effects
+  @override
+  void reset() {
+    modify((data) {
+      data.value = null;
+      data.operation = Operation.none;
+      data.failure = null;
+      data.removeAllSideEffects();
+    });
   }
 
   /// returns a new instance of data object which is copy of this object.

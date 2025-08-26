@@ -64,6 +64,12 @@ class ContextData<T, C> extends Data<T> {
   }
 
   @override
+  void reset() {
+    _context = null;
+    super.reset();
+  }
+
+  @override
   ContextData<T, C> copy() => ContextData(
         value: valueOrNull,
         failure: failureOrNull,

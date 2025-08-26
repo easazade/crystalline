@@ -236,6 +236,12 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     notifyObservers();
   }
 
+  @override
+  void reset() {
+    items.clear();
+    super.reset();
+  }
+
   void _removeObserversFromItem(Data<T> item) {
     for (var observer in observers) {
       item.removeObserver(observer);
