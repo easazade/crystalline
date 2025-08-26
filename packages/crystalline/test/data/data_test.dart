@@ -244,6 +244,44 @@ void main() {
         expect(string, contains(operation.name));
       },
     );
+
+    test(
+      'Should create and name a data without any issues, the name '
+      'should be printed in toString() result as well',
+      () {
+        final data = Data<int>(name: 'date-of-birth');
+        print(data);
+        expect(data.name, equals('date-of-birth'));
+        expect(data.toString(), contains('date-of-birth'));
+      },
+    );
+
+    test('Should reset data without any issue', () {
+      final dataName = 'string-data';
+      final data = Data<String>(
+        value: 'ali',
+        sideEffects: ['effect1'],
+        operation: Operation.read,
+        failure: Failure('error message'),
+        name: dataName,
+      );
+
+      expect(data.value, 'ali');
+      expect(data.sideEffects.length, equals(1));
+      expect(data.sideEffects, equals(['effect1']));
+      expect(data.operation, Operation.read);
+      expect(data.failureOrNull?.message, 'error message');
+      expect(data.name, dataName);
+
+      data.reset();
+
+      expect(data.hasValue, isFalse);
+      expect(data.sideEffects.isEmpty, isTrue);
+      expect(data.operation, Operation.none);
+      expect(data.hasFailure, isFalse);
+      // the data name should not change on reset. since it is just a name of the data
+      expect(data.name, dataName);
+    });
   });
 
   group('bulk -', () {
@@ -591,17 +629,6 @@ void main() {
           4,
           (event) => expect(event, SideEffectsUpdated(['effect'])),
         );
-      },
-    );
-
-    test(
-      'Should create and name a data without any issues, the name '
-      'should be printed in toString() result as well',
-      () {
-        final data = Data<int>(name: 'date-of-birth');
-        print(data);
-        expect(data.name, equals('date-of-birth'));
-        expect(data.toString(), contains('date-of-birth'));
       },
     );
   });

@@ -238,8 +238,12 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
 
   @override
   void reset() {
-    items.clear();
-    super.reset();
+    modify((collection) {
+      collection.removeAll();
+      collection.operation = Operation.none;
+      collection.failure = null;
+      collection.removeAllSideEffects();
+    });
   }
 
   void _removeObserversFromItem(Data<T> item) {

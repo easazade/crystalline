@@ -75,6 +75,44 @@ void main() {
       expect(removedItem, firstItem);
       expect(testObserver.timesUpdated, 2);
     });
+
+    test(
+        'failure and value flag methods for ListData should behave as default expected',
+        () {
+      expect(listData.hasFailure, isFalse);
+      listData.failure = Failure('oops!');
+      expect(listData.hasFailure, isTrue);
+
+      expect(listData.hasValue, isFalse);
+      expect(listData.hasNoValue, isTrue);
+      listData.add(singleItem);
+      expect(listData.hasValue, isTrue);
+      expect(listData.hasNoValue, isFalse);
+    });
+
+    test('Should reset the ListData without any issues', () {
+      expect(listData.length, 0);
+      listData = ListData(
+        items1,
+        sideEffects: ['effect1'],
+        operation: Operation.read,
+        failure: Failure('error message'),
+      );
+
+      expect(listData.items, items1);
+      expect(listData.sideEffects.length, equals(1));
+      expect(listData.sideEffects, equals(['effect1']));
+      expect(listData.operation, Operation.read);
+      expect(listData.failureOrNull?.message, 'error message');
+
+      listData.reset();
+
+      expect(listData.hasValue, isFalse);
+      expect(listData.items, isEmpty);
+      expect(listData.sideEffects, isEmpty);
+      expect(listData.operation, Operation.none);
+      expect(listData.hasFailure, isFalse);
+    });
   });
 
   group('bulk -', () {
@@ -353,21 +391,6 @@ void main() {
       },
     );
   });
-
-  test(
-    'failure and value flag methods for ListData should behave as default expected',
-    () {
-      expect(listData.hasFailure, isFalse);
-      listData.failure = Failure('oops!');
-      expect(listData.hasFailure, isTrue);
-
-      expect(listData.hasValue, isFalse);
-      expect(listData.hasNoValue, isTrue);
-      listData.add(singleItem);
-      expect(listData.hasValue, isTrue);
-      expect(listData.hasNoValue, isFalse);
-    },
-  );
 
   group('behavior strategies -', () {
     test(
