@@ -1,6 +1,7 @@
 /// Crystalline
 library crystalline;
 
+export 'annotations.dart';
 export 'src/config/global_config.dart';
 export 'src/config/logger/crystalline_logger.dart';
 export 'src/config/logger/default_crystalline_logger.dart';
@@ -12,5 +13,5 @@ export 'src/data_types/failure.dart';
 export 'src/data_types/operation_data.dart';
 export 'src/exceptions.dart';
 export 'src/mutators/mutators.dart';
+export 'src/semantics/side_effects.dart';
 export 'src/test_utils.dart';
-export 'annotations.dart';
