@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/failure.dart';
@@ -524,3 +526,99 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     }
   }
 }
+
+class RefreshData<T> extends Data<T> {
+  RefreshData({
+    T? value,
+    Failure? failure,
+    Operation operation = Operation.none,
+    List<dynamic>? sideEffects,
+    String? name,
+    required Future<RefreshStatus> Function(RefreshData<T> currentData) refresh,
+    this.retryDelay = const Duration(milliseconds: 200),
+    this.maxRetry = 3,
+  })  : _refreshCallback = refresh,
+        super(
+          value: value,
+          failure: failure,
+          operation: operation,
+          sideEffects: sideEffects,
+          name: name,
+        );
+
+  Future<RefreshStatus> Function(RefreshData<T> currentData) _refreshCallback;
+  bool _isRefreshing = false;
+  final Duration retryDelay;
+  final int maxRetry;
+  RefreshStatus _status = RefreshStatus.failed;
+
+  Future<void> refresh({bool onlyOnNoValue = false}) async {
+    Future<RefreshStatus> _tryRefreshCallback() async {
+      RefreshStatus status;
+
+      try {
+        status = await _refreshCallback(this);
+      } catch (e, stack) {
+        status = RefreshStatus.failed;
+        print(e);
+        print(stack);
+      }
+
+      return status;
+    }
+
+    if ((_value == null || onlyOnNoValue == false) && !_isRefreshing) {
+      _isRefreshing = true;
+      _status = await _tryRefreshCallback();
+      if (_status == RefreshStatus.failed) {
+        int retryCount = maxRetry;
+        while (retryCount > 0 && _status == RefreshStatus.failed) {
+          _status = await _tryRefreshCallback();
+          retryCount -= 1;
+        }
+      }
+
+      _isRefreshing = false;
+    }
+  }
+
+  RefreshStatus get status => _status;
+
+  @override
+  bool get hasValue {
+    refresh(onlyOnNoValue: true);
+    return super.hasValue;
+  }
+
+  @override
+  bool get hasNoValue {
+    refresh(onlyOnNoValue: true);
+    return super.hasNoValue;
+  }
+
+  @override
+  T get value {
+    refresh(onlyOnNoValue: true);
+    return super.value;
+  }
+
+  @override
+  T? get valueOrNull {
+    refresh(onlyOnNoValue: true);
+    return super.valueOrNull;
+  }
+
+  @override
+  void addEventListener(bool Function(Event event) listener) {
+    refresh(onlyOnNoValue: true);
+    super.addEventListener(listener);
+  }
+
+  @override
+  void addObserver(void Function() observer) {
+    refresh(onlyOnNoValue: true);
+    super.addObserver(observer);
+  }
+}
+
+enum RefreshStatus { done, failed }
