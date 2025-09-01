@@ -5,16 +5,18 @@ import 'package:crystalline/src/exceptions.dart';
 class ContextData<T, C> extends Data<T> {
   ContextData({
     T? value,
+    C? context,
     Failure? failure,
     Operation operation = Operation.none,
     List<dynamic>? sideEffects,
-    C? context,
+    String? name,
   })  : _context = context,
         super(
           value: value,
           failure: failure,
           operation: operation,
           sideEffects: sideEffects,
+          name: name,
         );
 
   C? _context;
