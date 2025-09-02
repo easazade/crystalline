@@ -1,12 +1,17 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
+import '../test_utils/test_logger.dart';
 import '../utils.dart';
 
 void main() {
   late ContextData<String, ({String job, String car})> contextData;
   late DataTestObserver<String, ContextData<String, ({String job, String car})>>
       testObserver;
+
+ setUpAll(() {
+    CrystallineGlobalConfig.logger = CrystallineTestLogger();
+  });
 
   setUp(() {
     contextData = ContextData();

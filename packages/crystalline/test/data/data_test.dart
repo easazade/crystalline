@@ -2,12 +2,17 @@ import 'package:collection/collection.dart';
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
+import '../test_utils/test_logger.dart';
 import '../utils.dart';
 
 void main() {
   late Data<String> data;
   late DataTestObserver<String, Data<String>> testObserver;
   late DataTestListener<String, Data<String>> testListener;
+
+  setUpAll(() {
+    CrystallineGlobalConfig.logger = CrystallineTestLogger();
+  });
 
   setUp(() {
     data = Data();

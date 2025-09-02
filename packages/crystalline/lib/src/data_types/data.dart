@@ -547,10 +547,11 @@ class RefreshData<T> extends Data<T> {
         );
 
   Future<RefreshStatus> Function(RefreshData<T> currentData) _refreshCallback;
-  bool _isRefreshing = false;
   final Duration retryDelay;
   final int maxRetry;
   RefreshStatus _status = RefreshStatus.failed;
+
+  Completer<void>? _refreshCompleter;
 
   Future<void> refresh({bool onlyOnNoValue = false}) async {
     Future<RefreshStatus> _tryRefreshCallback() async {
@@ -567,20 +568,64 @@ class RefreshData<T> extends Data<T> {
       return status;
     }
 
-    if ((_value == null || onlyOnNoValue == false) && !_isRefreshing) {
-      _isRefreshing = true;
+    final isRefreshing =
+        _refreshCompleter != null && !_refreshCompleter!.isCompleted;
+
+    if ((_value == null || onlyOnNoValue == false) && !isRefreshing) {
+      _refreshCompleter = Completer();
+
+      _log(CrystallineGlobalConfig.logger
+          .greenText('Refreshing ${name ?? "RefreshData<$T>"}'));
       _status = await _tryRefreshCallback();
       if (_status == RefreshStatus.failed) {
-        int retryCount = maxRetry;
-        while (retryCount > 0 && _status == RefreshStatus.failed) {
+        _log(CrystallineGlobalConfig.logger.redText(
+          '❌ Refresh failed for ${name ?? "RefreshData<$T>"} retrying after ${retryDelay} | failure: ${failureOrNull}',
+        ));
+
+        int retryCount = 1;
+        while (retryCount <= maxRetry && _status == RefreshStatus.failed) {
+          _log(CrystallineGlobalConfig.logger
+              .yellowText('Retry attempt $retryCount'));
           _status = await _tryRefreshCallback();
-          retryCount -= 1;
+          _log(CrystallineGlobalConfig.logger.yellowText(
+              'Retry attempt result: status: ${_status} | data: ${this}'));
+          retryCount += 1;
+        }
+        if (_status == RefreshStatus.done) {
+          _log(CrystallineGlobalConfig.logger.greenText(
+            '✅ Refreshed on Retry attempt $retryCount ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operation | value: $valueOrNull',
+          ));
+        } else {
+          _log(CrystallineGlobalConfig.logger.redText(
+            '❌ All refresh retry attempts failed for ${name ?? "RefreshData<$T>"} | failure: ${failureOrNull}',
+          ));
+        }
+      } else {
+        _log(CrystallineGlobalConfig.logger.greenText(
+          '✅ Refreshed ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operation | value: $valueOrNull',
+        ));
+
+        if (operation != Operation.none) {
+          _log(CrystallineGlobalConfig.logger.orangeText(
+            '⚠️ Operation after successful refresh was not set to Operation.none. '
+            'Usually it is desired to set the Operation to Operation.none when there is no operation is going on anymore. '
+            'Please implement refresh callback for RefreshData object to do so.',
+          ));
         }
       }
 
-      _isRefreshing = false;
+      _refreshCompleter?.complete();
     }
+
+    return _refreshCompleter?.future;
   }
+
+  void _log(String msg) {
+    CrystallineGlobalConfig.logger.log(msg);
+  }
+
+  Future<void> ensureRefreshComplete() =>
+      _refreshCompleter?.future ?? Future.value();
 
   RefreshStatus get status => _status;
 

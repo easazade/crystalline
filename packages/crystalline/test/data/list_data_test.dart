@@ -1,6 +1,8 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
+import '../test_utils/test_logger.dart';
+
 void main() {
   late List<Data<String>> items1;
   late List<Data<String>> items2;
@@ -16,6 +18,10 @@ void main() {
   // ignore: unused_local_variable
   late ListDataTestObserver<String> prefilledTestObserver;
   late ListDataTestEventListener<String> prefilledTestListener;
+
+ setUpAll(() {
+    CrystallineGlobalConfig.logger = CrystallineTestLogger();
+  });
 
   setUp(() {
     items1 = ['apple', 'orange', 'ananas', 'banana', 'pen', 'cat']

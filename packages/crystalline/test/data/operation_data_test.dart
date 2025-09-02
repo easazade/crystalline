@@ -1,11 +1,17 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
+import '../test_utils/test_logger.dart';
+
 void main() {
   late OperationData operationData;
   late DataTestObserver<void, OperationData> testObserver;
 
   late Data<String> data;
+
+ setUpAll(() {
+    CrystallineGlobalConfig.logger = CrystallineTestLogger();
+  });
 
   setUp(() {
     operationData = OperationData();

@@ -1,6 +1,8 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
+import '../test_utils/test_logger.dart';
+
 class CollectionDataTestImpl<T> extends CollectionData<T> {
   CollectionDataTestImpl(this.items);
   final List<Data<T>> items;
@@ -13,6 +15,10 @@ void main() {
   late CollectionDataTestImpl<String> collectionData;
   late List<Data<String>> items1;
   late CollectionDataTestObserver<String> testObserver;
+
+  setUpAll(() {
+    CrystallineGlobalConfig.logger = CrystallineTestLogger();
+  });
 
   setUp(() {
     collectionData = CollectionDataTestImpl([]);
