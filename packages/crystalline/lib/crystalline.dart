@@ -1,7 +1,6 @@
 /// Crystalline
 library crystalline;
 
-export 'annotations.dart';
 export 'src/config/global_config.dart';
 export 'src/config/logger/crystalline_logger.dart';
 export 'src/config/logger/default_crystalline_logger.dart';

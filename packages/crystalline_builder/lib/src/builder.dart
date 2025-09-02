@@ -1,4 +1,5 @@
 import 'package:build/build.dart';
+import 'package:crystalline/annotations.dart';
 import 'package:crystalline/crystalline.dart';
 import 'package:crystalline_builder/src/extensions.dart';
 import 'package:crystalline_builder/src/file_header.dart';
