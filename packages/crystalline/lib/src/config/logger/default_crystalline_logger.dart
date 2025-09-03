@@ -1,8 +1,9 @@
+import 'dart:developer' as dev;
+
 import 'package:crystalline/src/config/logger/crystalline_logger.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:meta/meta.dart';
-import 'dart:developer' as dev;
 
 class DefaultCrystallineLogger extends CrystallineLogger {
   String redText(dynamic object) => "\x1B[31m${object}\x1B[0m";

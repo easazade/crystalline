@@ -1,3 +1,4 @@
+import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
@@ -79,4 +80,8 @@ class ContextData<T, C> extends Data<T> {
         context: contextOrNull,
         sideEffects: sideEffects.toList(),
       );
+
+        @override
+  String toString() =>
+      CrystallineGlobalConfig.logger.generateToStringForData(this);
 }

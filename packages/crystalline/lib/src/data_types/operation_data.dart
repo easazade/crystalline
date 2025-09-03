@@ -1,3 +1,4 @@
+import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/mutators/mutators.dart';
@@ -42,4 +43,8 @@ class OperationData extends Data<void> {
         failure: failureOrNull,
         sideEffects: sideEffects,
       );
+
+  @override
+  String toString() =>
+      CrystallineGlobalConfig.logger.generateToStringForData(this);
 }

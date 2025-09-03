@@ -275,6 +275,10 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
         operation == other.operation &&
         failureOrNull == other.failureOrNull;
   }
+
+  @override
+  String toString() =>
+      CrystallineGlobalConfig.logger.generateToStringForData(this);
 }
 
 class ListData<T> extends CollectionData<T> {
@@ -395,4 +399,8 @@ class ListData<T> extends CollectionData<T> {
   ) {
     return super.modifyAsync((data) => fn(data as ListData<T>));
   }
+
+  @override
+  String toString() =>
+      CrystallineGlobalConfig.logger.generateToStringForData(this);
 }

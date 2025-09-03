@@ -535,8 +535,8 @@ class RefreshData<T> extends Data<T> {
     List<dynamic>? sideEffects,
     String? name,
     required Future<RefreshStatus> Function(RefreshData<T> currentData) refresh,
-    this.retryDelay = const Duration(milliseconds: 200),
-    this.maxRetry = 3,
+    this.retryDelay = const Duration(milliseconds: 1000),
+    this.maxRetry = 1,
   })  : _refreshCallback = refresh,
         super(
           value: value,
@@ -553,7 +553,7 @@ class RefreshData<T> extends Data<T> {
 
   Completer<void>? _refreshCompleter;
 
-  Future<void> refresh({bool onlyOnNoValue = false}) async {
+  Future<void> refresh({bool allowRetry = true}) async {
     Future<RefreshStatus> _tryRefreshCallback() async {
       RefreshStatus status;
 
@@ -571,12 +571,13 @@ class RefreshData<T> extends Data<T> {
     final isRefreshing =
         _refreshCompleter != null && !_refreshCompleter!.isCompleted;
 
-    if ((_value == null || onlyOnNoValue == false) && !isRefreshing) {
+    if (_value == null && !isRefreshing) {
       _refreshCompleter = Completer();
 
       _log(CrystallineGlobalConfig.logger
           .greenText('Refreshing ${name ?? "RefreshData<$T>"}'));
       _status = await _tryRefreshCallback();
+
       if (_status == RefreshStatus.failed) {
         _log(CrystallineGlobalConfig.logger.redText(
           '❌ Refresh failed for ${name ?? "RefreshData<$T>"} retrying after ${retryDelay} | failure: ${failureOrNull}',
@@ -631,39 +632,43 @@ class RefreshData<T> extends Data<T> {
 
   @override
   bool get hasValue {
-    refresh(onlyOnNoValue: true);
+    if (_value == null) refresh(allowRetry: false);
     return super.hasValue;
   }
 
   @override
   bool get hasNoValue {
-    refresh(onlyOnNoValue: true);
+    if (_value == null) refresh(allowRetry: false);
     return super.hasNoValue;
   }
 
   @override
   T get value {
-    refresh(onlyOnNoValue: true);
+    if (_value == null) refresh(allowRetry: false);
     return super.value;
   }
 
   @override
   T? get valueOrNull {
-    refresh(onlyOnNoValue: true);
+    if (_value == null) refresh(allowRetry: false);
     return super.valueOrNull;
   }
 
   @override
   void addEventListener(bool Function(Event event) listener) {
-    refresh(onlyOnNoValue: true);
+    if (_value == null) refresh(allowRetry: false);
     super.addEventListener(listener);
   }
 
   @override
   void addObserver(void Function() observer) {
-    refresh(onlyOnNoValue: true);
+    if (_value == null) refresh(allowRetry: false);
     super.addObserver(observer);
   }
+
+  @override
+  String toString() =>
+      CrystallineGlobalConfig.logger.generateToStringForData(this);
 }
 
 enum RefreshStatus { done, failed }
