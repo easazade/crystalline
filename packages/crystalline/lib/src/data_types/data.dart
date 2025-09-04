@@ -631,30 +631,6 @@ class RefreshData<T> extends Data<T> {
   RefreshStatus get status => _status;
 
   @override
-  bool get hasValue {
-    if (_value == null) refresh(allowRetry: false);
-    return super.hasValue;
-  }
-
-  @override
-  bool get hasNoValue {
-    if (_value == null) refresh(allowRetry: false);
-    return super.hasNoValue;
-  }
-
-  @override
-  T get value {
-    if (_value == null) refresh(allowRetry: false);
-    return super.value;
-  }
-
-  @override
-  T? get valueOrNull {
-    if (_value == null) refresh(allowRetry: false);
-    return super.valueOrNull;
-  }
-
-  @override
   void addEventListener(bool Function(Event event) listener) {
     if (_value == null) refresh(allowRetry: false);
     super.addEventListener(listener);
