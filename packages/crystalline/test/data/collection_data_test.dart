@@ -22,9 +22,7 @@ void main() {
 
   setUp(() {
     collectionData = CollectionDataTestImpl([]);
-    items1 = ['apple', 'orange', 'ananas', 'banana']
-        .map((e) => Data(value: e))
-        .toList();
+    items1 = ['apple', 'orange', 'ananas', 'banana'].map((e) => Data(value: e)).toList();
     testObserver = DataTestObserver(collectionData);
   });
 

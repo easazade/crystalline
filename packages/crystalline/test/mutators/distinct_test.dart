@@ -8,8 +8,7 @@ void main() {
       final original = Data<int>();
       final distinct = original.distinct();
 
-      final DataTestObserver<int, Data<int>> distinctTestObserver =
-          DataTestObserver(distinct);
+      final DataTestObserver<int, Data<int>> distinctTestObserver = DataTestObserver(distinct);
 
       original.value = 20;
       original.value = 20;

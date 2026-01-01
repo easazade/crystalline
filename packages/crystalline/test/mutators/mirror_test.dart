@@ -8,8 +8,7 @@ void main() {
       final original = Data<int>();
       final mirror = original.mirror();
 
-      final DataTestObserver<int, Data<int>> mirrorTestObserver =
-          DataTestObserver(mirror);
+      final DataTestObserver<int, Data<int>> mirrorTestObserver = DataTestObserver(mirror);
 
       original.value = 20;
       original.value = 20;

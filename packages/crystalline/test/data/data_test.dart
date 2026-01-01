@@ -54,9 +54,7 @@ void main() {
       expect(testObserver.timesUpdated, 1);
     });
 
-    test(
-        'Should throw Failure when failure of Data is null and getter failure is called',
-        () {
+    test('Should throw Failure when failure of Data is null and getter failure is called', () {
       expect(data.hasFailure, isFalse);
       expect(() => data.failure, throwsA(isA<FailureIsNullException>()));
     });
@@ -77,8 +75,7 @@ void main() {
       'Should throw exception when data has no failure and data.consumeFailure is called',
       () {
         expect(data.hasFailure, isFalse);
-        expect(
-            () => data.consumeFailure, throwsA(isA<FailureIsNullException>()));
+        expect(() => data.consumeFailure, throwsA(isA<FailureIsNullException>()));
       },
     );
 
@@ -213,8 +210,7 @@ void main() {
         } catch (e, stacktrace) {
           data.value = 'cat';
           data.operation = Operation.create;
-          data.failure = Failure('oops!',
-              id: 'ID-2', exception: e, stacktrace: stacktrace);
+          data.failure = Failure('oops!', id: 'ID-2', exception: e, stacktrace: stacktrace);
 
           final string = data.toString();
           expect(string, contains(data.operation.name));
@@ -378,7 +374,6 @@ void main() {
   });
 
   group('extension -', () {
-
     test(
       'data.mapToData extension should convert an Iterable<T> to a List<Data<T>>',
       () {
@@ -502,8 +497,7 @@ void main() {
           1,
           (event) => expect(
             event,
-            AddSideEffectEvent(
-                newSideEffect: 'effect', sideEffects: ['effect']),
+            AddSideEffectEvent(newSideEffect: 'effect', sideEffects: ['effect']),
           ),
         );
 
@@ -551,8 +545,7 @@ void main() {
 
         testListener.expectNthDispatch(
           3,
-          (event) =>
-              expect(event, FailureEvent(Failure('This is ERROR message !!!'))),
+          (event) => expect(event, FailureEvent(Failure('This is ERROR message !!!'))),
         );
 
         testListener.expectNthDispatch(
@@ -584,8 +577,7 @@ void main() {
 
         testListener.expectNthDispatch(
           3,
-          (event) =>
-              expect(event, FailureEvent(Failure('This is ERROR message !!!'))),
+          (event) => expect(event, FailureEvent(Failure('This is ERROR message !!!'))),
         );
 
         testListener.expectNthDispatch(
@@ -620,8 +612,7 @@ void main() {
 
         testListener2.expectNthDispatch(
           3,
-          (event) =>
-              expect(event, FailureEvent(Failure('This is ERROR message !!!'))),
+          (event) => expect(event, FailureEvent(Failure('This is ERROR message !!!'))),
         );
 
         testListener2.expectNthDispatch(

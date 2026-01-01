@@ -45,6 +45,5 @@ class OperationData extends Data<void> {
       );
 
   @override
-  String toString() =>
-      CrystallineGlobalConfig.logger.generateToStringForData(this);
+  String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 }

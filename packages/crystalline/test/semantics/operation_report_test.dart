@@ -9,10 +9,8 @@ void main() {
 
   setUp(() {
     data = Data(value: 'some-value');
-    operationReport1 =
-        OperationReport(message: 'message 1', operation: Operation.create);
-    operationReport2 =
-        OperationReport(message: 'message 2', operation: Operation.read);
+    operationReport1 = OperationReport(message: 'message 1', operation: Operation.create);
+    operationReport2 = OperationReport(message: 'message 2', operation: Operation.read);
 
     expect(operationReport1, isNot(equals(operationReport2)));
   });
@@ -21,45 +19,36 @@ void main() {
     data.semanticSideEffects.operationReports.add(operationReport1);
     expect(data.sideEffects.length, equals(1));
     expect(data.semanticSideEffects.operationReports.items.length, equals(1));
-    expect(data.semanticSideEffects.operationReports.items.first,
-        operationReport1);
+    expect(data.semanticSideEffects.operationReports.items.first, operationReport1);
   });
 
-  test(
-      'OperationReport - Should be able to add multiple operation-report objects',
-      () {
+  test('OperationReport - Should be able to add multiple operation-report objects', () {
     data.semanticSideEffects.operationReports.add(operationReport1);
     expect(data.sideEffects.length, equals(1));
     expect(data.semanticSideEffects.operationReports.items.length, equals(1));
-    expect(
-        data.semanticSideEffects.operationReports.items[0], operationReport1);
+    expect(data.semanticSideEffects.operationReports.items[0], operationReport1);
 
     data.semanticSideEffects.operationReports.add(operationReport2);
     expect(data.sideEffects.length, equals(2));
     expect(data.semanticSideEffects.operationReports.items.length, equals(2));
-    expect(
-        data.semanticSideEffects.operationReports.items[1], operationReport2);
+    expect(data.semanticSideEffects.operationReports.items[1], operationReport2);
   });
 
   test('OperationReport - Should remove operation-report object', () {
     data.semanticSideEffects.operationReports.add(operationReport1);
-    expect(data.semanticSideEffects.operationReports.items.first,
-        operationReport1);
+    expect(data.semanticSideEffects.operationReports.items.first, operationReport1);
 
     data.semanticSideEffects.operationReports.remove(operationReport1);
     expect(data.semanticSideEffects.operationReports.items, isEmpty);
   });
 
-  test(
-      'OperationReport - Should add operation-report object alongside other side effects',
-      () {
+  test('OperationReport - Should add operation-report object alongside other side effects', () {
     data.addAllSideEffects(['side-effect-1', 'side-effect-2', 'side-effect-1']);
     expect(data.sideEffects.length, 3);
 
     // when adding an operation report it should work well along side effects.
     data.semanticSideEffects.operationReports.add(operationReport1);
-    expect(data.semanticSideEffects.operationReports.items.first,
-        operationReport1);
+    expect(data.semanticSideEffects.operationReports.items.first, operationReport1);
     expect(data.semanticSideEffects.operationReports.items.length, 1);
     expect(data.sideEffects.length, 4);
 

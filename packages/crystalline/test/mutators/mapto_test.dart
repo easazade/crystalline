@@ -12,8 +12,7 @@ void main() {
         (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
       );
 
-      final DataTestObserver<String, Data<String>> data2TestObserver =
-          DataTestObserver(stringData);
+      final DataTestObserver<String, Data<String>> data2TestObserver = DataTestObserver(stringData);
 
       expect(stringData, isA<Data<String>>());
       expect(stringData.valueOrNull, isNotNull);
@@ -32,8 +31,7 @@ void main() {
         (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
       );
 
-      final DataTestObserver<String, Data<String>> testObserver =
-          DataTestObserver(stringData);
+      final DataTestObserver<String, Data<String>> testObserver = DataTestObserver(stringData);
 
       intData.value = 20;
       expect(stringData, isA<Data<String>>());

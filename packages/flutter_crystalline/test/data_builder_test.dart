@@ -159,8 +159,7 @@ void main() {
     'Builder should update widget when operation is '
     'updated on data and observe is set to true on DataBuilder',
     (tester) async {
-      final Operation operation = Operation.defaultOperations
-          .randomItem(exceptionValues: [Operation.none]);
+      final Operation operation = Operation.defaultOperations.randomItem(exceptionValues: [Operation.none]);
 
       await tester.pumpWidget(
         Testable(

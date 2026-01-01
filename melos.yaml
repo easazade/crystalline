@@ -23,7 +23,7 @@ scripts:
   format:
     run: |
       melos exec -c 1 -- \
-        dart analyze .
+        dart format lib test
     description: Run dart format in all packages
 
   analyze:

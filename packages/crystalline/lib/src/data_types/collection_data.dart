@@ -3,14 +3,12 @@ import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 
-typedef _DataPredicate<T> = bool Function(
-    List<Data<T>> value, Operation operation, Failure? failure)?;
+typedef _DataPredicate<T> = bool Function(List<Data<T>> value, Operation operation, Failure? failure)?;
 
 class AddItemEvent<T> extends Event {
   AddItemEvent(this.newItem, this.items)
       : super(
-          CrystallineGlobalConfig.logger
-              .ellipsize(newItem.toString(), maxSize: 20),
+          CrystallineGlobalConfig.logger.ellipsize(newItem.toString(), maxSize: 20),
         );
 
   final Data<T> newItem;
@@ -20,8 +18,7 @@ class AddItemEvent<T> extends Event {
 class RemoveItemEvent<T> extends Event {
   RemoveItemEvent(this.removedItem, this.items)
       : super(
-          CrystallineGlobalConfig.logger
-              .ellipsize(removedItem.toString(), maxSize: 20),
+          CrystallineGlobalConfig.logger.ellipsize(removedItem.toString(), maxSize: 20),
         );
 
   final Data<T> removedItem;
@@ -29,14 +26,12 @@ class RemoveItemEvent<T> extends Event {
 }
 
 class ItemsUpdatedEvent<T> extends Event {
-  ItemsUpdatedEvent(this.items)
-      : super('${items.runtimeType} = ${items.length}');
+  ItemsUpdatedEvent(this.items) : super('${items.runtimeType} = ${items.length}');
 
   final Iterable<Data<T>> items;
 }
 
-abstract class CollectionData<T> extends Data<List<Data<T>>>
-    with Iterable<Data<T>> {
+abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<T>> {
   List<Data<T>> get items;
 
   @override
@@ -145,8 +140,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     notifyObservers();
   }
 
-  Future<void> modifyItemsAsync(
-      Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
+  Future<void> modifyItemsAsync(Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
     disallowNotify();
     final oldItems = items.toList();
     final newItems = await modifier(items).then((e) => e.toList());
@@ -176,8 +170,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       dispatchEvent(FailureEvent(failure));
     }
-    if (!ListEquality<dynamic>()
-        .equals(old.sideEffects.toList(), sideEffects.toList())) {
+    if (!ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
     notifyObservers();
@@ -200,8 +193,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       dispatchEvent(FailureEvent(failure));
     }
-    if (!ListEquality<dynamic>()
-        .equals(old.sideEffects.toList(), sideEffects.toList())) {
+    if (!ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
     notifyObservers();
@@ -229,8 +221,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       dispatchEvent(FailureEvent(failure));
     }
-    if (!ListEquality<dynamic>()
-        .equals(old.sideEffects.toList(), sideEffects.toList())) {
+    if (!ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
     notifyObservers();
@@ -277,8 +268,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   }
 
   @override
-  String toString() =>
-      CrystallineGlobalConfig.logger.generateToStringForData(this);
+  String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 }
 
 class ListData<T> extends CollectionData<T> {
@@ -319,56 +309,47 @@ class ListData<T> extends CollectionData<T> {
 
   @override
   bool get isAnyOperation {
-    return isAnyOperationStrategy?.call(value, operation, failureOrNull) ??
-        super.isAnyOperation;
+    return isAnyOperationStrategy?.call(value, operation, failureOrNull) ?? super.isAnyOperation;
   }
 
   @override
   bool get hasFailure {
-    return hasFailureStrategy?.call(value, operation, failureOrNull) ??
-        super.hasFailure;
+    return hasFailureStrategy?.call(value, operation, failureOrNull) ?? super.hasFailure;
   }
 
   @override
   bool get hasValue {
-    return hasValueStrategy?.call(value, operation, failureOrNull) ??
-        super.hasValue;
+    return hasValueStrategy?.call(value, operation, failureOrNull) ?? super.hasValue;
   }
 
   @override
   bool get hasNoValue {
-    return hasNoValueStrategy?.call(value, operation, failureOrNull) ??
-        super.hasNoValue;
+    return hasNoValueStrategy?.call(value, operation, failureOrNull) ?? super.hasNoValue;
   }
 
   @override
   bool get isCreating {
-    return isCreatingStrategy?.call(value, operation, failureOrNull) ??
-        super.isCreating;
+    return isCreatingStrategy?.call(value, operation, failureOrNull) ?? super.isCreating;
   }
 
   @override
   bool get isDeleting {
-    return isDeletingStrategy?.call(value, operation, failureOrNull) ??
-        super.isDeleting;
+    return isDeletingStrategy?.call(value, operation, failureOrNull) ?? super.isDeleting;
   }
 
   @override
   bool get isReading {
-    return isReadingStrategy?.call(value, operation, failureOrNull) ??
-        super.isReading;
+    return isReadingStrategy?.call(value, operation, failureOrNull) ?? super.isReading;
   }
 
   @override
   bool get isUpdating {
-    return isUpdatingStrategy?.call(value, operation, failureOrNull) ??
-        super.isUpdating;
+    return isUpdatingStrategy?.call(value, operation, failureOrNull) ?? super.isUpdating;
   }
 
   @override
   bool get hasCustomOperation {
-    return hasCustomOperationStrategy?.call(value, operation, failureOrNull) ??
-        super.hasCustomOperation;
+    return hasCustomOperationStrategy?.call(value, operation, failureOrNull) ?? super.hasCustomOperation;
   }
 
   @override
@@ -401,6 +382,5 @@ class ListData<T> extends CollectionData<T> {
   }
 
   @override
-  String toString() =>
-      CrystallineGlobalConfig.logger.generateToStringForData(this);
+  String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 }

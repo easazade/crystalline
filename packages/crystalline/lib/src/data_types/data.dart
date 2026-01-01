@@ -7,13 +7,14 @@ import 'package:crystalline/src/exceptions.dart';
 import 'package:meta/meta.dart';
 
 class Operation {
+  const Operation(this.name);
   static const Operation update = Operation('update');
   static const Operation delete = Operation('delete');
   static const Operation read = Operation('read');
   static const Operation create = Operation('create');
   static const Operation none = Operation('none');
 
-  static final defaultOperations = [
+  static final List<Operation> defaultOperations = [
     update,
     delete,
     read,
@@ -22,8 +23,6 @@ class Operation {
   ];
 
   final String name;
-
-  const Operation(this.name);
 
   bool get isCustom => !defaultOperations.contains(this);
 
@@ -62,53 +61,56 @@ class OperationEvent extends Event {
 }
 
 class ValueEvent<T> extends Event {
-  ValueEvent(this.value)
-      : super(CrystallineGlobalConfig.logger
-            .ellipsize(value.toString(), maxSize: 20));
+  ValueEvent(this.value) : super(CrystallineGlobalConfig.logger.ellipsize(value.toString(), maxSize: 20));
 
   final T value;
 }
 
 class FailureEvent extends Event {
-  FailureEvent(this.failure)
-      : super(CrystallineGlobalConfig.logger
-            .ellipsize(failure.message, maxSize: 20));
+  FailureEvent(this.failure) : super(CrystallineGlobalConfig.logger.ellipsize(failure.message, maxSize: 20));
 
   final Failure failure;
 }
 
 class SideEffectsUpdatedEvent extends Event {
+  SideEffectsUpdatedEvent(this.sideEffects) : super('sideEffects: ${sideEffects.length}');
   final Iterable<dynamic> sideEffects;
-
-  SideEffectsUpdatedEvent(this.sideEffects)
-      : super('sideEffects: ${sideEffects.length}');
 }
 
 class AddSideEffectEvent extends Event {
-  final dynamic newSideEffect;
-  final List<dynamic> sideEffects;
-
   AddSideEffectEvent({
     required this.newSideEffect,
     required this.sideEffects,
-  }) : super(CrystallineGlobalConfig.logger
-            .ellipsize(newSideEffect.toString(), maxSize: 20));
+  }) : super(CrystallineGlobalConfig.logger.ellipsize(newSideEffect.toString(), maxSize: 20));
+  final dynamic newSideEffect;
+  final List<dynamic> sideEffects;
 }
 
 class RemoveSideEffectEvent extends Event {
-  final dynamic removedSideEffect;
-  final List<dynamic> sideEffects;
-
   RemoveSideEffectEvent({
     required this.removedSideEffect,
     required this.sideEffects,
-  }) : super(CrystallineGlobalConfig.logger.ellipsize(
-          removedSideEffect.toString(),
-          maxSize: 20,
-        ));
+  }) : super(
+          CrystallineGlobalConfig.logger.ellipsize(
+            removedSideEffect.toString(),
+            maxSize: 20,
+          ),
+        );
+  final dynamic removedSideEffect;
+  final List<dynamic> sideEffects;
 }
 
 class Data<T> {
+  Data({
+    T? value,
+    Failure? failure,
+    Operation operation = Operation.none,
+    Iterable<dynamic>? sideEffects,
+    this.name,
+  })  : _value = value,
+        _failure = failure,
+        _sideEffects = sideEffects?.toList() ?? [],
+        _operation = operation;
   T? _value;
   Failure? _failure;
   Operation _operation;
@@ -121,20 +123,9 @@ class Data<T> {
 
   final String? name;
 
-  Data({
-    T? value,
-    Failure? failure,
-    Operation operation = Operation.none,
-    Iterable<dynamic>? sideEffects,
-    this.name,
-  })  : _value = value,
-        _failure = failure,
-        _sideEffects = sideEffects?.toList() ?? [],
-        _operation = operation;
-
   T get value {
     if (_value == null) {
-      throw ValueNotAvailableException();
+      throw const ValueNotAvailableException();
     }
     return _value!;
   }
@@ -143,16 +134,16 @@ class Data<T> {
 
   Failure get consumeFailure {
     if (_failure == null) {
-      throw FailureIsNullException();
+      throw const FailureIsNullException();
     }
-    Failure consumedFailureValue = _failure!;
+    final consumedFailureValue = _failure!;
     _failure = null;
     return consumedFailureValue;
   }
 
   Failure get failure {
     if (_failure == null) {
-      throw FailureIsNullException();
+      throw const FailureIsNullException();
     }
     return _failure!;
   }
@@ -161,10 +152,12 @@ class Data<T> {
 
   void addSideEffect(dynamic sideEffect) {
     _sideEffects.add(sideEffect);
-    dispatchEvent(AddSideEffectEvent(
-      newSideEffect: sideEffect,
-      sideEffects: _sideEffects,
-    ));
+    dispatchEvent(
+      AddSideEffectEvent(
+        newSideEffect: sideEffect,
+        sideEffects: _sideEffects,
+      ),
+    );
     dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
@@ -177,10 +170,12 @@ class Data<T> {
 
   void removeSideEffect(dynamic sideEffect) {
     _sideEffects.remove(sideEffect);
-    dispatchEvent(RemoveSideEffectEvent(
-      removedSideEffect: sideEffect,
-      sideEffects: _sideEffects,
-    ));
+    dispatchEvent(
+      RemoveSideEffectEvent(
+        removedSideEffect: sideEffect,
+        sideEffects: _sideEffects,
+      ),
+    );
     dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
@@ -215,7 +210,7 @@ class Data<T> {
 
   bool valueEqualsTo(T? otherValue) => _value == otherValue;
 
-  void set failure(final Failure? failure) {
+  set failure(final Failure? failure) {
     _failure = failure;
     if (failure != null) {
       dispatchEvent(FailureEvent(failure));
@@ -223,7 +218,7 @@ class Data<T> {
     notifyObservers();
   }
 
-  void set operation(final Operation operation) {
+  set operation(final Operation operation) {
     _operation = operation;
     dispatchEvent(OperationEvent(operation));
     notifyObservers();
@@ -254,8 +249,7 @@ class Data<T> {
     if (old._failure != _failure && _failure != null) {
       dispatchEvent(FailureEvent(_failure!));
     }
-    if (!ListEquality<dynamic>()
-        .equals(old.sideEffects.toList(), sideEffects.toList())) {
+    if (!const ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
 
@@ -277,8 +271,7 @@ class Data<T> {
     if (old._failure != _failure && _failure != null) {
       dispatchEvent(FailureEvent(_failure!));
     }
-    if (!ListEquality<dynamic>()
-        .equals(old.sideEffects.toList(), sideEffects.toList())) {
+    if (!const ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
 
@@ -304,8 +297,7 @@ class Data<T> {
     if (old._failure != _failure && _failure != null) {
       dispatchEvent(FailureEvent(_failure!));
     }
-    if (!ListEquality<dynamic>()
-        .equals(old.sideEffects.toList(), sideEffects.toList())) {
+    if (!const ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
       dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
 
@@ -323,12 +315,10 @@ class Data<T> {
   }
 
   /// returns a new instance of data object which is copy of this object.
-  Data<T> copy() =>
-      Data<T>(value: _value, failure: _failure, operation: _operation);
+  Data<T> copy() => Data<T>(value: _value, failure: _failure, operation: _operation);
 
   @override
-  String toString() =>
-      CrystallineGlobalConfig.logger.generateToStringForData(this);
+  String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 
   @override
   bool operator ==(Object other) {
@@ -370,7 +360,10 @@ class Data<T> {
     if (stateChangeLog != null) {
       CrystallineGlobalConfig.logger.log(stateChangeLog);
     }
-    if (isAllowedToNotify) observers.forEach((observer) => observer());
+    if (isAllowedToNotify)
+      for (final observer in observers) {
+        observer();
+      }
   }
 
   Iterable<bool Function(Event event)> get eventListeners => _eventListeners;
@@ -385,7 +378,7 @@ class Data<T> {
 
   void dispatchEvent(Event event) {
     if (_allowedToNotify) {
-      for (var callback in eventListeners) {
+      for (final callback in eventListeners) {
         final isEventConsumed = callback(event);
         if (isEventConsumed) {
           break;
@@ -397,24 +390,17 @@ class Data<T> {
 
 class RefreshData<T> extends Data<T> {
   RefreshData({
-    T? value,
-    Failure? failure,
-    Operation operation = Operation.none,
-    List<dynamic>? sideEffects,
-    String? name,
     required Future<RefreshStatus> Function(RefreshData<T> currentData) refresh,
+    super.value,
+    super.failure,
+    super.operation,
+    List<dynamic>? super.sideEffects,
+    super.name,
     this.retryDelay = const Duration(milliseconds: 1000),
     this.maxRetry = 1,
-  })  : _refreshCallback = refresh,
-        super(
-          value: value,
-          failure: failure,
-          operation: operation,
-          sideEffects: sideEffects,
-          name: name,
-        );
+  }) : _refreshCallback = refresh;
 
-  Future<RefreshStatus> Function(RefreshData<T> currentData) _refreshCallback;
+  final Future<RefreshStatus> Function(RefreshData<T> currentData) _refreshCallback;
   final Duration retryDelay;
   final int maxRetry;
   RefreshStatus _status = RefreshStatus.failed;
@@ -427,7 +413,7 @@ class RefreshData<T> extends Data<T> {
       return;
     }
 
-    Future<RefreshStatus> _tryRefreshCallback() async {
+    Future<RefreshStatus> tryRefreshCallback() async {
       RefreshStatus status;
 
       try {
@@ -441,50 +427,56 @@ class RefreshData<T> extends Data<T> {
       return status;
     }
 
-    final isRefreshing =
-        _refreshCompleter != null && !_refreshCompleter!.isCompleted;
+    final isRefreshing = _refreshCompleter != null && !_refreshCompleter!.isCompleted;
 
     if (_value == null && !isRefreshing) {
       _refreshCompleter = Completer();
 
-      _log(CrystallineGlobalConfig.logger
-          .greenText('Refreshing ${name ?? "RefreshData<$T>"}'));
-      _status = await _tryRefreshCallback();
+      _log(CrystallineGlobalConfig.logger.greenText('Refreshing ${name ?? "RefreshData<$T>"}'));
+      _status = await tryRefreshCallback();
 
       if (_status == RefreshStatus.failed) {
-        _log(CrystallineGlobalConfig.logger.redText(
-          '❌ Refresh failed for ${name ?? "RefreshData<$T>"} retrying after ${retryDelay} | failure: ${failureOrNull}',
-        ));
+        _log(
+          CrystallineGlobalConfig.logger.redText(
+            '❌ Refresh failed for ${name ?? "RefreshData<$T>"} retrying after $retryDelay | failure: $failureOrNull',
+          ),
+        );
 
-        int retryCount = 1;
+        var retryCount = 1;
         while (retryCount <= maxRetry && _status == RefreshStatus.failed) {
-          _log(CrystallineGlobalConfig.logger
-              .yellowText('Retry attempt $retryCount'));
-          _status = await _tryRefreshCallback();
-          _log(CrystallineGlobalConfig.logger.yellowText(
-              'Retry attempt result: status: ${_status} | data: ${this}'));
+          _log(CrystallineGlobalConfig.logger.yellowText('Retry attempt $retryCount'));
+          _status = await tryRefreshCallback();
+          _log(CrystallineGlobalConfig.logger.yellowText('Retry attempt result: status: $_status | data: $this'));
           retryCount += 1;
         }
         if (_status == RefreshStatus.done) {
-          _log(CrystallineGlobalConfig.logger.greenText(
-            '✅ Refreshed on Retry attempt $retryCount ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operation | value: $valueOrNull',
-          ));
+          _log(
+            CrystallineGlobalConfig.logger.greenText(
+              '✅ Refreshed on Retry attempt $retryCount ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operation | value: $valueOrNull',
+            ),
+          );
         } else {
-          _log(CrystallineGlobalConfig.logger.redText(
-            '❌ All refresh retry attempts failed for ${name ?? "RefreshData<$T>"} | failure: ${failureOrNull}',
-          ));
+          _log(
+            CrystallineGlobalConfig.logger.redText(
+              '❌ All refresh retry attempts failed for ${name ?? "RefreshData<$T>"} | failure: $failureOrNull',
+            ),
+          );
         }
       } else {
-        _log(CrystallineGlobalConfig.logger.greenText(
-          '✅ Refreshed ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operation | value: $valueOrNull',
-        ));
+        _log(
+          CrystallineGlobalConfig.logger.greenText(
+            '✅ Refreshed ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operation | value: $valueOrNull',
+          ),
+        );
 
         if (operation != Operation.none) {
-          _log(CrystallineGlobalConfig.logger.orangeText(
-            '⚠️ Operation after successful refresh was not set to Operation.none. '
-            'Usually it is desired to set the Operation to Operation.none when there is no operation is going on anymore. '
-            'Please implement refresh callback for RefreshData object to do so.',
-          ));
+          _log(
+            CrystallineGlobalConfig.logger.orangeText(
+              '⚠️ Operation after successful refresh was not set to Operation.none. '
+              'Usually it is desired to set the Operation to Operation.none when there is no operation is going on anymore. '
+              'Please implement refresh callback for RefreshData object to do so.',
+            ),
+          );
         }
       }
 
@@ -498,8 +490,7 @@ class RefreshData<T> extends Data<T> {
     CrystallineGlobalConfig.logger.log(msg);
   }
 
-  Future<void> ensureRefreshComplete() =>
-      _refreshCompleter?.future ?? Future.value();
+  Future<void> ensureRefreshComplete() => _refreshCompleter?.future ?? Future.value();
 
   RefreshStatus get status => _status;
 
@@ -516,8 +507,7 @@ class RefreshData<T> extends Data<T> {
   }
 
   @override
-  String toString() =>
-      CrystallineGlobalConfig.logger.generateToStringForData(this);
+  String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 
   void dispose() {
     _disposed = true;

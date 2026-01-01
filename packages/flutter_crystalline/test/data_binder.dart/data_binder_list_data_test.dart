@@ -23,8 +23,7 @@ void main() async {
             onValue: (context, items) {
               return Column(
                 children: [
-                  if (items.sideEffects.isNotEmpty)
-                    Text(items.sideEffects.first.toString()),
+                  if (items.sideEffects.isNotEmpty) Text(items.sideEffects.first.toString()),
                   ...items.map((item) => Text(item.value)).toList(),
                 ],
               );
@@ -78,8 +77,7 @@ void main() async {
             builder: (context, items) {
               return Column(
                 children: [
-                  if (items.sideEffects.isNotEmpty)
-                    Text(items.sideEffects.first.toString()),
+                  if (items.sideEffects.isNotEmpty) Text(items.sideEffects.first.toString()),
                   ...items.map((item) {
                     if (item.isAnyOperation)
                       return CircularProgressIndicator();

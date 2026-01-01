@@ -11,6 +11,5 @@ class Failure {
   final StackTrace? stacktrace;
 
   @override
-  String toString() =>
-      CrystallineGlobalConfig.logger.generateToStringForFailure(this);
+  String toString() => CrystallineGlobalConfig.logger.generateToStringForFailure(this);
 }

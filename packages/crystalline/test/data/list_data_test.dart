@@ -24,9 +24,7 @@ void main() {
   });
 
   setUp(() {
-    items1 = ['apple', 'orange', 'ananas', 'banana', 'pen', 'cat']
-        .map((e) => Data(value: e))
-        .toList();
+    items1 = ['apple', 'orange', 'ananas', 'banana', 'pen', 'cat'].map((e) => Data(value: e)).toList();
     items2 = ['book', 'pencil', 'eraser'].map((e) => Data(value: e)).toList();
     singleItem = Data(value: 'tomato');
 
@@ -82,9 +80,7 @@ void main() {
       expect(testObserver.timesUpdated, 2);
     });
 
-    test(
-        'failure and value flag methods for ListData should behave as default expected',
-        () {
+    test('failure and value flag methods for ListData should behave as default expected', () {
       expect(listData.hasFailure, isFalse);
       listData.failure = Failure('oops!');
       expect(listData.hasFailure, isTrue);
@@ -238,8 +234,7 @@ void main() {
         expect(listData.items, items1);
 
         // items should have no observer
-        listData
-            .forEach((e) => expect(e.observers.contains(observer), isFalse));
+        listData.forEach((e) => expect(e.observers.contains(observer), isFalse));
 
         // when added an observer it should be added on all data items
         listData.addObserver(observer);
@@ -386,8 +381,7 @@ void main() {
     test(
       'Should update list-data from another list-data',
       () async {
-        final otherData =
-            ListData<String>([Data(value: 'shapoor'), Data(value: 'chancho')]);
+        final otherData = ListData<String>([Data(value: 'shapoor'), Data(value: 'chancho')]);
         expect(listData, isNot(otherData));
 
         listData.updateFrom(otherData);
@@ -542,8 +536,7 @@ void main() {
           1,
           (event) => expect(
             event,
-            AddSideEffectEvent(
-                newSideEffect: 'effect', sideEffects: ['effect']),
+            AddSideEffectEvent(newSideEffect: 'effect', sideEffects: ['effect']),
           ),
         );
 

@@ -82,6 +82,5 @@ class ContextData<T, C> extends Data<T> {
       );
 
   @override
-  String toString() =>
-      CrystallineGlobalConfig.logger.generateToStringForData(this);
+  String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 }

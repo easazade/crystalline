@@ -6,10 +6,9 @@ import '../utils.dart';
 
 void main() {
   late ContextData<String, ({String job, String car})> contextData;
-  late DataTestObserver<String, ContextData<String, ({String job, String car})>>
-      testObserver;
+  late DataTestObserver<String, ContextData<String, ({String job, String car})>> testObserver;
 
- setUpAll(() {
+  setUpAll(() {
     CrystallineGlobalConfig.logger = CrystallineTestLogger();
   });
 
@@ -55,8 +54,7 @@ void main() {
     'Should throw Failure when value of Data is null and getter value is called',
     () {
       expect(contextData.valueOrNull, isNull);
-      expect(
-          () => contextData.value, throwsA(isA<ValueNotAvailableException>()));
+      expect(() => contextData.value, throwsA(isA<ValueNotAvailableException>()));
     },
   );
 
@@ -91,9 +89,7 @@ void main() {
     expect(contextData.failure, expectedFailure);
   });
 
-  test(
-      'Should throw Failure when failure of Data is null and getter failure is called',
-      () {
+  test('Should throw Failure when failure of Data is null and getter failure is called', () {
     expect(contextData.failureOrNull, isNull);
     expect(() => contextData.failure, throwsA(isA<FailureIsNullException>()));
   });

@@ -9,7 +9,7 @@ void main() {
 
   late Data<String> data;
 
- setUpAll(() {
+  setUpAll(() {
     CrystallineGlobalConfig.logger = CrystallineTestLogger();
   });
 

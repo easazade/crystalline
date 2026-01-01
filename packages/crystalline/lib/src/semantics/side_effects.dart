@@ -24,8 +24,7 @@ class OperationReportsManager<T> {
     _data.removeSideEffect(report);
   }
 
-  List<OperationReport> get items =>
-      _data.sideEffects.whereType<OperationReport>().toList();
+  List<OperationReport> get items => _data.sideEffects.whereType<OperationReport>().toList();
 }
 
 class SemanticSideEffects<T> {
@@ -37,6 +36,5 @@ class SemanticSideEffects<T> {
 }
 
 extension SemanticSideEffectsOnDataX<T> on Data<T> {
-  SemanticSideEffects<T> get semanticSideEffects =>
-      SemanticSideEffects<T>(this);
+  SemanticSideEffects<T> get semanticSideEffects => SemanticSideEffects<T>(this);
 }

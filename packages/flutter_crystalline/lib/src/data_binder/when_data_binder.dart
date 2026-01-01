@@ -38,8 +38,7 @@ class WhenDataBinder<T, D extends Data<T>> extends StatefulWidget {
   State<WhenDataBinder<T, D>> createState() => _WhenDataBinderState<T, D>();
 }
 
-class _WhenDataBinderState<T, D extends Data<T>>
-    extends State<WhenDataBinder<T, D>> {
+class _WhenDataBinderState<T, D extends Data<T>> extends State<WhenDataBinder<T, D>> {
   late D _data;
 
   late void Function() _observer = () => setState(() {});
@@ -87,9 +86,7 @@ class _WhenDataBinderState<T, D extends Data<T>>
     if (_data.hasNoValue && widget.onNoValue != null) {
       return widget.onNoValue!(context, _data);
     }
-    return (widget.orElse != null)
-        ? widget.orElse!(context, _data)
-        : widget.fallback;
+    return (widget.orElse != null) ? widget.orElse!(context, _data) : widget.fallback;
   }
 
   @override
