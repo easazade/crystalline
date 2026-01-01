@@ -378,12 +378,6 @@ void main() {
   });
 
   group('extension -', () {
-    test(
-      'data.unModifiable() extension should convert Data to ObservableData',
-      () {
-        expect(data.unModifiable(), isA<ObservableData<String>>());
-      },
-    );
 
     test(
       'data.mapToData extension should convert an Iterable<T> to a List<Data<T>>',

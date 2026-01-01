@@ -39,8 +39,8 @@ class ContextIsNullException implements Exception {
 class CannotUpdateFromTypeException implements Exception {
   const CannotUpdateFromTypeException(this.source, this.other);
 
-  final ReadableData<dynamic> source;
-  final ReadableData<dynamic> other;
+  final Data<dynamic> source;
+  final Data<dynamic> other;
 
   @override
   String toString() {

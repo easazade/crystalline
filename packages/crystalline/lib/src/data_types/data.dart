@@ -108,100 +108,7 @@ class RemoveSideEffectEvent extends Event {
         ));
 }
 
-abstract class ReadableData<T> {
-  T get value;
-
-  T? get valueOrNull;
-
-  Failure get failure;
-
-  Failure? get failureOrNull;
-
-  Operation get operation;
-
-  Failure get consumeFailure;
-
-  Iterable<dynamic> get sideEffects;
-
-  bool get hasSideEffects;
-
-  bool get hasValue;
-
-  bool get hasNoValue;
-
-  bool get isAnyOperation;
-
-  bool get isUpdating;
-
-  bool get isDeleting;
-
-  bool get isReading;
-
-  bool get isCreating;
-
-  bool get hasCustomOperation;
-
-  bool get hasFailure;
-
-  bool valueEqualsTo(T? another);
-}
-
-abstract class ModifiableData<T> {
-  void set value(T? value);
-
-  void set operation(Operation operation);
-
-  void set failure(Failure? failure);
-
-  void addSideEffect(dynamic sideEffect);
-
-  void addAllSideEffects(Iterable<dynamic> sideEffect);
-
-  void removeSideEffect(dynamic sideEffect);
-
-  void removeAllSideEffects();
-
-  void modify(void Function(Data<T> data) fn);
-
-  Future<void> modifyAsync(Future<void> Function(Data<T> data) fn);
-
-  void updateFrom(ReadableData<T> data);
-
-  void reset();
-}
-
-abstract class ObservableData<T> implements ReadableData<T> {
-  void addObserver(void Function() observer);
-
-  void removeObserver(void Function() observer);
-
-  bool get hasObservers;
-
-  Iterable<void Function()> get observers;
-
-  Iterable<bool Function(Event event)> get eventListeners;
-
-  bool get hasEventListeners;
-
-  void addEventListener(bool Function(Event event) listener);
-
-  void removeEventListener(bool Function(Event event) listener);
-
-  void dispatchEvent(Event event);
-
-  bool get isAllowedToNotify;
-
-  @mustCallSuper
-  void allowNotify();
-
-  @mustCallSuper
-  void disallowNotify();
-
-  @mustCallSuper
-  void notifyObservers();
-}
-
-class Data<T> implements ObservableData<T>, ModifiableData<T> {
+class Data<T> {
   T? _value;
   Failure? _failure;
   Operation _operation;
@@ -225,7 +132,6 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
         _sideEffects = sideEffects?.toList() ?? [],
         _operation = operation;
 
-  @override
   T get value {
     if (_value == null) {
       throw ValueNotAvailableException();
@@ -235,7 +141,6 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
 
   T? get valueOrNull => _value;
 
-  @override
   Failure get consumeFailure {
     if (_failure == null) {
       throw FailureIsNullException();
@@ -245,7 +150,6 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     return consumedFailureValue;
   }
 
-  @override
   Failure get failure {
     if (_failure == null) {
       throw FailureIsNullException();
@@ -253,10 +157,8 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     return _failure!;
   }
 
-  @override
   Iterable<dynamic> get sideEffects => _sideEffects;
 
-  @override
   void addSideEffect(dynamic sideEffect) {
     _sideEffects.add(sideEffect);
     dispatchEvent(AddSideEffectEvent(
@@ -267,14 +169,12 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     notifyObservers();
   }
 
-  @override
   void addAllSideEffects(Iterable<dynamic> sideEffects) {
     _sideEffects.addAll(sideEffects);
     dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
-  @override
   void removeSideEffect(dynamic sideEffect) {
     _sideEffects.remove(sideEffect);
     dispatchEvent(RemoveSideEffectEvent(
@@ -285,50 +185,36 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     notifyObservers();
   }
 
-  @override
   void removeAllSideEffects() {
     _sideEffects.clear();
     dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
-  @override
   bool get hasSideEffects => _sideEffects.isNotEmpty;
 
-  @override
   Failure? get failureOrNull => _failure;
 
-  @override
   bool get hasFailure => _failure != null;
 
-  @override
   bool get hasValue => _value != null;
 
-  @override
   bool get hasNoValue => !hasValue;
 
-  @override
   bool get isCreating => _operation == Operation.create;
 
-  @override
   bool get isDeleting => _operation == Operation.delete;
 
-  @override
   bool get isReading => _operation == Operation.read;
 
-  @override
   bool get isUpdating => _operation == Operation.update;
 
-  @override
   bool get hasCustomOperation => _operation.isCustom;
 
-  @override
   bool get isAnyOperation => _operation != Operation.none;
 
-  @override
   bool valueEqualsTo(T? otherValue) => _value == otherValue;
 
-  @override
   void set failure(final Failure? failure) {
     _failure = failure;
     if (failure != null) {
@@ -337,7 +223,6 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     notifyObservers();
   }
 
-  @override
   void set operation(final Operation operation) {
     _operation = operation;
     dispatchEvent(OperationEvent(operation));
@@ -346,7 +231,6 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
 
   Operation get operation => _operation;
 
-  @override
   set value(final T? value) {
     _value = value;
     if (value != null) {
@@ -355,7 +239,6 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     notifyObservers();
   }
 
-  @override
   void modify(void Function(Data<T> data) fn) {
     disallowNotify();
     final old = copy();
@@ -379,7 +262,6 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     notifyObservers();
   }
 
-  @override
   Future<void> modifyAsync(Future<void> Function(Data<T> data) fn) async {
     disallowNotify();
     final old = copy();
@@ -403,8 +285,7 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     notifyObservers();
   }
 
-  @override
-  void updateFrom(ReadableData<T> data) {
+  void updateFrom(Data<T> data) {
     disallowNotify();
     final old = copy();
     value = data.valueOrNull;
@@ -432,7 +313,6 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
   }
 
   /// Resets the Data by setting value & failure to null, sets operation to Operation.none and removes all side-effects
-  @override
   void reset() {
     modify((data) {
       data.value = null;
@@ -460,36 +340,28 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
         _operation == other._operation;
   }
 
-  @override
   Iterable<void Function()> get observers => _observers;
 
-  @override
   void addObserver(void Function() observer) {
     _observers.add(observer);
   }
 
-  @override
   void removeObserver(void Function() observer) {
     _observers.remove(observer);
   }
 
-  @override
   bool get hasObservers => observers.isNotEmpty;
 
-  @override
   bool get hasEventListeners => eventListeners.isNotEmpty;
 
-  @override
   void allowNotify() {
     _allowedToNotify = true;
   }
 
-  @override
   void disallowNotify() {
     _allowedToNotify = false;
   }
 
-  @override
   bool get isAllowedToNotify => _allowedToNotify;
 
   @mustCallSuper
@@ -501,20 +373,16 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     if (isAllowedToNotify) observers.forEach((observer) => observer());
   }
 
-  @override
   Iterable<bool Function(Event event)> get eventListeners => _eventListeners;
 
-  @override
   void addEventListener(bool Function(Event event) listener) {
     _eventListeners.add(listener);
   }
 
-  @override
   void removeEventListener(bool Function(Event event) listener) {
     _eventListeners.remove(listener);
   }
 
-  @override
   void dispatchEvent(Event event) {
     if (_allowedToNotify) {
       for (var callback in eventListeners) {

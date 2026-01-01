@@ -37,7 +37,7 @@
 
 - Add sideEffects to Data types
 - Add OperationData
-- Data.updateFrom() method can now read from ReadableData instead of just Data
+- Data.updateFrom() method can now read from Data instead of just Data
 - Fix data types updateFrom method not updating sideEffects & add OperationData.from() factory method
 - Change type name EditableData to ModifiableData
 - Fix bug in ListData not setting side effects

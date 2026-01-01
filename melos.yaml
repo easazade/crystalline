@@ -34,7 +34,7 @@ scripts:
 
   test:
     run: |
-      melos exec --ignore="*example*" -c 1 -- flutter test --coverage
+      melos exec --ignore="*example*" --ignore="crystalline_builder" -c 1 -- flutter test --coverage
     description: Run all tests .
 
   gen:

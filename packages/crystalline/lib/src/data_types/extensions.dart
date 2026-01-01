@@ -5,8 +5,6 @@ extension CrystallineDataX<T> on Data<T> {
   /// returns an [OperationData] that observers this data
   OperationData toOperationData() => OperationData.from(this);
 
-  /// returns [Data] as [ObservableData]
-  ObservableData<T> unModifiable() => this;
 }
 
 extension CrystallineIterableX<T> on Iterable<T> {

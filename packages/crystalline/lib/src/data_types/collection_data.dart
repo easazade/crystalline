@@ -208,7 +208,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
   }
 
   @override
-  void updateFrom(ReadableData<List<Data<T>>> data) {
+  void updateFrom(Data<List<Data<T>>> data) {
     disallowNotify();
     final old = copy();
     items.forEach((e) => _removeObserversFromItem(e));

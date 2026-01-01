@@ -51,7 +51,7 @@ class ContextData<T, C> extends Data<T> {
   }
 
   @override
-  void updateFrom(ReadableData<T> data) {
+  void updateFrom(Data<T> data) {
     if (data is! ContextData<T, C>) {
       throw CannotUpdateFromTypeException(this, data);
     }
@@ -81,7 +81,7 @@ class ContextData<T, C> extends Data<T> {
         sideEffects: sideEffects.toList(),
       );
 
-        @override
+  @override
   String toString() =>
       CrystallineGlobalConfig.logger.generateToStringForData(this);
 }
