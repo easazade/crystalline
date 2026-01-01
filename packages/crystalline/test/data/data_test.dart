@@ -401,7 +401,7 @@ void main() {
         final someData = Data<String>();
         expect(someData.hasEventListeners, isFalse);
 
-        final listener = (event) => false;
+        bool listener(event) => false;
 
         someData.addEventListener(listener);
 

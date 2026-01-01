@@ -6,25 +6,35 @@ import 'package:crystalline/src/data_types/failure.dart';
 import 'package:meta/meta.dart';
 
 class DefaultCrystallineLogger extends CrystallineLogger {
-  String redText(dynamic object) => "\x1B[31m${object}\x1B[0m";
+  @override
+  String redText(dynamic object) => "\x1B[31m$object\x1B[0m";
 
-  String greenText(dynamic object) => "\x1B[32m${object}\x1B[0m";
+  @override
+  String greenText(dynamic object) => "\x1B[32m$object\x1B[0m";
 
-  String yellowText(dynamic object) => "\x1B[33m${object}\x1B[0m";
+  @override
+  String yellowText(dynamic object) => "\x1B[33m$object\x1B[0m";
 
-  String orangeText(dynamic object) => "\x1B[34m${object}\x1B[0m";
+  @override
+  String orangeText(dynamic object) => "\x1B[34m$object\x1B[0m";
 
-  String magentaText(dynamic object) => "\x1B[35m${object}\x1B[0m";
+  @override
+  String magentaText(dynamic object) => "\x1B[35m$object\x1B[0m";
 
-  String cyanText(dynamic object) => "\x1B[36m${object}\x1B[0m";
+  @override
+  String cyanText(dynamic object) => "\x1B[36m$object\x1B[0m";
 
-  String whiteText(dynamic object) => "\x1B[37m${object}\x1B[0m";
+  @override
+  String whiteText(dynamic object) => "\x1B[37m$object\x1B[0m";
 
-  String whiteTextRedBg(dynamic object) => '\x1B[41m\x1B[37m${object}\x1B[0m';
+  @override
+  String whiteTextRedBg(dynamic object) => '\x1B[41m\x1B[37m$object\x1B[0m';
 
-  String whiteTextBlueBg(dynamic object) => '\x1B[44m\x1B[37m${object}\x1B[0m';
+  @override
+  String whiteTextBlueBg(dynamic object) => '\x1B[44m\x1B[37m$object\x1B[0m';
 
-  String resetTextColors(dynamic object) => "\x1B[0m${object}\x1B[0m";
+  @override
+  String resetTextColors(dynamic object) => "\x1B[0m$object\x1B[0m";
 
   /// prints all ANSI colors and effects that can be shown
   /// this method is just for testing to see what colors/effects we can use
@@ -35,6 +45,7 @@ class DefaultCrystallineLogger extends CrystallineLogger {
     }
   }
 
+  @override
   String ellipsize(String text, {required int maxSize}) {
     if (text.length <= maxSize) {
       return text;
@@ -43,6 +54,7 @@ class DefaultCrystallineLogger extends CrystallineLogger {
     }
   }
 
+  @override
   String generateToStringForData<T>(Data<T> data) {
     final buffer = StringBuffer();
     buffer.write('{ ');

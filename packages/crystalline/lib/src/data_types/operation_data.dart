@@ -1,18 +1,13 @@
 import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
-import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/mutators/mutators.dart';
 
 class OperationData extends Data<void> {
   OperationData({
-    Operation operation = Operation.none,
-    Iterable<dynamic>? sideEffects,
-    Failure? failure,
-  }) : super(
-          operation: operation,
-          sideEffects: sideEffects,
-          failure: failure,
-        );
+    super.operation,
+    super.sideEffects,
+    super.failure,
+  });
 
   factory OperationData.from(Data<dynamic> data) {
     return data.mapTo<dynamic, OperationData>(

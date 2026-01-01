@@ -31,10 +31,11 @@ void main() {
               return DataBuilder(
                 data: data,
                 builder: (context, data) {
-                  if (data.hasValue)
+                  if (data.hasValue) {
                     return Text(data.value);
-                  else
+                  } else {
                     return Container();
+                  }
                 },
               );
             },
@@ -79,10 +80,11 @@ void main() {
                 return DataBuilder(
                   data: getData(),
                   builder: (context, data) {
-                    if (data.hasValue)
+                    if (data.hasValue) {
                       return Text(data.value);
-                    else
+                    } else {
                       return Container();
+                    }
                   },
                 );
               },
@@ -128,10 +130,11 @@ void main() {
           child: DataBuilder(
             data: data,
             builder: (context, data) {
-              if (data.hasValue)
+              if (data.hasValue) {
                 return Text(data.value);
-              else
+              } else {
                 return Container();
+              }
             },
           ),
         ),
@@ -204,10 +207,11 @@ void main() {
                 return DataBuilder(
                   data: data,
                   builder: (context, data) {
-                    if (data.hasFailure)
+                    if (data.hasFailure) {
                       return Text(data.failure.message);
-                    else
+                    } else {
                       return Text('no failure');
+                    }
                   },
                 );
               }),

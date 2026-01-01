@@ -5,10 +5,9 @@ import '../test_utils/test_logger.dart';
 
 class CollectionDataTestImpl<T> extends CollectionData<T> {
   CollectionDataTestImpl(this.items);
+  @override
   final List<Data<T>> items;
 
-  @override
-  CollectionData<T> copy() => super.copy();
 }
 
 void main() {

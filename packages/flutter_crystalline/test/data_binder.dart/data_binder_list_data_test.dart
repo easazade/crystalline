@@ -24,7 +24,7 @@ void main() async {
               return Column(
                 children: [
                   if (items.sideEffects.isNotEmpty) Text(items.sideEffects.first.toString()),
-                  ...items.map((item) => Text(item.value)).toList(),
+                  ...items.map((item) => Text(item.value)),
                 ],
               );
             },
@@ -79,11 +79,12 @@ void main() async {
                 children: [
                   if (items.sideEffects.isNotEmpty) Text(items.sideEffects.first.toString()),
                   ...items.map((item) {
-                    if (item.isAnyOperation)
+                    if (item.isAnyOperation) {
                       return CircularProgressIndicator();
-                    else
+                    } else {
                       return Text(item.value);
-                  }).toList(),
+                    }
+                  }),
                 ],
               );
             },

@@ -7,7 +7,7 @@ void main() {
   late List<Data<String>> items1;
   late List<Data<String>> items2;
   late Data<String> singleItem;
-  final observer = () {};
+  void observer() {}
 
   late ListData<String> listData;
   late ListDataTestObserver<String> testObserver;
@@ -164,20 +164,28 @@ void main() {
       expect(listData.items, items1);
 
       // items should have no observer
-      listData.forEach((e) => expect(e.observers.contains(observer), isFalse));
+      for (var e in listData) {
+        expect(e.observers.contains(observer), isFalse);
+      }
 
       // when added an observer it should be added on all data items
       listData.addObserver(observer);
-      items1.forEach((e) => expect(e.observers, contains(observer)));
+      for (var e in items1) {
+        expect(e.observers, contains(observer));
+      }
 
       // when modified list and remove some items
       listData.modifyItems((items) => items2);
 
       // expect observer should be removed from removed items
-      items1.forEach((e) => expect(e.observers.contains(observer), isFalse));
+      for (var e in items1) {
+        expect(e.observers.contains(observer), isFalse);
+      }
 
       // expect new items should have the observer
-      items2.forEach((e) => expect(e.observers, contains(observer)));
+      for (var e in items2) {
+        expect(e.observers, contains(observer));
+      }
       expect(testObserver.timesUpdated, 2);
     });
 
@@ -219,11 +227,15 @@ void main() {
       expect(listData.items, items1);
 
       // items should have no observer
-      listData.forEach((e) => expect(e.observers.contains(observer), isFalse));
+      for (var e in listData) {
+        expect(e.observers.contains(observer), isFalse);
+      }
 
       // when added an observer it should be added on all data items
       listData.addObserver(observer);
-      items1.forEach((e) => expect(e.observers, contains(observer)));
+      for (var e in items1) {
+        expect(e.observers, contains(observer));
+      }
       expect(testObserver.timesUpdated, 1);
     });
 
@@ -234,16 +246,22 @@ void main() {
         expect(listData.items, items1);
 
         // items should have no observer
-        listData.forEach((e) => expect(e.observers.contains(observer), isFalse));
+        for (var e in listData) {
+          expect(e.observers.contains(observer), isFalse);
+        }
 
         // when added an observer it should be added on all data items
         listData.addObserver(observer);
-        items1.forEach((e) => expect(e.observers, contains(observer)));
+        for (var e in items1) {
+          expect(e.observers, contains(observer));
+        }
         expect(listData.observers, contains(observer));
 
         // when removed an observer it should be removed from all data items and ListData itself
         listData.removeObserver(observer);
-        items1.forEach((e) => expect(e.observers.contains(observer), isFalse));
+        for (var e in items1) {
+          expect(e.observers.contains(observer), isFalse);
+        }
         expect(listData.observers.contains(observer), isFalse);
         expect(testObserver.timesUpdated, 1);
       },
@@ -676,7 +694,7 @@ void main() {
     test(
       'should dispatch ItemsUpdatedEvent when items removed using removeWhere() method',
       () {
-        final removeWhere = (Data<String> data) => data.value.length <= 3;
+        bool removeWhere(Data<String> data) => data.value.length <= 3;
         prefilledListData.removeWhere(removeWhere);
         final expectedList = prefilledItems..removeWhere(removeWhere);
 

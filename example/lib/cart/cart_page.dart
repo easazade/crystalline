@@ -16,7 +16,7 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cart'),
+        title: const Text('Cart'),
       ),
       body: StoreBuilder(
         store: cartStore,
@@ -26,11 +26,11 @@ class _CartPageState extends State<CartPage> {
             children: [
               TextField(
                 controller: _controller,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Enter shopping item name to add it to cart',
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               FilledButton(
                 onPressed: () {
                   final itemName = _controller.text;
@@ -41,13 +41,13 @@ class _CartPageState extends State<CartPage> {
                     );
                   }
                 },
-                child: Text('Add to Cart'),
+                child: const Text('Add to Cart'),
               ),
               if (store.cartItems.isNotEmpty) ...[
-                SizedBox(height: 16),
-                Divider(),
+                const SizedBox(height: 16),
+                const Divider(),
               ],
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               for (final cartItem in store.cartItems)
                 if (cartItem.hasValue)
                   Row(
@@ -55,12 +55,12 @@ class _CartPageState extends State<CartPage> {
                       Expanded(
                         child: Text(
                           cartItem.value.name,
-                          style: TextStyle(color: Colors.blue, fontSize: 18),
+                          style: const TextStyle(color: Colors.blue, fontSize: 18),
                         ),
                       ),
                       IconButton(
                         onPressed: () => store.deleteItem(cartItem.value),
-                        icon: Icon(Icons.delete, color: Colors.red),
+                        icon: const Icon(Icons.delete, color: Colors.red),
                       ),
                     ],
                   ),

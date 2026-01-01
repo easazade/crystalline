@@ -3,7 +3,7 @@ import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 
-typedef _DataPredicate<T> = bool Function(List<Data<T>> value, Operation operation, Failure? failure)?;
+typedef DataPredicate<T> = bool Function(List<Data<T>> value, Operation operation, Failure? failure)?;
 
 class AddItemEvent<T> extends Event {
   AddItemEvent(this.newItem, this.items)
@@ -51,18 +51,23 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   @override
   void addObserver(void Function() observer) {
     super.addObserver(observer);
-    items.forEach((item) => item.addObserver(observer));
+    for (var item in items) {
+      item.addObserver(observer);
+    }
   }
 
   @override
   void removeObserver(void Function() observer) {
     super.removeObserver(observer);
-    items.forEach((e) => e.removeObserver(observer));
+    for (var e in items) {
+      e.removeObserver(observer);
+    }
   }
 
   @override
   Iterator<Data<T>> get iterator => items.iterator;
 
+  @override
   int get length => items.length;
 
   Data<T> operator [](int index) => items[index];
@@ -85,7 +90,9 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   }
 
   void removeAll() {
-    items.forEach((e) => _removeObserversFromItem(e));
+    for (var e in items) {
+      _removeObserversFromItem(e);
+    }
     items.clear();
     dispatchEvent(ItemsUpdatedEvent(items));
     notifyObservers();
@@ -129,10 +136,14 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     disallowNotify();
     final oldItems = items.toList();
     final newItems = modifier(items).toList();
-    items.forEach((e) => _removeObserversFromItem(e));
+    for (var e in items) {
+      _removeObserversFromItem(e);
+    }
     items.clear();
     items.addAll(newItems);
-    items.forEach((e) => _addObserversToItem(e));
+    for (var e in items) {
+      _addObserversToItem(e);
+    }
     allowNotify();
     if (oldItems != items) {
       dispatchEvent(ItemsUpdatedEvent(items));
@@ -144,10 +155,14 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     disallowNotify();
     final oldItems = items.toList();
     final newItems = await modifier(items).then((e) => e.toList());
-    items.forEach((e) => _removeObserversFromItem(e));
+    for (var e in items) {
+      _removeObserversFromItem(e);
+    }
     items.clear();
     items.addAll(newItems);
-    items.forEach((e) => _addObserversToItem(e));
+    for (var e in items) {
+      _addObserversToItem(e);
+    }
     allowNotify();
     if (oldItems != items) {
       dispatchEvent(ItemsUpdatedEvent(items));
@@ -203,10 +218,14 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   void updateFrom(Data<List<Data<T>>> data) {
     disallowNotify();
     final old = copy();
-    items.forEach((e) => _removeObserversFromItem(e));
+    for (var e in items) {
+      _removeObserversFromItem(e);
+    }
     items.clear();
     items.addAll(data.value.toList());
-    items.forEach((e) => _addObserversToItem(e));
+    for (var e in items) {
+      _addObserversToItem(e);
+    }
     operation = data.operation;
     failure = data.failureOrNull;
     removeAllSideEffects();
@@ -252,8 +271,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   @override
   CollectionData<T> copy() => ListData(
         items.toList().map((data) => data.copy()).toList(),
-        operation: this.operation,
-        failure: this.failureOrNull,
+        operation: operation,
+        failure: failureOrNull,
         sideEffects: sideEffects.toList(),
       );
 
@@ -266,6 +285,9 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
         operation == other.operation &&
         failureOrNull == other.failureOrNull;
   }
+
+  @override
+  int get hashCode => items.hashCode + operation.hashCode + (failureOrNull?.hashCode ?? 1);
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
@@ -297,15 +319,15 @@ class ListData<T> extends CollectionData<T> {
   @override
   final List<Data<T>> items;
 
-  final _DataPredicate<T> isAnyOperationStrategy;
-  final _DataPredicate<T> hasFailureStrategy;
-  final _DataPredicate<T> hasValueStrategy;
-  final _DataPredicate<T> hasNoValueStrategy;
-  final _DataPredicate<T> isCreatingStrategy;
-  final _DataPredicate<T> isDeletingStrategy;
-  final _DataPredicate<T> isReadingStrategy;
-  final _DataPredicate<T> isUpdatingStrategy;
-  final _DataPredicate<T> hasCustomOperationStrategy;
+  final DataPredicate<T> isAnyOperationStrategy;
+  final DataPredicate<T> hasFailureStrategy;
+  final DataPredicate<T> hasValueStrategy;
+  final DataPredicate<T> hasNoValueStrategy;
+  final DataPredicate<T> isCreatingStrategy;
+  final DataPredicate<T> isDeletingStrategy;
+  final DataPredicate<T> isReadingStrategy;
+  final DataPredicate<T> isUpdatingStrategy;
+  final DataPredicate<T> hasCustomOperationStrategy;
 
   @override
   bool get isAnyOperation {
@@ -355,8 +377,8 @@ class ListData<T> extends CollectionData<T> {
   @override
   ListData<T> copy() => ListData(
         items.toList().map((data) => data.copy()).toList(),
-        operation: this.operation,
-        failure: this.failureOrNull,
+        operation: operation,
+        failure: failureOrNull,
         sideEffects: sideEffects.toList(),
         isAnyOperationStrategy: isAnyOperationStrategy,
         hasFailureStrategy: hasFailureStrategy,

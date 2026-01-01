@@ -19,7 +19,7 @@ abstract class Store extends Data<void> with ChangeNotifier {
   @override
   String toString() {
     final buffer = StringBuffer();
-    buffer.writeln('${this.runtimeType}: ${CrystallineGlobalConfig.logger.generateToStringForData(this)}');
+    buffer.writeln('$runtimeType: ${CrystallineGlobalConfig.logger.generateToStringForData(this)}');
 
     if (states.isNotEmpty) {
       buffer.writeln();

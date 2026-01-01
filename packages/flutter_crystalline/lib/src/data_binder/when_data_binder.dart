@@ -41,7 +41,9 @@ class WhenDataBinder<T, D extends Data<T>> extends StatefulWidget {
 class _WhenDataBinderState<T, D extends Data<T>> extends State<WhenDataBinder<T, D>> {
   late D _data;
 
-  late void Function() _observer = () => setState(() {});
+  void _observer() {
+    setState(() {});
+  }
 
   @override
   void initState() {

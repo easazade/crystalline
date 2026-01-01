@@ -37,6 +37,9 @@ class Operation {
       return name == other.name;
     }
   }
+
+  @override
+  int get hashCode => name.hashCode + 4;
 }
 
 class Event {
@@ -49,6 +52,9 @@ class Event {
     if (other is! Event) return false;
     return other.runtimeType == runtimeType && name == other.name;
   }
+
+  @override
+  int get hashCode => name.hashCode + 12;
 
   @override
   String toString() => name;
@@ -330,6 +336,9 @@ class Data<T> {
         _operation == other._operation;
   }
 
+  @override
+  int get hashCode => (_failure?.hashCode ?? 0) + (_value?.hashCode ?? 4) + _operation.hashCode + runtimeType.hashCode;
+
   Iterable<void Function()> get observers => _observers;
 
   void addObserver(void Function() observer) {
@@ -360,10 +369,11 @@ class Data<T> {
     if (stateChangeLog != null) {
       CrystallineGlobalConfig.logger.log(stateChangeLog);
     }
-    if (isAllowedToNotify)
+    if (isAllowedToNotify) {
       for (final observer in observers) {
         observer();
       }
+    }
   }
 
   Iterable<bool Function(Event event)> get eventListeners => _eventListeners;

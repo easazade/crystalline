@@ -1,5 +1,5 @@
 /// Crystalline
-library crystalline;
+library;
 
 export 'src/config/global_config.dart';
 export 'src/config/logger/crystalline_logger.dart';

@@ -1,30 +1,22 @@
 import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
-import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
 
 class ContextData<T, C> extends Data<T> {
   ContextData({
-    T? value,
+    super.value,
     C? context,
-    Failure? failure,
-    Operation operation = Operation.none,
-    List<dynamic>? sideEffects,
-    String? name,
-  })  : _context = context,
-        super(
-          value: value,
-          failure: failure,
-          operation: operation,
-          sideEffects: sideEffects,
-          name: name,
-        );
+    super.failure,
+    super.operation,
+    List<dynamic>? super.sideEffects,
+    super.name,
+  })  : _context = context;
 
   C? _context;
 
   bool get hasContext => _context != null;
 
-  void set context(C? context) {
+  set context(C? context) {
     _context = context;
     notifyObservers();
   }
