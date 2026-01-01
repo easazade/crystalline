@@ -19,7 +19,7 @@ void main() {
   late ListDataTestObserver<String> prefilledTestObserver;
   late ListDataTestEventListener<String> prefilledTestListener;
 
- setUpAll(() {
+  setUpAll(() {
     CrystallineGlobalConfig.logger = CrystallineTestLogger();
   });
 
@@ -549,7 +549,7 @@ void main() {
 
         testListener.expectNthDispatch(
           2,
-          (event) => expect(event, SideEffectsUpdated(['effect'])),
+          (event) => expect(event, SideEffectsUpdatedEvent(['effect'])),
         );
 
         listData.removeSideEffect('effect');
@@ -564,7 +564,7 @@ void main() {
 
         testListener.expectNthDispatch(
           4,
-          (event) => expect(event, SideEffectsUpdated([])),
+          (event) => expect(event, SideEffectsUpdatedEvent([])),
         );
       },
     );
@@ -751,7 +751,7 @@ void main() {
 
         testListener.expectNthDispatch(
           4,
-          (event) => expect(event, SideEffectsUpdated(['effect'])),
+          (event) => expect(event, SideEffectsUpdatedEvent(['effect'])),
         );
       },
     );
@@ -783,7 +783,7 @@ void main() {
 
         testListener.expectNthDispatch(
           4,
-          (event) => expect(event, SideEffectsUpdated(['effect'])),
+          (event) => expect(event, SideEffectsUpdatedEvent(['effect'])),
         );
       },
     );
@@ -818,7 +818,7 @@ void main() {
 
         testListener2.expectNthDispatch(
           4,
-          (event) => expect(event, SideEffectsUpdated(['effect'])),
+          (event) => expect(event, SideEffectsUpdatedEvent(['effect'])),
         );
       },
     );

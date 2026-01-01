@@ -77,10 +77,10 @@ class FailureEvent extends Event {
   final Failure failure;
 }
 
-class SideEffectsUpdated extends Event {
+class SideEffectsUpdatedEvent extends Event {
   final Iterable<dynamic> sideEffects;
 
-  SideEffectsUpdated(this.sideEffects)
+  SideEffectsUpdatedEvent(this.sideEffects)
       : super('sideEffects: ${sideEffects.length}');
 }
 
@@ -263,14 +263,14 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
       newSideEffect: sideEffect,
       sideEffects: _sideEffects,
     ));
-    dispatchEvent(SideEffectsUpdated(_sideEffects));
+    dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
   @override
   void addAllSideEffects(Iterable<dynamic> sideEffects) {
     _sideEffects.addAll(sideEffects);
-    dispatchEvent(SideEffectsUpdated(_sideEffects));
+    dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
@@ -281,14 +281,14 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
       removedSideEffect: sideEffect,
       sideEffects: _sideEffects,
     ));
-    dispatchEvent(SideEffectsUpdated(_sideEffects));
+    dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
   @override
   void removeAllSideEffects() {
     _sideEffects.clear();
-    dispatchEvent(SideEffectsUpdated(_sideEffects));
+    dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
@@ -373,7 +373,7 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     }
     if (!ListEquality<dynamic>()
         .equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdated(sideEffects));
+      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
 
     notifyObservers();
@@ -397,7 +397,7 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     }
     if (!ListEquality<dynamic>()
         .equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdated(sideEffects));
+      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
 
     notifyObservers();
@@ -425,7 +425,7 @@ class Data<T> implements ObservableData<T>, ModifiableData<T> {
     }
     if (!ListEquality<dynamic>()
         .equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdated(sideEffects));
+      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
 
     notifyObservers();
@@ -558,7 +558,7 @@ class RefreshData<T> extends Data<T> {
     if (_disposed) {
       return;
     }
-    
+
     Future<RefreshStatus> _tryRefreshCallback() async {
       RefreshStatus status;
 

@@ -178,7 +178,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     }
     if (!ListEquality<dynamic>()
         .equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdated(sideEffects));
+      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
     notifyObservers();
   }
@@ -202,7 +202,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     }
     if (!ListEquality<dynamic>()
         .equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdated(sideEffects));
+      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
     notifyObservers();
   }
@@ -231,7 +231,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>>
     }
     if (!ListEquality<dynamic>()
         .equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdated(sideEffects));
+      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
     }
     notifyObservers();
   }
