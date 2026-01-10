@@ -12,7 +12,7 @@ Crystalline is a comprehensive state management library designed to simplify and
 
 - **Enhanced Code Clarity:** Crystalline streamlines state management code and state objects for improved readability.
 
-- **Comprehensive State Definition:** Define all necessary elements within your state, including data, status, operations, errors, and events, using a unified and efficient approach.
+- **Comprehensive State Modeling:** Define all necessary elements within your state, including data, status, operations, errors, and events, using a unified and efficient approach.
 
 - **Comprehensive State Tracking:** Crystalline empowers you to represent the entire lifecycle of a `Store` within your state. Whether an operation is in progress, completed successfully, or has encountered an error, you can explicitly define these states using Crystalline data types designed for defining state objects. This level of granularity can be applied to the entire state or only specific parts of it.
 
@@ -29,7 +29,7 @@ Crystalline is a comprehensive state management library designed to simplify and
 - [ ] create a doc for scenarios and use cases added in example
 - [ ] define crystal-clear state objects across all state management libraries.
 - [ ] refer to built in events as semantic events as they are semantics. create a table for all semantic events
-- [ ] State definition library that makes your states, reflective and crystal clear, no matter what state management library you use.
+- [ ] State modeling library that makes your states, reflective and crystal clear, no matter what state management library you use.
 - [ ] Checkout actual use-cases in code where crystalline saves you
 - [ ] Why use this?
 - [ ] Quick example
