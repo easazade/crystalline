@@ -22,14 +22,14 @@ class _ProfilePageState extends State<ProfilePage> {
               profileStore.update();
             },
           ),
-          DataBinder(
+          DataBuilder(
             data: profileStore,
             builder: (context, _) {
               print('updating profile page widget');
               return Text(profileStore.toString());
             },
           ),
-          WhenDataBinder(
+          WhenDataBuilder(
             data: profileStore.profileImage,
             onValue: (context, profileStore) {
               return Text(profileStore.value);

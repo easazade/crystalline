@@ -14,11 +14,11 @@ void main() async {
   });
 
   testWidgets(
-    'DataBinder Should rebuild when ListData changes',
+    'DataBuilder Should rebuild when ListData changes',
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBinder(
+          child: WhenDataBuilder(
             data: listData,
             onValue: (context, items) {
               return Column(
@@ -68,11 +68,11 @@ void main() async {
   );
 
   testWidgets(
-    'DataBinder Should rebuild when ListData when its child items change',
+    'DataBuilder Should rebuild when ListData when its child items change',
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
             data: listData,
             builder: (context, items) {
               return Column(

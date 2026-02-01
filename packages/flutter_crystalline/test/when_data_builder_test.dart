@@ -28,10 +28,10 @@ void main() {
             rebuild = () => setState(() {});
 
             return Testable(
-              child: DataBinder(
+              child: DataBuilder(
                 data: getData(),
                 builder: (context, data) {
-                  return WhenDataBuilder<String, Data<String>>(
+                  return WhenData<String, Data<String>>(
                     data: getData(),
                     onValue: (context, data) => Text(data.value),
                   );
@@ -65,10 +65,10 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
             data: data,
             builder: (context, data) {
-              return WhenDataBuilder<String, Data<String>>(
+              return WhenData<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
                 onNoValue: (context, data) => Text('data has no value'),
@@ -130,7 +130,7 @@ void main() {
             rebuildParent = () => setState(() {});
 
             return Testable(
-              child: WhenDataBuilder<String, Data<String>>(
+              child: WhenData<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
                 onNoValue: (context, data) => Text('data has no value'),
@@ -198,7 +198,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBuilder<String, Data<String>>(
+          child: WhenData<String, Data<String>>(
             data: data,
             onValue: (context, data) => Text(data.value),
             onNoValue: (context, data) => Text('data has no value'),
@@ -247,10 +247,10 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
             data: data,
             builder: (context, data) {
-              return WhenDataBuilder<String, Data<String>>(
+              return WhenData<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
                 onNoValue: (context, data) => Text('data has no value'),
@@ -302,10 +302,10 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
             data: data,
             builder: (context, data) {
-              return WhenDataBuilder<String, Data<String>>(
+              return WhenData<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
                 onAnyOperation: (context, data) => Text('operating'),
@@ -355,10 +355,10 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
             data: data,
             builder: (context, data) {
-              return WhenDataBuilder<String, Data<String>>(
+              return WhenData<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
                 onAnyOperation: (context, data) => Text('operating'),
@@ -410,10 +410,10 @@ void main() {
 
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
             data: data,
             builder: (context, data) {
-              return WhenDataBuilder<String, Data<String>>(
+              return WhenData<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
                 onAnyOperation: (context, data) => Text('operating'),
@@ -448,10 +448,10 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
             data: data,
             builder: (context, data) {
-              return WhenDataBuilder<String, Data<String>>(
+              return WhenData<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
               );
@@ -470,10 +470,10 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
               data: data,
               builder: (context, data) {
-                return WhenDataBuilder<String, Data<String>>(
+                return WhenData<String, Data<String>>(
                   data: data,
                   onValue: (context, data) => Text(data.value),
                   orElse: (context, data) => Text('or else'),
@@ -499,7 +499,7 @@ void main() {
             rebuild = () => setState(() {});
 
             return Testable(
-              child: WhenDataBuilder<String, Data<String>>(
+              child: WhenData<String, Data<String>>(
                 data: data,
                 onValue: (context, data) => Text(data.value),
                 orElse: (context, data) => Text('or else'),

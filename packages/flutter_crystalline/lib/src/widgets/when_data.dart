@@ -2,8 +2,8 @@ import 'package:crystalline/crystalline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/src/typedefs.dart';
 
-class WhenDataBuilder<T, D extends Data<T>> extends StatelessWidget {
-  const WhenDataBuilder({
+class WhenData<T, D extends Data<T>> extends StatelessWidget {
+  const WhenData({
     super.key,
     required this.data,
     required this.onValue,

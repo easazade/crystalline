@@ -14,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: WhenDataBinder(
+        title: WhenDataBuilder(
           data: homeStore.title,
           onValue: (context, data) => Text(data.value),
           onAnyOperation: (context, data) => const SizedBox(
@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         actions: [
-          WhenDataBinder(
+          WhenDataBuilder(
             data: homeStore.number,
             onValue: (context, data) => SizedBox(
               width: 54,
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
               child: const Text('Change Number'),
               onPressed: () => homeStore.changeNumber(),
             ),
-            WhenDataBinder(
+            WhenDataBuilder(
               data: homeStore.number,
               onValue: (context, data) => SizedBox(
                 width: 54,
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            WhenDataBinder(
+            WhenDataBuilder(
               data: homeStore.number,
               onValue: (context, data) => SizedBox(
                 width: 54,
@@ -119,9 +119,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            DataBuilder(
-              data: homeStore,
-              builder: (context, _) {
+            Builder(
+              builder: (context) {
                 print('home store being rebuilt');
                 if (homeStore.isAnyOperation) {
                   return const Text(
@@ -132,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                 return const Text('home store available');
               },
             ),
-            WhenDataBinder(
+            WhenDataBuilder(
               data: homeStore,
               onValue: (context, _) => const Text('home store available'),
               onAnyOperation: (context, _) => const Text(

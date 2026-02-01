@@ -25,19 +25,14 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
             data: data,
             builder: (context, data) {
-              return DataBuilder(
-                data: data,
-                builder: (context, data) {
-                  if (data.hasValue) {
-                    return Text(data.value);
-                  } else {
-                    return Container();
-                  }
-                },
-              );
+              if (data.hasValue) {
+                return Text(data.value);
+              } else {
+                return Container();
+              }
             },
           ),
         ),
@@ -74,19 +69,14 @@ void main() {
           rebuild = () => setState(() {});
 
           return Testable(
-            child: DataBinder(
+            child: DataBuilder(
               data: getData(),
               builder: (context, data) {
-                return DataBuilder(
-                  data: getData(),
-                  builder: (context, data) {
-                    if (data.hasValue) {
-                      return Text(data.value);
-                    } else {
-                      return Container();
-                    }
-                  },
-                );
+                if (data.hasValue) {
+                  return Text(data.value);
+                } else {
+                  return Container();
+                }
               },
             ),
           );
@@ -123,42 +113,6 @@ void main() {
   );
 
   testWidgets(
-    'DataBuilder should not watch data by itself and rebuild',
-    (tester) async {
-      await tester.pumpWidget(
-        Testable(
-          child: DataBuilder(
-            data: data,
-            builder: (context, data) {
-              if (data.hasValue) {
-                return Text(data.value);
-              } else {
-                return Container();
-              }
-            },
-          ),
-        ),
-      );
-
-      await tester.pumpAndSettle();
-
-      expect(find.byType(Container), matchers.findsOneWidget);
-      expect(find.text('text'), matchers.findsNothing);
-
-      // when data value changes
-      data.value = 'text';
-      data.operation = Operation.create;
-      data.failure = Failure('Something Went wrong !!!');
-
-      await tester.pumpAndSettle();
-
-      // expect no update from DataBuilder
-      expect(find.byType(Container), matchers.findsOneWidget);
-      expect(find.text('text'), matchers.findsNothing);
-    },
-  );
-
-  testWidgets(
     'Builder should update widget when operation is '
     'updated on data and observe is set to true on DataBuilder',
     (tester) async {
@@ -166,16 +120,12 @@ void main() {
 
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
-              data: data,
-              builder: (context, data) {
-                return DataBuilder(
-                  data: data,
-                  builder: (context, data) {
-                    return Text(data.operation.name);
-                  },
-                );
-              }),
+          child: DataBuilder(
+            data: data,
+            builder: (context, data) {
+              return Text(data.operation.name);
+            },
+          ),
         ),
       );
 
@@ -201,19 +151,14 @@ void main() {
 
       await tester.pumpWidget(
         Testable(
-          child: DataBinder(
+          child: DataBuilder(
               data: data,
               builder: (context, data) {
-                return DataBuilder(
-                  data: data,
-                  builder: (context, data) {
-                    if (data.hasFailure) {
-                      return Text(data.failure.message);
-                    } else {
-                      return Text('no failure');
-                    }
-                  },
-                );
+                if (data.hasFailure) {
+                  return Text(data.failure.message);
+                } else {
+                  return Text('no failure');
+                }
               }),
         ),
       );

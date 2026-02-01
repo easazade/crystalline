@@ -2,8 +2,8 @@ import 'package:crystalline/crystalline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/src/typedefs.dart';
 
-class WhenDataBinder<T, D extends Data<T>> extends StatefulWidget {
-  const WhenDataBinder({
+class WhenDataBuilder<T, D extends Data<T>> extends StatefulWidget {
+  const WhenDataBuilder({
     super.key,
     required this.data,
     required this.onValue,
@@ -35,10 +35,10 @@ class WhenDataBinder<T, D extends Data<T>> extends StatefulWidget {
   final Widget fallback;
 
   @override
-  State<WhenDataBinder<T, D>> createState() => _WhenDataBinderState<T, D>();
+  State<WhenDataBuilder<T, D>> createState() => _WhenDataBuilderState<T, D>();
 }
 
-class _WhenDataBinderState<T, D extends Data<T>> extends State<WhenDataBinder<T, D>> {
+class _WhenDataBuilderState<T, D extends Data<T>> extends State<WhenDataBuilder<T, D>> {
   late D _data;
 
   void _observer() {
@@ -53,7 +53,7 @@ class _WhenDataBinderState<T, D extends Data<T>> extends State<WhenDataBinder<T,
   }
 
   @override
-  void didUpdateWidget(covariant WhenDataBinder<T, D> oldWidget) {
+  void didUpdateWidget(covariant WhenDataBuilder<T, D> oldWidget) {
     if (!identical(oldWidget.data, widget.data)) {
       oldWidget.data.removeObserver(_observer);
       _data = widget.data;

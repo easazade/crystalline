@@ -1,21 +1,21 @@
 import 'package:crystalline/crystalline.dart';
 import 'package:flutter/material.dart';
 
-class DataBinder<T, D extends Data<T>> extends StatefulWidget {
+class DataBuilder<T, D extends Data<T>> extends StatefulWidget {
   final D data;
   final Widget Function(BuildContext context, D data) builder;
 
-  const DataBinder({
+  const DataBuilder({
     super.key,
     required this.data,
     required this.builder,
   });
 
   @override
-  State<DataBinder<T, D>> createState() => DataBinderState<T, D>();
+  State<DataBuilder<T, D>> createState() => DataBuilderState<T, D>();
 }
 
-class DataBinderState<T, D extends Data<T>> extends State<DataBinder<T, D>> {
+class DataBuilderState<T, D extends Data<T>> extends State<DataBuilder<T, D>> {
   late D _data;
 
   void _observer() {
@@ -30,7 +30,7 @@ class DataBinderState<T, D extends Data<T>> extends State<DataBinder<T, D>> {
   }
 
   @override
-  void didUpdateWidget(covariant DataBinder<T, D> oldWidget) {
+  void didUpdateWidget(covariant DataBuilder<T, D> oldWidget) {
     if (!identical(oldWidget.data, widget.data)) {
       _data = widget.data;
       oldWidget.data.removeObserver(_observer);

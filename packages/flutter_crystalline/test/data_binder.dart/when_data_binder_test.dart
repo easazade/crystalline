@@ -18,7 +18,7 @@ void main() {
 
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBinder(
+          child: WhenDataBuilder(
             data: data,
             onValue: (context, data) => Text('onValue ${data.value}'),
           ),
@@ -39,7 +39,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBinder(
+          child: WhenDataBuilder(
             data: data,
             onValue: (context, data) => Text(data.value),
             onNoValue: (context, data) => Text('onNoValue'),
@@ -101,7 +101,7 @@ void main() {
 
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBinder(
+          child: WhenDataBuilder(
             data: data,
             onValue: (context, data) => Text(data.value),
             onAnyOperation: (context, data) => Text(data.operation.name),
@@ -124,7 +124,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBinder(
+          child: WhenDataBuilder(
             data: data,
             onValue: (context, data) => Text(data.value),
             orElse: (context, data) => Text('or else'),
@@ -142,7 +142,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         Testable(
-          child: WhenDataBinder(
+          child: WhenDataBuilder(
             data: data,
             onValue: (context, data) => Text(data.value),
             fallback: Center(),
@@ -171,7 +171,7 @@ void main() {
           rebuild = () => setState(() {});
 
           return Testable(
-            child: WhenDataBinder(
+            child: WhenDataBuilder(
               data: getData(),
               onValue: (context, data) => Text(data.value),
               onNoValue: (context, data) => Container(),
