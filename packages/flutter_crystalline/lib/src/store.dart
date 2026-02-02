@@ -2,19 +2,12 @@ import 'package:crystalline/crystalline.dart';
 import 'package:flutter/widgets.dart';
 
 abstract class Store extends Data<void> with ChangeNotifier {
-  // ignore: unused_field
-  late final ListData<Object?> _statesList = ListData(states);
-
   List<Data<Object?>> get states;
 
   @override
-  String? get name => storeName;
+  String? get name;
 
-  String get storeName;
-
-  void publish() {
-    notifyListeners();
-  }
+  void publish() => (this as ChangeNotifier).notifyListeners();
 
   @override
   String toString() {

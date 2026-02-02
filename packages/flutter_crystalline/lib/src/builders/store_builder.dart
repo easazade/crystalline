@@ -14,11 +14,9 @@ class StoreBuilder<T extends Store> extends StatelessWidget {
   final Widget Function(BuildContext context, T store, Widget? child) builder;
 
   @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: store,
-      builder: (context, child) => builder(context, store, child),
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) => ListenableBuilder(
+        listenable: store,
+        builder: (context, child) => builder(context, store, child),
+        child: child,
+      );
 }
