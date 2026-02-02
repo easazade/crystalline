@@ -7,7 +7,6 @@ import 'package:crystalline/src/exceptions.dart';
 import 'package:crystalline/src/semantics/events.dart';
 import 'package:crystalline/src/semantics/observers.dart';
 import 'package:crystalline/src/semantics/operation.dart';
-import 'package:meta/meta.dart';
 
 part 'refresh_data.dart';
 

@@ -87,8 +87,6 @@ class _TestStore extends Store {
   // this field should not cause a rebuild, since it is not part of the states
   var nonData = 'something';
 
-  @override
-  String get storeName => 'TestStore';
 
   @override
   List<Data<Object?>> get states => [userName, age, points];
