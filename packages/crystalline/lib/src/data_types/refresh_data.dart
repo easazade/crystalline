@@ -20,6 +20,15 @@ class RefreshData<T> extends Data<T> {
   Completer<void>? _refreshCompleter;
   var _disposed = false;
 
+  late final _refreshDataEvents = RefreshDataEvents(this);
+  late final _refreshObservers = RefreshDataObservers(this);
+
+  @override
+  RefreshDataObservers get observers => _refreshObservers;
+
+  @override
+  RefreshDataEvents get events => _refreshDataEvents;
+
   Future<void> refresh({bool allowRetry = true}) async {
     if (_disposed) {
       return;
@@ -107,24 +116,12 @@ class RefreshData<T> extends Data<T> {
   RefreshStatus get status => _status;
 
   @override
-  void addEventListener(bool Function(Event event) listener) {
-    if (_value == null) refresh(allowRetry: false);
-    super.events.addListener(listener);
-  }
-
-  @override
-  void addObserver(void Function() observer) {
-    if (_value == null) refresh(allowRetry: false);
-    super.addObserver(observer);
-  }
-
-  @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 
   void dispose() {
     _disposed = true;
-    _observers.clear();
-    events.removeAllListeners();
+    observers.clear();
+    events.clear();
     reset();
   }
 }

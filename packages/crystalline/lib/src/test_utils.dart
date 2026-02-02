@@ -7,7 +7,7 @@ import 'data_types/data.dart';
 @visibleForTesting
 class DataTestObserver<T, D extends Data<T>> {
   DataTestObserver(this.data) {
-    data.addObserver(() => records.add(data.copy() as D));
+    data.observers.add(() => records.add(data.copy() as D));
   }
 
   final D data;

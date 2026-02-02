@@ -29,7 +29,7 @@ class OperationData extends Data<void> {
     removeAllSideEffects();
     addAllSideEffects(data.sideEffects);
     allowNotify();
-    notifyObservers();
+    observers.notify();
   }
 
   @override

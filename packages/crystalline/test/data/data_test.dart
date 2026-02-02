@@ -186,10 +186,10 @@ void main() {
       'data.hasObservers should return true if it has any',
       () {
         final newData = Data<String>();
-        expect(newData.hasObservers, isFalse);
-        newData.addObserver(() {});
-        expect(newData.observers.length, 1);
-        expect(newData.hasObservers, isTrue);
+        expect(newData.observers.hasObservers, isFalse);
+        newData.observers.add(() {});
+        expect(newData.observers.all.length, 1);
+        expect(newData.observers.hasObservers, isTrue);
       },
     );
 

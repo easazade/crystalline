@@ -48,16 +48,16 @@ class _WhenDataBuilderState<T, D extends Data<T>> extends State<WhenDataBuilder<
   @override
   void initState() {
     _data = widget.data;
-    _data.addObserver(_observer);
+    _data.observers.add(_observer);
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant WhenDataBuilder<T, D> oldWidget) {
     if (!identical(oldWidget.data, widget.data)) {
-      oldWidget.data.removeObserver(_observer);
+      oldWidget.data.observers.remove(_observer);
       _data = widget.data;
-      _data.addObserver(_observer);
+      _data.observers.add(_observer);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -93,7 +93,7 @@ class _WhenDataBuilderState<T, D extends Data<T>> extends State<WhenDataBuilder<
 
   @override
   void dispose() {
-    _data.removeObserver(_observer);
+    _data.observers.remove(_observer);
     super.dispose();
   }
 }

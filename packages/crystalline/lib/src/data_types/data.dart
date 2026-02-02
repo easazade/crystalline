@@ -5,6 +5,7 @@ import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
 import 'package:crystalline/src/semantics/events.dart';
+import 'package:crystalline/src/semantics/observers.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 import 'package:meta/meta.dart';
 
@@ -27,8 +28,8 @@ class Data<T> {
 
   bool _allowedToNotify = true;
 
+  late final observers = DataObservers(this);
   final events = Events();
-  final List<void Function()> _observers = [];
   final List<dynamic> _sideEffects;
 
   final String? name;
@@ -69,13 +70,13 @@ class Data<T> {
       ),
     );
     events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    notifyObservers();
+    observers.notify();
   }
 
   void addAllSideEffects(Iterable<dynamic> sideEffects) {
     _sideEffects.addAll(sideEffects);
     events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    notifyObservers();
+    observers.notify();
   }
 
   void removeSideEffect(dynamic sideEffect) {
@@ -87,13 +88,13 @@ class Data<T> {
       ),
     );
     events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    notifyObservers();
+    observers.notify();
   }
 
   void removeAllSideEffects() {
     _sideEffects.clear();
     events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    notifyObservers();
+    observers.notify();
   }
 
   bool get hasSideEffects => _sideEffects.isNotEmpty;
@@ -125,13 +126,13 @@ class Data<T> {
     if (failure != null) {
       events.dispatch(FailureEvent(failure));
     }
-    notifyObservers();
+    observers.notify();
   }
 
   set operation(final Operation operation) {
     _operation = operation;
     events.dispatch(OperationEvent(operation));
-    notifyObservers();
+    observers.notify();
   }
 
   Operation get operation => _operation;
@@ -141,7 +142,7 @@ class Data<T> {
     if (value != null) {
       events.dispatch(ValueEvent(value));
     }
-    notifyObservers();
+    observers.notify();
   }
 
   void modify(void Function(Data<T> data) fn) {
@@ -163,7 +164,7 @@ class Data<T> {
       events.dispatch(SideEffectsUpdatedEvent(sideEffects));
     }
 
-    notifyObservers();
+    observers.notify();
   }
 
   Future<void> modifyAsync(Future<void> Function(Data<T> data) fn) async {
@@ -185,7 +186,7 @@ class Data<T> {
       events.dispatch(SideEffectsUpdatedEvent(sideEffects));
     }
 
-    notifyObservers();
+    observers.notify();
   }
 
   void updateFrom(Data<T> data) {
@@ -211,7 +212,7 @@ class Data<T> {
       events.dispatch(SideEffectsUpdatedEvent(sideEffects));
     }
 
-    notifyObservers();
+    observers.notify();
   }
 
   /// Resets the Data by setting value & failure to null, sets operation to Operation.none and removes all side-effects
@@ -243,40 +244,17 @@ class Data<T> {
   @override
   int get hashCode => (_failure?.hashCode ?? 0) + (_value?.hashCode ?? 4) + _operation.hashCode + runtimeType.hashCode;
 
-  Iterable<void Function()> get observers => _observers;
-
-  void addObserver(void Function() observer) {
-    _observers.add(observer);
-  }
-
-  void removeObserver(void Function() observer) {
-    _observers.remove(observer);
-  }
-
-  bool get hasObservers => observers.isNotEmpty;
-
   void allowNotify() {
     _allowedToNotify = true;
+    observers.allowNotify();
     events.allowNotify();
   }
 
   void disallowNotify() {
     _allowedToNotify = false;
+    observers.disallowNotify();
     events.disallowNotify();
   }
 
   bool get isAllowedToNotify => _allowedToNotify;
-
-  @mustCallSuper
-  void notifyObservers() {
-    final stateChangeLog = CrystallineGlobalConfig.logger.globalLogFilter(this);
-    if (stateChangeLog != null) {
-      CrystallineGlobalConfig.logger.log(stateChangeLog);
-    }
-    if (isAllowedToNotify) {
-      for (final observer in observers) {
-        observer();
-      }
-    }
-  }
 }

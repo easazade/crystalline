@@ -25,7 +25,7 @@ class DataBuilderState<T, D extends Data<T>> extends State<DataBuilder<T, D>> {
   @override
   void initState() {
     _data = widget.data;
-    _data.addObserver(_observer);
+    _data.observers.add(_observer);
     super.initState();
   }
 
@@ -33,8 +33,8 @@ class DataBuilderState<T, D extends Data<T>> extends State<DataBuilder<T, D>> {
   void didUpdateWidget(covariant DataBuilder<T, D> oldWidget) {
     if (!identical(oldWidget.data, widget.data)) {
       _data = widget.data;
-      oldWidget.data.removeObserver(_observer);
-      widget.data.addObserver(_observer);
+      oldWidget.data.observers.remove(_observer);
+      widget.data.observers.add(_observer);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -44,7 +44,7 @@ class DataBuilderState<T, D extends Data<T>> extends State<DataBuilder<T, D>> {
 
   @override
   void dispose() {
-    _data.removeObserver(_observer);
+    _data.observers.remove(_observer);
     super.dispose();
   }
 }

@@ -166,13 +166,13 @@ void main() {
 
       // items should have no observer
       for (var e in listData) {
-        expect(e.observers.contains(observer), isFalse);
+        expect(e.observers.all.contains(observer), isFalse);
       }
 
       // when added an observer it should be added on all data items
-      listData.addObserver(observer);
+      listData.observers.add(observer);
       for (var e in items1) {
-        expect(e.observers, contains(observer));
+        expect(e.observers.all, contains(observer));
       }
 
       // when modified list and remove some items
@@ -180,12 +180,12 @@ void main() {
 
       // expect observer should be removed from removed items
       for (var e in items1) {
-        expect(e.observers.contains(observer), isFalse);
+        expect(e.observers.all.contains(observer), isFalse);
       }
 
       // expect new items should have the observer
       for (var e in items2) {
-        expect(e.observers, contains(observer));
+        expect(e.observers.all, contains(observer));
       }
       expect(testObserver.timesUpdated, 2);
     });
@@ -229,13 +229,13 @@ void main() {
 
       // items should have no observer
       for (var e in listData) {
-        expect(e.observers.contains(observer), isFalse);
+        expect(e.observers.all.contains(observer), isFalse);
       }
 
       // when added an observer it should be added on all data items
-      listData.addObserver(observer);
+      listData.observers.add(observer);
       for (var e in items1) {
-        expect(e.observers, contains(observer));
+        expect(e.observers.all, contains(observer));
       }
       expect(testObserver.timesUpdated, 1);
     });
@@ -248,43 +248,43 @@ void main() {
 
         // items should have no observer
         for (var e in listData) {
-          expect(e.observers.contains(observer), isFalse);
+          expect(e.observers.all.contains(observer), isFalse);
         }
 
         // when added an observer it should be added on all data items
-        listData.addObserver(observer);
+        listData.observers.add(observer);
         for (var e in items1) {
-          expect(e.observers, contains(observer));
+          expect(e.observers.all, contains(observer));
         }
-        expect(listData.observers, contains(observer));
+        expect(listData.observers.all, contains(observer));
 
         // when removed an observer it should be removed from all data items and ListData itself
-        listData.removeObserver(observer);
+        listData.observers.remove(observer);
         for (var e in items1) {
-          expect(e.observers.contains(observer), isFalse);
+          expect(e.observers.all.contains(observer), isFalse);
         }
-        expect(listData.observers.contains(observer), isFalse);
+        expect(listData.observers.all.contains(observer), isFalse);
         expect(testObserver.timesUpdated, 1);
       },
     );
 
     test('Should add observer to new item after it is added', () {
-      expect(singleItem.observers, isEmpty);
+      expect(singleItem.observers.all, isEmpty);
       listData.addAll(items1);
-      listData.addObserver(observer);
+      listData.observers.add(observer);
       listData.add(singleItem);
-      expect(singleItem.observers, contains(observer));
+      expect(singleItem.observers.all, contains(observer));
       expect(testObserver.timesUpdated, 2);
     });
 
     test(
       'Should add observer to new item after it is added using insert method',
       () {
-        expect(singleItem.observers, isEmpty);
+        expect(singleItem.observers.all, isEmpty);
         listData.addAll(items1);
-        listData.addObserver(observer);
+        listData.observers.add(observer);
         listData.insert(0, singleItem);
-        expect(singleItem.observers, contains(observer));
+        expect(singleItem.observers.all, contains(observer));
         expect(testObserver.timesUpdated, 2);
       },
     );
@@ -292,21 +292,21 @@ void main() {
     test(
       'Should add observer to new item after it is added using [] operator',
       () {
-        expect(singleItem.observers, isEmpty);
+        expect(singleItem.observers.all, isEmpty);
         listData.addAll(items1);
-        listData.addObserver(observer);
+        listData.observers.add(observer);
         listData[0] = singleItem;
-        expect(singleItem.observers, contains(observer));
+        expect(singleItem.observers.all, contains(observer));
         expect(testObserver.timesUpdated, 2);
       },
     );
 
     test('Should remove observer from removed item', () {
-      listData.addObserver(observer);
+      listData.observers.add(observer);
       listData.add(singleItem);
-      expect(singleItem.observers, contains(observer));
+      expect(singleItem.observers.all, contains(observer));
       listData.removeAt(0);
-      expect(singleItem.observers, isEmpty);
+      expect(singleItem.observers.all, isEmpty);
       expect(testObserver.timesUpdated, 2);
     });
 

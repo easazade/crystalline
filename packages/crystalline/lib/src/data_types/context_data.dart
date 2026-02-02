@@ -18,7 +18,7 @@ class ContextData<T, C> extends Data<T> {
 
   set context(C? context) {
     _context = context;
-    notifyObservers();
+    observers.notify();
   }
 
   C get context {
@@ -55,7 +55,7 @@ class ContextData<T, C> extends Data<T> {
     removeAllSideEffects();
     addAllSideEffects(data.sideEffects);
     allowNotify();
-    notifyObservers();
+    observers.notify();
   }
 
   @override

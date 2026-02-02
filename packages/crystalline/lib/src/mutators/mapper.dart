@@ -13,11 +13,11 @@ class _Mapper<T1, T2, D1 extends Data<T1>, D2 extends Data<T2>> {
     mapper(origin, mappedMutation);
 
     // add an observer to map state of original data to mutated data on each
-    origin.addObserver(() {
+    origin.observers.add(() {
       mappedMutation.disallowNotify();
       mapper(origin, mappedMutation);
       mappedMutation.allowNotify();
-      mappedMutation.notifyObservers();
+      mappedMutation.observers.notify();
     });
   }
 }

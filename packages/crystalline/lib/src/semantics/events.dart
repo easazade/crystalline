@@ -1,4 +1,5 @@
 import 'package:crystalline/src/config/global_config.dart';
+import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 
@@ -31,11 +32,23 @@ class Events {
     }
   }
 
-  void removeAllListeners() => _listeners.clear();
+  void clear() => _listeners.clear();
 
   void allowNotify() => _allowedToNotify = true;
 
   void disallowNotify() => _allowedToNotify = false;
+}
+
+class RefreshDataEvents extends Events {
+  final RefreshData _refreshData;
+
+  RefreshDataEvents(this._refreshData);
+
+  @override
+  void addListener(bool Function(Event event) listener) {
+    if (_refreshData.hasNoValue) _refreshData.refresh(allowRetry: false);
+    super.addListener(listener);
+  }
 }
 
 class Event {
