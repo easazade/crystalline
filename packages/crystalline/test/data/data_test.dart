@@ -400,31 +400,31 @@ void main() {
       'data.addEventListener() should add/remove event listener successfully',
       () {
         final someData = Data<String>();
-        expect(someData.hasEventListeners, isFalse);
+        expect(someData.events.hasListeners, isFalse);
 
         bool listener(event) => false;
 
-        someData.addEventListener(listener);
+        someData.events.addListener(listener);
 
-        expect(someData.hasEventListeners, isTrue);
-        expect(someData.eventListeners.length, equals(1));
+        expect(someData.events.hasListeners, isTrue);
+        expect(someData.events.listeners.length, equals(1));
 
-        someData.removeEventListener(listener);
+        someData.events.removeListener(listener);
 
-        expect(someData.hasEventListeners, isFalse);
+        expect(someData.events.hasListeners, isFalse);
       },
     );
 
     test(
-      'data.dispatchEvent() should dispatch all events successfully and in order',
+      'data.dispatch() should dispatch all events successfully and in order',
       () {
         final event1 = Event('1');
         final event2 = Event('2');
         final event3 = Event('3');
 
-        data.dispatchEvent(event1);
-        data.dispatchEvent(event2);
-        data.dispatchEvent(event3);
+        data.events.dispatch(event1);
+        data.events.dispatch(event2);
+        data.events.dispatch(event3);
 
         expect(testListener.timesDispatched, 3);
         testListener.expectNthDispatch(1, (event) => expect(event, event1));

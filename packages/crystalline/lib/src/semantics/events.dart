@@ -2,6 +2,40 @@ import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 
+class Events {
+  final bool _allowedToNotify = true;
+
+  final List<bool Function(Event event)> _listeners = [];
+
+  // returns a copy of current listeners added.
+  List<bool Function(Event event)> get listeners => _listeners.toList();
+
+  bool get hasListeners => _listeners.isNotEmpty;
+
+  void addListener(bool Function(Event event) listener) {
+    _listeners.add(listener);
+  }
+
+  void removeListener(bool Function(Event event) listener) {
+    _listeners.remove(listener);
+  }
+
+  void dispatch(Event event) {
+    if (_allowedToNotify) {
+      for (final callback in _listeners) {
+        final isEventConsumed = callback(event);
+        if (isEventConsumed) {
+          break;
+        }
+      }
+    }
+  }
+
+  void removeAllListeners() {
+    _listeners.clear();
+  }
+}
+
 class Event {
   const Event(this.name);
 

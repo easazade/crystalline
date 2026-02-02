@@ -77,16 +77,16 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   void operator []=(int index, Data<T> value) {
     items[index] = value;
     _addObserversToItem(value);
-    dispatchEvent(AddItemEvent(value, items));
-    dispatchEvent(ItemsUpdatedEvent(items));
+    events.dispatch(AddItemEvent(value, items));
+    events.dispatch(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
   Data<T> removeAt(int index) {
     final removedItem = items.removeAt(index);
     _removeObserversFromItem(removedItem);
-    dispatchEvent(RemoveItemEvent(removedItem, items));
-    dispatchEvent(ItemsUpdatedEvent(items));
+    events.dispatch(RemoveItemEvent(removedItem, items));
+    events.dispatch(ItemsUpdatedEvent(items));
     notifyObservers();
     return removedItem;
   }
@@ -96,23 +96,23 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
       _removeObserversFromItem(e);
     }
     items.clear();
-    dispatchEvent(ItemsUpdatedEvent(items));
+    events.dispatch(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
   void add(Data<T> data) {
     items.add(data);
     _addObserversToItem(data);
-    dispatchEvent(AddItemEvent(data, items));
-    dispatchEvent(ItemsUpdatedEvent(items));
+    events.dispatch(AddItemEvent(data, items));
+    events.dispatch(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
   void insert(int index, Data<T> data) {
     items.insert(index, data);
     _addObserversToItem(data);
-    dispatchEvent(AddItemEvent(data, items));
-    dispatchEvent(ItemsUpdatedEvent(items));
+    events.dispatch(AddItemEvent(data, items));
+    events.dispatch(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
@@ -121,7 +121,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     for (var item in list) {
       _addObserversToItem(item);
     }
-    dispatchEvent(ItemsUpdatedEvent(items));
+    events.dispatch(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
@@ -130,7 +130,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
       _removeObserversFromItem(item);
     }
     items.removeWhere(test);
-    dispatchEvent(ItemsUpdatedEvent(items));
+    events.dispatch(ItemsUpdatedEvent(items));
     notifyObservers();
   }
 
@@ -148,7 +148,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     }
     allowNotify();
     if (oldItems != items) {
-      dispatchEvent(ItemsUpdatedEvent(items));
+      events.dispatch(ItemsUpdatedEvent(items));
     }
     notifyObservers();
   }
@@ -167,7 +167,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     }
     allowNotify();
     if (oldItems != items) {
-      dispatchEvent(ItemsUpdatedEvent(items));
+      events.dispatch(ItemsUpdatedEvent(items));
     }
     notifyObservers();
   }
@@ -179,16 +179,16 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     fn(this);
     allowNotify();
     if (old.items != items) {
-      dispatchEvent(ItemsUpdatedEvent(items));
+      events.dispatch(ItemsUpdatedEvent(items));
     }
     if (old.operation != operation) {
-      dispatchEvent(OperationEvent(operation));
+      events.dispatch(OperationEvent(operation));
     }
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
-      dispatchEvent(FailureEvent(failure));
+      events.dispatch(FailureEvent(failure));
     }
     if (!ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
     }
     notifyObservers();
   }
@@ -202,16 +202,16 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     await fn(this);
     allowNotify();
     if (old.items != items) {
-      dispatchEvent(ItemsUpdatedEvent(items));
+      events.dispatch(ItemsUpdatedEvent(items));
     }
     if (old.operation != operation) {
-      dispatchEvent(OperationEvent(operation));
+      events.dispatch(OperationEvent(operation));
     }
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
-      dispatchEvent(FailureEvent(failure));
+      events.dispatch(FailureEvent(failure));
     }
     if (!ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
     }
     notifyObservers();
   }
@@ -234,16 +234,16 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     addAllSideEffects(data.sideEffects);
     allowNotify();
     if (old.items != items) {
-      dispatchEvent(ItemsUpdatedEvent(items));
+      events.dispatch(ItemsUpdatedEvent(items));
     }
     if (old.operation != operation) {
-      dispatchEvent(OperationEvent(operation));
+      events.dispatch(OperationEvent(operation));
     }
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
-      dispatchEvent(FailureEvent(failure));
+      events.dispatch(FailureEvent(failure));
     }
     if (!ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
     }
     notifyObservers();
   }

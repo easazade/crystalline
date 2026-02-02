@@ -10,8 +10,6 @@ import 'package:meta/meta.dart';
 
 part 'refresh_data.dart';
 
-
-
 class Data<T> {
   Data({
     T? value,
@@ -29,8 +27,8 @@ class Data<T> {
 
   bool _allowedToNotify = true;
 
+  final events = Events();
   final List<void Function()> _observers = [];
-  final List<bool Function(Event event)> _eventListeners = [];
   final List<dynamic> _sideEffects;
 
   final String? name;
@@ -64,37 +62,37 @@ class Data<T> {
 
   void addSideEffect(dynamic sideEffect) {
     _sideEffects.add(sideEffect);
-    dispatchEvent(
+    events.dispatch(
       AddSideEffectEvent(
         newSideEffect: sideEffect,
         sideEffects: _sideEffects,
       ),
     );
-    dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
+    events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
   void addAllSideEffects(Iterable<dynamic> sideEffects) {
     _sideEffects.addAll(sideEffects);
-    dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
+    events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
   void removeSideEffect(dynamic sideEffect) {
     _sideEffects.remove(sideEffect);
-    dispatchEvent(
+    events.dispatch(
       RemoveSideEffectEvent(
         removedSideEffect: sideEffect,
         sideEffects: _sideEffects,
       ),
     );
-    dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
+    events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
   void removeAllSideEffects() {
     _sideEffects.clear();
-    dispatchEvent(SideEffectsUpdatedEvent(_sideEffects));
+    events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
     notifyObservers();
   }
 
@@ -125,14 +123,14 @@ class Data<T> {
   set failure(final Failure? failure) {
     _failure = failure;
     if (failure != null) {
-      dispatchEvent(FailureEvent(failure));
+      events.dispatch(FailureEvent(failure));
     }
     notifyObservers();
   }
 
   set operation(final Operation operation) {
     _operation = operation;
-    dispatchEvent(OperationEvent(operation));
+    events.dispatch(OperationEvent(operation));
     notifyObservers();
   }
 
@@ -141,7 +139,7 @@ class Data<T> {
   set value(final T? value) {
     _value = value;
     if (value != null) {
-      dispatchEvent(ValueEvent(value));
+      events.dispatch(ValueEvent(value));
     }
     notifyObservers();
   }
@@ -153,16 +151,16 @@ class Data<T> {
     allowNotify();
 
     if (old._value != _value && hasValue) {
-      dispatchEvent(ValueEvent(value));
+      events.dispatch(ValueEvent(value));
     }
     if (old.operation != operation) {
-      dispatchEvent(OperationEvent(operation));
+      events.dispatch(OperationEvent(operation));
     }
     if (old._failure != _failure && _failure != null) {
-      dispatchEvent(FailureEvent(_failure!));
+      events.dispatch(FailureEvent(_failure!));
     }
     if (!const ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
     }
 
     notifyObservers();
@@ -175,16 +173,16 @@ class Data<T> {
     allowNotify();
 
     if (old._value != _value && hasValue) {
-      dispatchEvent(ValueEvent(value));
+      events.dispatch(ValueEvent(value));
     }
     if (old.operation != operation) {
-      dispatchEvent(OperationEvent(operation));
+      events.dispatch(OperationEvent(operation));
     }
     if (old._failure != _failure && _failure != null) {
-      dispatchEvent(FailureEvent(_failure!));
+      events.dispatch(FailureEvent(_failure!));
     }
     if (!const ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
     }
 
     notifyObservers();
@@ -201,16 +199,16 @@ class Data<T> {
     allowNotify();
 
     if (old._value != _value && hasValue) {
-      dispatchEvent(ValueEvent(value));
+      events.dispatch(ValueEvent(value));
     }
     if (old.operation != operation) {
-      dispatchEvent(OperationEvent(operation));
+      events.dispatch(OperationEvent(operation));
     }
     if (old._failure != _failure && _failure != null) {
-      dispatchEvent(FailureEvent(_failure!));
+      events.dispatch(FailureEvent(_failure!));
     }
     if (!const ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      dispatchEvent(SideEffectsUpdatedEvent(sideEffects));
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
     }
 
     notifyObservers();
@@ -257,8 +255,6 @@ class Data<T> {
 
   bool get hasObservers => observers.isNotEmpty;
 
-  bool get hasEventListeners => eventListeners.isNotEmpty;
-
   void allowNotify() {
     _allowedToNotify = true;
   }
@@ -278,27 +274,6 @@ class Data<T> {
     if (isAllowedToNotify) {
       for (final observer in observers) {
         observer();
-      }
-    }
-  }
-
-  Iterable<bool Function(Event event)> get eventListeners => _eventListeners;
-
-  void addEventListener(bool Function(Event event) listener) {
-    _eventListeners.add(listener);
-  }
-
-  void removeEventListener(bool Function(Event event) listener) {
-    _eventListeners.remove(listener);
-  }
-
-  void dispatchEvent(Event event) {
-    if (isAllowedToNotify) {
-      for (final callback in eventListeners) {
-        final isEventConsumed = callback(event);
-        if (isEventConsumed) {
-          break;
-        }
       }
     }
   }

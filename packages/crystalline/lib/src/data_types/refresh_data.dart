@@ -109,7 +109,7 @@ class RefreshData<T> extends Data<T> {
   @override
   void addEventListener(bool Function(Event event) listener) {
     if (_value == null) refresh(allowRetry: false);
-    super.addEventListener(listener);
+    super.events.addListener(listener);
   }
 
   @override
@@ -124,7 +124,7 @@ class RefreshData<T> extends Data<T> {
   void dispose() {
     _disposed = true;
     _observers.clear();
-    _eventListeners.clear();
+    events.removeAllListeners();
     reset();
   }
 }

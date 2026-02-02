@@ -29,7 +29,7 @@ class DataTestObserver<T, D extends Data<T>> {
 @visibleForTesting
 class DataTestListener<T, D extends Data<T>> {
   DataTestListener(this.data) {
-    data.addEventListener((event) {
+    data.events.addListener((event) {
       records.add(event);
       return false;
     });
