@@ -1,5 +1,5 @@
 import 'package:crystalline/src/config/global_config.dart';
-import 'package:crystalline/src/data_types/data.dart';
+import 'package:crystalline/src/semantics/operation.dart';
 
 class Failure {
   Failure(this.message, {this.id, this.cause, this.exception, this.stacktrace});

@@ -1,4 +1,5 @@
-import 'package:crystalline/crystalline.dart';
+import 'package:crystalline/src/data_types/data.dart';
+import 'package:crystalline/src/semantics/operation.dart';
 
 class OperationReport {
   final String type;

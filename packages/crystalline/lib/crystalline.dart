@@ -13,4 +13,5 @@ export 'src/data_types/operation_data.dart';
 export 'src/exceptions.dart';
 export 'src/mutators/mutators.dart';
 export 'src/semantics/side_effects.dart';
+export 'src/semantics/operation.dart';
 export 'src/test_utils.dart';

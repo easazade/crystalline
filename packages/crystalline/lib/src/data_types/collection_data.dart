@@ -2,6 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
+import 'package:crystalline/src/semantics/events.dart';
+import 'package:crystalline/src/semantics/operation.dart';
 
 typedef DataPredicate<T> = bool Function(List<Data<T>> value, Operation operation, Failure? failure)?;
 

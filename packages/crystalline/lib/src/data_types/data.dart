@@ -4,103 +4,13 @@ import 'package:collection/collection.dart';
 import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
+import 'package:crystalline/src/semantics/events.dart';
+import 'package:crystalline/src/semantics/operation.dart';
 import 'package:meta/meta.dart';
 
 part 'refresh_data.dart';
 
-class Operation {
-  const Operation(this.name);
-  static const Operation create = Operation('create');
-  static const Operation read = Operation('read');
-  static const Operation update = Operation('update');
-  static const Operation delete = Operation('delete');
-  static const Operation none = Operation('none');
 
-  static final List<Operation> defaultOperations = [create, read, update, delete, none];
-
-  final String name;
-
-  bool get isCustom => !defaultOperations.contains(this);
-
-  @override
-  String toString() => 'Operation.$name';
-
-  @override
-  bool operator ==(Object other) {
-    if (other is! Operation) {
-      return false;
-    } else {
-      return name == other.name;
-    }
-  }
-
-  @override
-  int get hashCode => name.hashCode + 4;
-}
-
-class Event {
-  const Event(this.name);
-
-  final String name;
-
-  @override
-  bool operator ==(Object other) {
-    if (other is! Event) return false;
-    return other.runtimeType == runtimeType && name == other.name;
-  }
-
-  @override
-  int get hashCode => name.hashCode + 12;
-
-  @override
-  String toString() => name;
-}
-
-class OperationEvent extends Event {
-  OperationEvent(this.operation) : super(operation.name);
-
-  final Operation operation;
-}
-
-class ValueEvent<T> extends Event {
-  ValueEvent(this.value) : super(CrystallineGlobalConfig.logger.ellipsize(value.toString(), maxSize: 20));
-
-  final T value;
-}
-
-class FailureEvent extends Event {
-  FailureEvent(this.failure) : super(CrystallineGlobalConfig.logger.ellipsize(failure.message, maxSize: 20));
-
-  final Failure failure;
-}
-
-class SideEffectsUpdatedEvent extends Event {
-  SideEffectsUpdatedEvent(this.sideEffects) : super('sideEffects: ${sideEffects.length}');
-  final Iterable<dynamic> sideEffects;
-}
-
-class AddSideEffectEvent extends Event {
-  AddSideEffectEvent({
-    required this.newSideEffect,
-    required this.sideEffects,
-  }) : super(CrystallineGlobalConfig.logger.ellipsize(newSideEffect.toString(), maxSize: 20));
-  final dynamic newSideEffect;
-  final List<dynamic> sideEffects;
-}
-
-class RemoveSideEffectEvent extends Event {
-  RemoveSideEffectEvent({
-    required this.removedSideEffect,
-    required this.sideEffects,
-  }) : super(
-          CrystallineGlobalConfig.logger.ellipsize(
-            removedSideEffect.toString(),
-            maxSize: 20,
-          ),
-        );
-  final dynamic removedSideEffect;
-  final List<dynamic> sideEffects;
-}
 
 class Data<T> {
   Data({

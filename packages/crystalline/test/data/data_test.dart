@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:crystalline/crystalline.dart';
+import 'package:crystalline/src/semantics/events.dart';
 import 'package:test/test.dart';
 
 import '../test_utils/test_logger.dart';
