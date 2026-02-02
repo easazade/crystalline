@@ -3,7 +3,7 @@ import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 
 class Events {
-  final bool _allowedToNotify = true;
+  bool _allowedToNotify = true;
 
   final List<bool Function(Event event)> _listeners = [];
 
@@ -31,9 +31,11 @@ class Events {
     }
   }
 
-  void removeAllListeners() {
-    _listeners.clear();
-  }
+  void removeAllListeners() => _listeners.clear();
+
+  void allowNotify() => _allowedToNotify = true;
+
+  void disallowNotify() => _allowedToNotify = false;
 }
 
 class Event {

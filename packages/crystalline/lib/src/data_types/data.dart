@@ -257,10 +257,12 @@ class Data<T> {
 
   void allowNotify() {
     _allowedToNotify = true;
+    events.allowNotify();
   }
 
   void disallowNotify() {
     _allowedToNotify = false;
+    events.disallowNotify();
   }
 
   bool get isAllowedToNotify => _allowedToNotify;
