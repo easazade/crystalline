@@ -2,40 +2,82 @@
 
 <p align="center"> <img alt="CI Build Checks" src="https://img.shields.io/github/actions/workflow/status/easazade/crystalline/build.yaml?branch=main&style=flat-square"> <img alt="Pub Version" src="https://img.shields.io/pub/v/crystalline?style=flat-square"> <img alt="Pub Popularity" src="https://img.shields.io/pub/popularity/crystalline?style=flat-square"> <img alt="Pub Points" src="https://img.shields.io/pub/points/crystalline?style=flat-square"> <img alt="Pub Likes" src="https://img.shields.io/pub/likes/crystalline?style=flat-square"> <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/easazade/crystalline?style=flat-square"> <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/easazade/crystalline?style=flat-square"> <img alt="Pub Publisher" src="https://img.shields.io/pub/publisher/crystalline?style=flat-square"> <img alt="GitHub" src="https://img.shields.io/github/license/easazade/crystalline?style=flat-square"> </p>
 
-**Crystalline:** Simple yet Powerful state management solution
+> **Note**: This library is currently in early development. Documentation is not yet ready, and the API is subject to changes as I continue to refine the core concepts.
 
-Crystalline is a comprehensive state management library designed to simplify and enhance your state management practices. By providing a structured approach to defining state objects, Crystalline helps you build more robust, maintainable, and testable applications.
+## The Core Idea
 
-### Why Use Crystalline?
+Crystalline is a state management solution built on a simple premise: **Everything that exists is data, and everything that is done is a manipulation of that data.**
 
-#### Key Benefits
+While many state management libraries focus on complex flows or boilerplate-heavy patterns, Crystalline treats state as a living piece of data that inherently reflects its own lifecycle. Whether data is being read, updated, created, or deleted, those transitions shouldn't just be "side effects"—they should be first-class properties of the state itself.
 
-- **Enhanced Code Clarity:** Crystalline streamlines state management code and state objects for improved readability.
+In Crystalline, state is not just a value; it's a **Data** object that knows its current operation, its failures, and its history. This makes the relationship between data manipulation and the UI observer transparent and effortless.
 
-- **Comprehensive State Modeling:** Define all necessary elements within your state, including data, status, operations, errors, and events, using a unified and efficient approach.
+## Quick Example
 
-- **Comprehensive State Tracking:** Crystalline empowers you to represent the entire lifecycle of a `Store` within your state. Whether an operation is in progress, completed successfully, or has encountered an error, you can explicitly define these states using Crystalline data types designed for defining state objects. This level of granularity can be applied to the entire state or only specific parts of it.
+Here is how you can manage an asynchronous operation like fetching a user profile.
 
-- **State Composition:** Compose a state from smaller, more manageable states.
+### 1. Define and Manipulate Data
 
-- **Shared State:** Seamlessly share states or parts of states across multiple `Stores` without compromising loose coupling or testability.
+Instead of manually managing loading booleans and error strings, the `Data` object tracks the state of the operation for you.
 
-- **Custom Operations:** Crystalline supports generic operations CRUD operations. However, it also allows you to easily define any custom operations tailored to specific scenarios, such as "request access right", "apply coupon" and so forth.
+```dart
+// Define a piece of state for a UserProfile
+final userProfile = Data<UserProfile>();
 
-## Some examples
+// Perform an async operation
+Future<void> fetchUserProfile() async {
+  // Set operation to 'read' to indicate loading
+  userProfile.operation = Operation.read;
 
-# For Docs
+  try {
+    final profile = await api.getUserProfile();
+    // Setting the value automatically updates observers
+    userProfile.value = profile;
+  } catch (e) {
+    userProfile.failure = Failure(e.toString());
+  } finally {
+    // Reset operation to 'none' when finished
+    userProfile.operation = Operation.none;
+  }
+}
+```
 
-- [ ] create a doc for scenarios and use cases added in example
-- [ ] define crystal-clear state objects across all state management libraries.
-- [ ] refer to built in events as semantic events as they are semantics. create a table for all semantic events
-- [ ] State modeling library that makes your states, reflective and crystal clear, no matter what state management library you use.
-- [ ] Checkout actual use-cases in code where crystalline saves you
-- [ ] Why use this?
-- [ ] Quick example
-- [ ] Everything is data
-- [ ] Different Data types
-- [ ] Use with all state management libraries
-- [ ] Easy to test
-- [ ] the root cause of a lot of unclean unreadable code is bad defined state. a bad defined state makes developers to move some of the state inside ui layer inside repositories even and in simple word make it scattered in many different places in app. this in turn causes the logic to manipulate these states be scattered a cross the application as well. when you have logics scattered across different layers and components it is much harder to understand the logic or even the business logic of the app.
-- [ ] Makes loading parts of the ui in parallel much easier. if a page shows a lot of different items like for example homepage of a shop application we can load the differently and show each when it is loading. this is very ideal when we are using shimmers for each of those parts instead of showing a loader for the entire page.
+### 2. Observe with DataBuilder
+
+`DataBuilder` gives you full control over how to render the state based on its current properties.
+
+```dart
+DataBuilder(
+  data: userProfile,
+  builder: (context, data) {
+    if (data.isReading) return CircularProgressIndicator();
+    if (data.hasFailure) return Text('Error: ${data.failure}');
+    if (data.hasValue) return Text('Welcome, ${data.value.name}');
+
+    return Text('No profile loaded');
+  },
+)
+```
+
+### 3. Simplify with WhenDataBuilder
+
+For a more declarative approach, you can use `WhenDataBuilder` to handle different states of your data explicitly.
+
+```dart
+WhenDataBuilder(
+  data: userProfile,
+  onRead: (context, data) => CircularProgressIndicator(),
+  onFailure: (context, data) => Text('Error: ${data.failure}'),
+  onValue: (context, data) => Text('Welcome, ${data.value.name}'),
+  onNoValue: (context, data) => Text('No profile loaded'),
+)
+```
+
+## Features & Roadmap
+
+- **Everything is Data**: Crystalline provides specialized data classes like `Data`, `ListData`, `CollectionData`, and `OperationData` to handle different state shapes.
+- **Built-in Builders**: Reactive widgets like `DataBuilder`, `StoreBuilder`, and `WhenDataBuilder` make it easy to consume state changes without manual listeners.
+- **Store System**: A structured `Store` class to organize multiple states, with upcoming support for **Code Generation** to automatically produce custom data classes and builders.
+- **Semantic Operations**: State naturally tracks whether it is `isReading`, `isUpdating`, or has a `failure`, allowing you to build robust UIs that respond to every stage of a data's lifecycle.
+
+Crystalline exists to make state management feel like what it actually is: simple data manipulation.
