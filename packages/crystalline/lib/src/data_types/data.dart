@@ -7,6 +7,7 @@ import 'package:crystalline/src/exceptions.dart';
 import 'package:crystalline/src/semantics/events.dart';
 import 'package:crystalline/src/semantics/observers.dart';
 import 'package:crystalline/src/semantics/operation.dart';
+import 'package:crystalline/src/semantics/side_effects.dart';
 
 part 'refresh_data.dart';
 
@@ -19,17 +20,21 @@ class Data<T> {
     this.name,
   })  : _value = value,
         _failure = failure,
-        _sideEffects = sideEffects?.toList() ?? [],
-        _operation = operation;
+        _operation = operation {
+    if (sideEffects != null) {
+      this.sideEffects.addAll(sideEffects);
+    }
+  }
+
   T? _value;
   Failure? _failure;
   Operation _operation;
 
   bool _allowedToNotify = true;
 
+  late final sideEffects = SideEffects(this);
   late final observers = DataObservers(this);
   final events = Events();
-  final List<dynamic> _sideEffects;
 
   final String? name;
 
@@ -57,46 +62,6 @@ class Data<T> {
     }
     return _failure!;
   }
-
-  Iterable<dynamic> get sideEffects => _sideEffects;
-
-  void addSideEffect(dynamic sideEffect) {
-    _sideEffects.add(sideEffect);
-    events.dispatch(
-      AddSideEffectEvent(
-        newSideEffect: sideEffect,
-        sideEffects: _sideEffects,
-      ),
-    );
-    events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    observers.notify();
-  }
-
-  void addAllSideEffects(Iterable<dynamic> sideEffects) {
-    _sideEffects.addAll(sideEffects);
-    events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    observers.notify();
-  }
-
-  void removeSideEffect(dynamic sideEffect) {
-    _sideEffects.remove(sideEffect);
-    events.dispatch(
-      RemoveSideEffectEvent(
-        removedSideEffect: sideEffect,
-        sideEffects: _sideEffects,
-      ),
-    );
-    events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    observers.notify();
-  }
-
-  void removeAllSideEffects() {
-    _sideEffects.clear();
-    events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    observers.notify();
-  }
-
-  bool get hasSideEffects => _sideEffects.isNotEmpty;
 
   Failure? get failureOrNull => _failure;
 
@@ -159,8 +124,8 @@ class Data<T> {
     if (old._failure != _failure && _failure != null) {
       events.dispatch(FailureEvent(_failure!));
     }
-    if (!const ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
+    if (!const ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
 
     observers.notify();
@@ -181,8 +146,8 @@ class Data<T> {
     if (old._failure != _failure && _failure != null) {
       events.dispatch(FailureEvent(_failure!));
     }
-    if (!const ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
+    if (!const ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
 
     observers.notify();
@@ -194,8 +159,8 @@ class Data<T> {
     value = data.valueOrNull;
     operation = data.operation;
     failure = data.failureOrNull;
-    _sideEffects.clear();
-    _sideEffects.addAll(data.sideEffects);
+    sideEffects.clear();
+    sideEffects.addAll(data.sideEffects.all);
     allowNotify();
 
     if (old._value != _value && hasValue) {
@@ -207,20 +172,21 @@ class Data<T> {
     if (old._failure != _failure && _failure != null) {
       events.dispatch(FailureEvent(_failure!));
     }
-    if (!const ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
+    if (!const ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
 
     observers.notify();
   }
 
   /// Resets the Data by setting value & failure to null, sets operation to Operation.none and removes all side-effects
+  /// It doesn't remove any observer or event-listener
   void reset() {
     modify((data) {
       data.value = null;
       data.operation = Operation.none;
       data.failure = null;
-      data.removeAllSideEffects();
+      data.sideEffects.clear();
     });
   }
 

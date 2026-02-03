@@ -34,13 +34,13 @@ void main() {
 
       operationData.failure = Failure('message');
       operationData.operation = Operation.create;
-      operationData.addSideEffect('side-effect');
+      operationData.sideEffects.add('side-effect');
 
       expect(operationData.operation, Operation.create);
       expect(operationData.failureOrNull, isNotNull);
       expect(operationData.failure.message, 'message');
-      expect(operationData.sideEffects.length, 1);
-      expect(operationData.sideEffects.first, 'side-effect');
+      expect(operationData.sideEffects.all.length, 1);
+      expect(operationData.sideEffects.all.first, 'side-effect');
       expect(testObserver.timesUpdated, 3);
     },
   );
@@ -50,14 +50,14 @@ void main() {
     () {
       expect(operationData.operation, Operation.none);
       expect(operationData.failureOrNull, isNull);
-      expect(operationData.sideEffects, isEmpty);
+      expect(operationData.sideEffects.all, isEmpty);
 
       operationData.updateFrom(data);
 
       expect(operationData.operation, data.operation);
       expect(operationData.failureOrNull, data.failureOrNull);
-      expect(operationData.sideEffects, data.sideEffects);
-      expect(operationData.sideEffects.length, 1);
+      expect(operationData.sideEffects.all, data.sideEffects.all);
+      expect(operationData.sideEffects.all.length, 1);
     },
   );
 
@@ -74,20 +74,20 @@ void main() {
       // as the data it is created from
       expect(operationData.operation, data.operation);
       expect(operationData.failureOrNull, data.failureOrNull);
-      expect(operationData.sideEffects, data.sideEffects);
-      expect(operationData.sideEffects.length, 1);
+      expect(operationData.sideEffects.all, data.sideEffects.all);
+      expect(operationData.sideEffects.all.length, 1);
 
       // when data updates, OperationData that is created from it should update as well
       data.failure = Failure('message 2');
       data.operation = Operation.delete;
-      data.addSideEffect('side-effect-2');
+      data.sideEffects.add('side-effect-2');
 
       expect(operationData.operation, Operation.delete);
       expect(operationData.failureOrNull, isNotNull);
       expect(operationData.failure.message, 'message 2');
-      expect(operationData.sideEffects.length, 2);
-      expect(operationData.sideEffects, data.sideEffects);
-      expect(operationData.sideEffects.last, 'side-effect-2');
+      expect(operationData.sideEffects.all.length, 2);
+      expect(operationData.sideEffects.all, data.sideEffects.all);
+      expect(operationData.sideEffects.all.last, 'side-effect-2');
       expect(testObserver.timesUpdated, 3);
     },
   );

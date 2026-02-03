@@ -15,8 +15,8 @@ class OperationData extends Data<void> {
       (origin, mutated) {
         mutated.failure = origin.failureOrNull;
         mutated.operation = origin.operation;
-        mutated.removeAllSideEffects();
-        mutated.addAllSideEffects(origin.sideEffects);
+        mutated.sideEffects.clear();
+        mutated.sideEffects.addAll(origin.sideEffects.all);
       },
     );
   }
@@ -26,8 +26,8 @@ class OperationData extends Data<void> {
     disallowNotify();
     operation = data.operation;
     failure = data.failureOrNull;
-    removeAllSideEffects();
-    addAllSideEffects(data.sideEffects);
+    sideEffects.clear();
+    sideEffects.addAll(data.sideEffects.all);
     allowNotify();
     observers.notify();
   }
@@ -36,7 +36,7 @@ class OperationData extends Data<void> {
   OperationData copy() => OperationData(
         operation: operation,
         failure: failureOrNull,
-        sideEffects: sideEffects,
+        sideEffects: sideEffects.all,
       );
 
   @override

@@ -269,8 +269,8 @@ void main() {
       );
 
       expect(data.value, 'ali');
-      expect(data.sideEffects.length, equals(1));
-      expect(data.sideEffects, equals(['effect1']));
+      expect(data.sideEffects.all.length, equals(1));
+      expect(data.sideEffects.all, equals(['effect1']));
       expect(data.operation, Operation.read);
       expect(data.failureOrNull?.message, 'error message');
       expect(data.name, dataName);
@@ -278,7 +278,7 @@ void main() {
       data.reset();
 
       expect(data.hasValue, isFalse);
-      expect(data.sideEffects.isEmpty, isTrue);
+      expect(data.sideEffects.isNotEmpty, isFalse);
       expect(data.operation, Operation.none);
       expect(data.hasFailure, isFalse);
       // the data name should not change on reset. since it is just a name of the data
@@ -328,48 +328,48 @@ void main() {
   group('sideEffects -', () {
     test('Should add a side effect', () {
       final sideEffect = 'effect on the side';
-      data.addSideEffect(sideEffect);
+      data.sideEffects.add(sideEffect);
 
-      expect(data.sideEffects.length, 1);
-      expect(data.sideEffects.firstOrNull, sideEffect);
+      expect(data.sideEffects.all.length, 1);
+      expect(data.sideEffects.all.firstOrNull, sideEffect);
       expect(testObserver.timesUpdated, 1);
     });
 
     test('Should remove a side effect', () {
       final sideEffect = 'effect on the side';
-      data.addSideEffect(sideEffect);
-      expect(data.sideEffects.length, 1);
+      data.sideEffects.add(sideEffect);
+      expect(data.sideEffects.all.length, 1);
 
-      data.removeSideEffect(sideEffect);
-      expect(data.sideEffects.length, 0);
+      data.sideEffects.remove(sideEffect);
+      expect(data.sideEffects.all.length, 0);
       expect(testObserver.timesUpdated, 2);
     });
 
     test('Should add a list of side effects', () {
       final sideEffects = ['effect1', 'effect2', 14, 4.5];
 
-      data.addAllSideEffects(sideEffects);
-      expect(data.sideEffects.length, 4);
-      expect(data.sideEffects, sideEffects);
+      data.sideEffects.addAll(sideEffects);
+      expect(data.sideEffects.all.length, 4);
+      expect(data.sideEffects.all, sideEffects);
       expect(testObserver.timesUpdated, 1);
     });
 
     test('Should clear all side effects', () {
       final sideEffects = ['effect1', 'effect2', 14, 4.5];
-      data.addAllSideEffects(sideEffects);
-      expect(data.sideEffects.length, 4);
+      data.sideEffects.addAll(sideEffects);
+      expect(data.sideEffects.all.length, 4);
 
-      data.removeAllSideEffects();
-      expect(data.sideEffects, isEmpty);
+      data.sideEffects.clear();
+      expect(data.sideEffects.all, isEmpty);
       expect(testObserver.timesUpdated, 2);
     });
 
     test(
       'data.hasSideEffects should return true when there are side effects and vise versa',
       () {
-        expect(data.hasSideEffects, isFalse);
-        data.addAllSideEffects(['effect1', 'effect2', 14, 4.5]);
-        expect(data.hasSideEffects, isTrue);
+        expect(data.sideEffects.isNotEmpty, isFalse);
+        data.sideEffects.addAll(['effect1', 'effect2', 14, 4.5]);
+        expect(data.sideEffects.isNotEmpty, isTrue);
       },
     );
   });
@@ -492,7 +492,7 @@ void main() {
       'should dispatch a SideEffectsUpdated event and AddSideEffectEvent '
       'and then a RemoveSideEffectEvent when side effect is removed',
       () {
-        data.addSideEffect('effect');
+        data.sideEffects.add('effect');
 
         testListener.expectNthDispatch(
           1,
@@ -507,7 +507,7 @@ void main() {
           (event) => expect(event, SideEffectsUpdatedEvent(['effect'])),
         );
 
-        data.removeSideEffect('effect');
+        data.sideEffects.remove('effect');
 
         testListener.expectNthDispatch(
           3,
@@ -531,7 +531,7 @@ void main() {
           data.value = 'meow';
           data.operation = Operation.delete;
           data.failure = Failure('This is ERROR message !!!');
-          data.addSideEffect('effect');
+          data.sideEffects.add('effect');
         });
 
         testListener.expectNthDispatch(
@@ -563,7 +563,7 @@ void main() {
           data.value = 'meow';
           data.operation = Operation.delete;
           data.failure = Failure('This is ERROR message !!!');
-          data.addSideEffect('effect');
+          data.sideEffects.add('effect');
         });
 
         testListener.expectNthDispatch(
@@ -594,7 +594,7 @@ void main() {
         data.value = 'meow';
         data.operation = Operation.delete;
         data.failure = Failure('This is ERROR message !!!');
-        data.addSideEffect('effect');
+        data.sideEffects.add('effect');
 
         final data2 = Data<String>();
         final testListener2 = DataTestListener<String, Data<String>>(data2);

@@ -103,8 +103,8 @@ void main() {
       );
 
       expect(listData.items, items1);
-      expect(listData.sideEffects.length, equals(1));
-      expect(listData.sideEffects, equals(['effect1']));
+      expect(listData.sideEffects.all.length, equals(1));
+      expect(listData.sideEffects.all, equals(['effect1']));
       expect(listData.operation, Operation.read);
       expect(listData.failureOrNull?.message, 'error message');
 
@@ -112,7 +112,7 @@ void main() {
 
       expect(listData.hasValue, isFalse);
       expect(listData.items, isEmpty);
-      expect(listData.sideEffects, isEmpty);
+      expect(listData.sideEffects.all, isEmpty);
       expect(listData.operation, Operation.none);
       expect(listData.hasFailure, isFalse);
     });
@@ -217,7 +217,7 @@ void main() {
         final sideEffects = ['side effect'];
         final list = ListData<int>([], sideEffects: sideEffects);
 
-        expect(list.sideEffects, sideEffects);
+        expect(list.sideEffects.all, sideEffects);
       },
     );
   });
@@ -549,7 +549,7 @@ void main() {
       'should dispatch a SideEffectsUpdated event and AddSideEffectEvent '
       'and then a RemoveSideEffectEvent when side effect is removed from ListData',
       () {
-        listData.addSideEffect('effect');
+        listData.sideEffects.add('effect');
 
         testListener.expectNthDispatch(
           1,
@@ -564,7 +564,7 @@ void main() {
           (event) => expect(event, SideEffectsUpdatedEvent(['effect'])),
         );
 
-        listData.removeSideEffect('effect');
+        listData.sideEffects.remove('effect');
 
         testListener.expectNthDispatch(
           3,
@@ -743,7 +743,7 @@ void main() {
           list.value.add(Data(value: 'meow'));
           list.operation = Operation.delete;
           list.failure = Failure('message');
-          list.addSideEffect('effect');
+          list.sideEffects.add('effect');
         });
 
         testListener.expectNthDispatch(
@@ -775,7 +775,7 @@ void main() {
           list.value.add(Data(value: 'meow'));
           list.operation = Operation.delete;
           list.failure = Failure('message');
-          list.addSideEffect('effect');
+          list.sideEffects.add('effect');
         });
 
         testListener.expectNthDispatch(
@@ -806,7 +806,7 @@ void main() {
         listData.add(Data(value: 'meow'));
         listData.operation = Operation.delete;
         listData.failure = Failure('message');
-        listData.addSideEffect('effect');
+        listData.sideEffects.add('effect');
 
         final newListData = ListData<String>([]);
         final testListener2 = ListDataTestEventListener(newListData);

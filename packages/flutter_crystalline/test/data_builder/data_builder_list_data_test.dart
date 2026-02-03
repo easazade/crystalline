@@ -23,7 +23,7 @@ void main() async {
             onValue: (context, items) {
               return Column(
                 children: [
-                  if (items.sideEffects.isNotEmpty) Text(items.sideEffects.first.toString()),
+                  if (items.sideEffects.isNotEmpty) Text(items.sideEffects.all.first.toString()),
                   ...items.map((item) => Text(item.value)),
                 ],
               );
@@ -44,7 +44,7 @@ void main() async {
       expect(listData.sideEffects, isEmpty);
 
       // check side effects rendering
-      listData.addSideEffect('sideEffect');
+      listData.sideEffects.add('sideEffect');
       await tester.pumpAndSettle();
 
       expect(find.text('sideEffect'), findsOneWidget);
@@ -77,7 +77,7 @@ void main() async {
             builder: (context, items) {
               return Column(
                 children: [
-                  if (items.sideEffects.isNotEmpty) Text(items.sideEffects.first.toString()),
+                  if (items.sideEffects.isNotEmpty) Text(items.sideEffects.all.first.toString()),
                   ...items.map((item) {
                     if (item.isAnyOperation) {
                       return CircularProgressIndicator();

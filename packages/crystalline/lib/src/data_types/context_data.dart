@@ -10,7 +10,7 @@ class ContextData<T, C> extends Data<T> {
     super.operation,
     List<dynamic>? super.sideEffects,
     super.name,
-  })  : _context = context;
+  }) : _context = context;
 
   C? _context;
 
@@ -52,8 +52,8 @@ class ContextData<T, C> extends Data<T> {
     operation = data.operation;
     failure = data.failureOrNull;
     context = data.context;
-    removeAllSideEffects();
-    addAllSideEffects(data.sideEffects);
+    sideEffects.clear();
+    sideEffects.addAll(data.sideEffects.all);
     allowNotify();
     observers.notify();
   }
@@ -70,7 +70,7 @@ class ContextData<T, C> extends Data<T> {
         failure: failureOrNull,
         operation: operation,
         context: contextOrNull,
-        sideEffects: sideEffects.toList(),
+        sideEffects: sideEffects.all.toList(),
       );
 
   @override

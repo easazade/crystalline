@@ -177,8 +177,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       events.dispatch(FailureEvent(failure));
     }
-    if (!ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
+    if (!ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
     observers.notify();
   }
@@ -200,8 +200,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       events.dispatch(FailureEvent(failure));
     }
-    if (!ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
+    if (!ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
     observers.notify();
   }
@@ -220,8 +220,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     }
     operation = data.operation;
     failure = data.failureOrNull;
-    removeAllSideEffects();
-    addAllSideEffects(data.sideEffects);
+    sideEffects.clear();
+    sideEffects.addAll(data.sideEffects.all);
     allowNotify();
     if (old.items != items) {
       events.dispatch(ItemsUpdatedEvent(items));
@@ -232,8 +232,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       events.dispatch(FailureEvent(failure));
     }
-    if (!ListEquality<dynamic>().equals(old.sideEffects.toList(), sideEffects.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects));
+    if (!ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
     observers.notify();
   }
@@ -244,7 +244,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
       collection.removeAll();
       collection.operation = Operation.none;
       collection.failure = null;
-      collection.removeAllSideEffects();
+      collection.sideEffects.clear();
     });
   }
 
@@ -265,7 +265,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
         items.toList().map((data) => data.copy()).toList(),
         operation: operation,
         failure: failureOrNull,
-        sideEffects: sideEffects.toList(),
+        sideEffects: sideEffects.all.toList(),
       );
 
   @override
@@ -304,7 +304,7 @@ class ListData<T> extends CollectionData<T> {
     this.operation = operation;
     this.failure = failure;
     if (sideEffects != null) {
-      addAllSideEffects(sideEffects);
+      this.sideEffects.addAll(sideEffects);
     }
   }
 
@@ -371,7 +371,7 @@ class ListData<T> extends CollectionData<T> {
         items.toList().map((data) => data.copy()).toList(),
         operation: operation,
         failure: failureOrNull,
-        sideEffects: sideEffects.toList(),
+        sideEffects: sideEffects.all.toList(),
         isAnyOperationStrategy: isAnyOperationStrategy,
         hasFailureStrategy: hasFailureStrategy,
         hasValueStrategy: hasValueStrategy,
