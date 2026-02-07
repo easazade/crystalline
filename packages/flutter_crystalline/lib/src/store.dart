@@ -4,6 +4,10 @@ import 'package:crystalline/crystalline.dart';
 import 'package:flutter/widgets.dart';
 
 abstract class Store extends Data<void> with ChangeNotifier {
+  Store() {
+    unawaited(onInstantiate());
+  }
+
   bool _initTriggered = false;
 
   final _initializationCompleter = Completer();
@@ -13,6 +17,8 @@ abstract class Store extends Data<void> with ChangeNotifier {
   List<Data<Object?>> get states;
 
   Future<void> init() async {}
+
+  Future<void> onInstantiate() async {}
 
   void _triggerInit() {
     if (!_initTriggered) {

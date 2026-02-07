@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/element/element2.dart';
-import 'package:analyzer/dart/element/type.dart';
 // ignore: unused_import
 import 'package:crystalline/crystalline.dart';
 import 'package:crystalline_builder/src/utils/extensions.dart';
@@ -21,17 +20,18 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
     final mixinName = '${className}Mixin';
     final storeClassName = className.replaceAll('_', '');
 
-    for (var property in cls.fields2) {
-      print(property.displayName);
-      print(superclassChainOfFieldType(property.type).map((e)=> e.displayName));
-      print(property.type.displayNameWithNullability);
-      print((property.type as ParameterizedType).typeArguments);
-    }
+    // for (var property in cls.fields2) {
+    //   print(property.displayName);
+    //   print(superclassChainOfFieldType(property.type).map((e) => e.displayName));
+    //   print(property.type.displayNameWithNullability);
+    //   print((property.type as ParameterizedType).typeArguments);
+    // }
 
-    final dataProperties = cls.fields2.where((e) =>
-        e.type.displayName == 'Data' ||
-        superclassChainOfFieldType(e.type)
-            .any((interfaceType) => interfaceType.displayName == 'Data'));
+    final dataProperties = cls.fields2.where(
+      (e) =>
+          e.type.displayName == 'Data' ||
+          superclassChainOfFieldType(e.type).any((interfaceType) => interfaceType.displayName == 'Data'),
+    );
 
     // write store class implementation
     buffer.writeln(
@@ -39,6 +39,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
         class $storeClassName extends $className with $mixinName {}
       ''',
     );
+
     // write mixin
     buffer.writeln(
       '''
@@ -59,6 +60,6 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
 
 void validateSourceSyntaxForStoreAnnotatedClass(ClassElement2 cls) {
   if (!cls.isPrivate || !cls.isAbstract) {
-    throw Exception('!!! -> Annotated store classes need to be private and abstract');
+    throw Exception('!!! ->>> Annotated store classes with @store() need to be private and abstract');
   }
 }

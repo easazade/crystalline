@@ -7,4 +7,6 @@ part 'store.crystalline.dart';
 abstract class _GeneralStore extends Store {
   final user = Data<String>();
   final ope = OperationData();
+
+  
 }
