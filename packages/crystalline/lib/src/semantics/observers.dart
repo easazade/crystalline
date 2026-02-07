@@ -16,8 +16,7 @@ class DataObservers {
 
   final List<Observer> _observers = [];
 
-  Iterable<Observer> get all =>
-      _observers.toList().where((observer) => observer is! Internal);
+  Iterable<Observer> get all => _observers.toList().where((observer) => observer is! Internal);
 
   void add(Observer observer) => _observers.add(observer);
 
@@ -26,12 +25,12 @@ class DataObservers {
   bool get hasObservers => all.isNotEmpty;
 
   @mustCallSuper
-  void notify() {
+  void notify({bool forceNotify = false}) {
     final stateChangeLog = CrystallineGlobalConfig.logger.globalLogFilter(_data);
     if (stateChangeLog != null) {
       CrystallineGlobalConfig.logger.log(stateChangeLog);
     }
-    if (_allowedToNotify) {
+    if (_allowedToNotify || forceNotify) {
       for (final observer in _observers) {
         observer.callback();
       }
@@ -39,7 +38,7 @@ class DataObservers {
   }
 
   // void clear() {
-    // _observers.removeWhere((observer) => observer is! Internal);
+  // _observers.removeWhere((observer) => observer is! Internal);
   // }
 
   void allowNotify() => _allowedToNotify = true;

@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:crystalline/crystalline.dart';
-import 'package:flutter/widgets.dart';
 
-abstract class Store extends Data<void> with ChangeNotifier {
+abstract class Store extends Data<void> {
   Store() {
     unawaited(onInstantiate());
   }
@@ -35,16 +34,12 @@ abstract class Store extends Data<void> with ChangeNotifier {
   StoreObservers get observers => _storeObservers;
 
   @override
-  // ignore: unnecessary_overrides
-  void addListener(void Function() listener) {
-    _triggerInit();
-    super.addListener(listener);
-  }
-
-  @override
   String? get name;
 
-  void publish() => (this as ChangeNotifier).notifyListeners();
+  void publish() {
+    // setting forceNotify:true, since StoreObservers is disallowed notify by design.
+    observers.notify(forceNotify: true);
+  }
 
   @override
   String toString() {
@@ -65,7 +60,9 @@ abstract class Store extends Data<void> with ChangeNotifier {
 
 class StoreObservers extends DataObservers {
   final Store _store;
-  StoreObservers(this._store) : super(_store);
+  StoreObservers(this._store) : super(_store) {
+    disallowNotify();
+  }
 
   @override
   void add(Observer observer) {

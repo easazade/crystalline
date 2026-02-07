@@ -10,12 +10,12 @@ class HomeStore extends Store {
 
   Future changeTitle() async {
     title.operation = Operation.update;
-    notifyListeners();
+    publish();
 
     await Future.delayed(const Duration(seconds: 1));
     title.value = (title.value == 'THIS TITLE') ? 'THAT TITLE' : 'THIS TITLE';
     title.operation = Operation.none;
-    notifyListeners();
+    publish();
   }
 
   Future changeNumber() async {
@@ -23,12 +23,12 @@ class HomeStore extends Store {
     number.value = null;
     number.operation = Operation.update;
     failure = null;
-    notifyListeners();
+    publish();
 
     await Future.delayed(const Duration(seconds: 1));
     number.value = newValue;
     number.operation = Operation.none;
-    notifyListeners();
+    publish();
 
     await Future.delayed(const Duration(seconds: 1));
     failure = Failure('Some fake made failure');

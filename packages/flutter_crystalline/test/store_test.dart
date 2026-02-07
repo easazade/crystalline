@@ -4,17 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late _TestStore store;
-  late VoidCallback listener;
+  late Observer observer;
   late int publishCallsCount;
 
   setUp(() {
     publishCallsCount = 0;
     store = _TestStore();
-    listener = () {
+    observer = Observer(() {
       publishCallsCount += 1;
-    };
+    });
 
-    store.addListener(listener);
+    store.observers.add(observer);
   });
 
   test(
