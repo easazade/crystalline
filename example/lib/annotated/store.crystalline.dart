@@ -3,12 +3,19 @@
 
 part of 'store.dart';
 
-class GeneralStore extends _GeneralStore with _GeneralStoreMixin {}
+class GeneralStore extends _GeneralStore with _GeneralStoreMixin {
+  GeneralStore(
+    super.key, {
+    required super.token,
+    super.degree,
+    super.withDefault = true,
+  });
+}
 
 mixin _GeneralStoreMixin on _GeneralStore {
-  // override
+  @override
   List<Data<Object?>> get states => [user, ope];
 
-  // override
-  String? get name => '_GeneralStore';
+  @override
+  String? get name => 'GeneralStore';
 }

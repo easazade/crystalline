@@ -34,9 +34,29 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
     );
 
     // write store class implementation
+
+    // write constructor args for generate StoreClass
+    final positionalParams = cls.unnamedConstructor2!.formalParameters
+        .where((p) => p.isPositional)
+        .map((p) => 'super.${p.displayName}')
+        .join(',');
+    final namedParams = cls.unnamedConstructor2!.formalParameters.where((p) => p.isNamed).map((p) {
+      var fragment = 'super.${p.displayName}';
+      if (p.isRequired) {
+        fragment = 'required $fragment';
+      }
+      if (p.hasDefaultValue) {
+        fragment = '$fragment = ${p.defaultValueCode}';
+      }
+
+      return fragment;
+    }).join(',');
+
     buffer.writeln(
       '''
-        class $storeClassName extends $className with $mixinName {}
+        class $storeClassName extends $className with $mixinName {
+          $storeClassName($positionalParams, {$namedParams});
+        }
       ''',
     );
 
@@ -61,5 +81,9 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
 void validateSourceSyntaxForStoreAnnotatedClass(ClassElement2 cls) {
   if (!cls.isPrivate || !cls.isAbstract) {
     throw Exception('!!! ->>> Annotated store classes with @store() need to be private and abstract');
+  }
+
+  if (cls.unnamedConstructor2 == null) {
+    throw Exception('!!! ->>> Annotated store classes with @store must have an unnamed constructor');
   }
 }
