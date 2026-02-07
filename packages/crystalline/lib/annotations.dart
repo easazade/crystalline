@@ -7,3 +7,7 @@ class data {
     required this.valueType,
   });
 }
+
+class store {
+  const store();
+}

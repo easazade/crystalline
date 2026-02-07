@@ -7,10 +7,10 @@ part of 'custom_data.dart';
 class CustomDataOperation extends Operation {
   const CustomDataOperation(String name) : super(name);
 
+  static const CustomDataOperation create = CustomDataOperation('create');
+  static const CustomDataOperation read = CustomDataOperation('read');
   static const CustomDataOperation update = CustomDataOperation('update');
   static const CustomDataOperation delete = CustomDataOperation('delete');
-  static const CustomDataOperation read = CustomDataOperation('read');
-  static const CustomDataOperation create = CustomDataOperation('create');
   static const CustomDataOperation none = CustomDataOperation('none');
   // custom operations
   static const Operation deleteUser = Operation('DeleteUser');
@@ -31,12 +31,4 @@ class CustomData extends Data<String> {
          sideEffects: sideEffects,
          name: name,
        );
-
-  // @override
-  // CustomDataOperation get operation => super.operation as CustomDataOperation;
-
-  // @override
-  // set operation(CustomDataOperation operation) {
-
-  // }
 }
