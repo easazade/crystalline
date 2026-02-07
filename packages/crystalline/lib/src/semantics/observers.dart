@@ -1,5 +1,12 @@
 import 'package:crystalline/crystalline.dart';
+import 'package:crystalline/src/internal/internal.dart';
 import 'package:meta/meta.dart';
+
+class Observer {
+  Observer(this.callback);
+
+  void Function() callback;
+}
 
 class DataObservers {
   final Data _data;
@@ -7,13 +14,14 @@ class DataObservers {
 
   var _allowedToNotify = true;
 
-  final List<void Function()> _observers = [];
+  final List<Observer> _observers = [];
 
-  Iterable<void Function()> get all => _observers.toList();
+  Iterable<Observer> get all =>
+      _observers.toList().where((observer) => observer is! Internal);
 
-  void add(void Function() observer) => _observers.add(observer);
+  void add(Observer observer) => _observers.add(observer);
 
-  void remove(void Function() observer) => _observers.remove(observer);
+  void remove(Observer observer) => _observers.remove(observer);
 
   bool get hasObservers => all.isNotEmpty;
 
@@ -24,13 +32,15 @@ class DataObservers {
       CrystallineGlobalConfig.logger.log(stateChangeLog);
     }
     if (_allowedToNotify) {
-      for (final observer in all) {
-        observer();
+      for (final observer in _observers) {
+        observer.callback();
       }
     }
   }
 
-  void clear() => _observers.clear();
+  // void clear() {
+    // _observers.removeWhere((observer) => observer is! Internal);
+  // }
 
   void allowNotify() => _allowedToNotify = true;
 
@@ -43,7 +53,7 @@ class CollectionDataObservers extends DataObservers {
   CollectionDataObservers(this._collectionData) : super(_collectionData);
 
   @override
-  void add(void Function() observer) {
+  void add(Observer observer) {
     super.add(observer);
     for (var item in _collectionData.items) {
       item.observers.add(observer);
@@ -51,7 +61,7 @@ class CollectionDataObservers extends DataObservers {
   }
 
   @override
-  void remove(void Function() observer) {
+  void remove(Observer observer) {
     super.remove(observer);
     for (var e in _collectionData.items) {
       e.observers.remove(observer);
@@ -65,7 +75,7 @@ class RefreshDataObservers extends DataObservers {
   RefreshDataObservers(this._refreshData) : super(_refreshData);
 
   @override
-  void add(void Function() observer) {
+  void add(Observer observer) {
     if (_refreshData.hasNoValue) _refreshData.refresh(allowRetry: false);
     super.add(observer);
   }

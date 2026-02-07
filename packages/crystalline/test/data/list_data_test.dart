@@ -1,5 +1,4 @@
 import 'package:crystalline/crystalline.dart';
-import 'package:crystalline/src/semantics/events.dart';
 import 'package:test/test.dart';
 
 import '../test_utils/test_logger.dart';
@@ -8,7 +7,7 @@ void main() {
   late List<Data<String>> items1;
   late List<Data<String>> items2;
   late Data<String> singleItem;
-  void observer() {}
+  final observer = Observer(() {});
 
   late ListData<String> listData;
   late ListDataTestObserver<String> testObserver;

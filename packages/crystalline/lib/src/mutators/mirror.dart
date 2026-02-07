@@ -1,11 +1,12 @@
 import 'package:crystalline/src/data_types/data.dart';
+import 'package:crystalline/src/semantics/observers.dart';
 
 class _Mirror<T1, D1 extends Data<T1>> {
   _Mirror(this.origin) {
     mirror = origin.copy() as D1;
-    origin.observers.add(() {
+    origin.observers.add(Observer(() {
       mirror.updateFrom(origin);
-    });
+    }));
   }
 
   final D1 origin;

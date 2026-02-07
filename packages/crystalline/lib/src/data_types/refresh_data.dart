@@ -18,7 +18,6 @@ class RefreshData<T> extends Data<T> {
   RefreshStatus _status = RefreshStatus.failed;
 
   Completer<void>? _refreshCompleter;
-  var _disposed = false;
 
   late final _refreshDataEvents = RefreshDataEvents(this);
   late final _refreshObservers = RefreshDataObservers(this);
@@ -30,10 +29,6 @@ class RefreshData<T> extends Data<T> {
   RefreshDataEvents get events => _refreshDataEvents;
 
   Future<void> refresh({bool allowRetry = true}) async {
-    if (_disposed) {
-      return;
-    }
-
     Future<RefreshStatus> tryRefreshCallback() async {
       RefreshStatus status;
 
@@ -117,13 +112,6 @@ class RefreshData<T> extends Data<T> {
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
-
-  void dispose() {
-    _disposed = true;
-    observers.clear();
-    events.clear();
-    reset();
-  }
 }
 
 enum RefreshStatus { done, failed }

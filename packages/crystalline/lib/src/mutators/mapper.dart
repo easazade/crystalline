@@ -1,4 +1,5 @@
 import 'package:crystalline/src/data_types/data.dart';
+import 'package:crystalline/src/semantics/observers.dart';
 
 class _Mapper<T1, T2, D1 extends Data<T1>, D2 extends Data<T2>> {
   final D1 origin;
@@ -13,12 +14,14 @@ class _Mapper<T1, T2, D1 extends Data<T1>, D2 extends Data<T2>> {
     mapper(origin, mappedMutation);
 
     // add an observer to map state of original data to mutated data on each
-    origin.observers.add(() {
-      mappedMutation.disallowNotify();
-      mapper(origin, mappedMutation);
-      mappedMutation.allowNotify();
-      mappedMutation.observers.notify();
-    });
+    origin.observers.add(
+      Observer(() {
+        mappedMutation.disallowNotify();
+        mapper(origin, mappedMutation);
+        mappedMutation.allowNotify();
+        mappedMutation.observers.notify();
+      }),
+    );
   }
 }
 

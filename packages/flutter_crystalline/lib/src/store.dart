@@ -37,8 +37,8 @@ abstract class Store extends Data<void> with ChangeNotifier {
   @override
   // ignore: unnecessary_overrides
   void addListener(void Function() listener) {
-    super.addListener(listener);
     _triggerInit();
+    super.addListener(listener);
   }
 
   @override
@@ -68,8 +68,8 @@ class StoreObservers extends DataObservers {
   StoreObservers(this._store) : super(_store);
 
   @override
-  void add(void Function() observer) {
-    super.add(observer);
+  void add(Observer observer) {
     _store._triggerInit();
+    super.add(observer);
   }
 }

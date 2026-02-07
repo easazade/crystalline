@@ -187,7 +187,7 @@ void main() {
       () {
         final newData = Data<String>();
         expect(newData.observers.hasObservers, isFalse);
-        newData.observers.add(() {});
+        newData.observers.add(Observer(() {}));
         expect(newData.observers.all.length, 1);
         expect(newData.observers.hasObservers, isTrue);
       },

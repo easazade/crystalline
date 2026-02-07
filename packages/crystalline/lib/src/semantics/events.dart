@@ -32,7 +32,6 @@ class Events {
     }
   }
 
-  void clear() => _listeners.clear();
 
   void allowNotify() => _allowedToNotify = true;
 

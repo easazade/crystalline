@@ -1,4 +1,5 @@
 import 'package:crystalline/src/semantics/events.dart';
+import 'package:crystalline/src/semantics/observers.dart';
 import 'package:meta/meta.dart';
 
 import 'data_types/collection_data.dart';
@@ -7,7 +8,7 @@ import 'data_types/data.dart';
 @visibleForTesting
 class DataTestObserver<T, D extends Data<T>> {
   DataTestObserver(this.data) {
-    data.observers.add(() => records.add(data.copy() as D));
+    data.observers.add(Observer(() => records.add(data.copy() as D)));
   }
 
   final D data;

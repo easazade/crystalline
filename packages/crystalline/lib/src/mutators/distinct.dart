@@ -1,13 +1,16 @@
 import 'package:crystalline/src/data_types/data.dart';
+import 'package:crystalline/src/semantics/observers.dart';
 
 class _Distinct<T1, D1 extends Data<T1>> {
   _Distinct(this.origin) {
     distinct = origin.copy() as D1;
-    origin.observers.add(() {
-      if (origin != distinct) {
-        distinct.updateFrom(origin);
-      }
-    });
+    origin.observers.add(
+      Observer(() {
+        if (origin != distinct) {
+          distinct.updateFrom(origin);
+        }
+      }),
+    );
   }
 
   final D1 origin;

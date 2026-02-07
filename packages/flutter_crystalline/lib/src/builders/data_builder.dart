@@ -18,9 +18,9 @@ class DataBuilder<T, D extends Data<T>> extends StatefulWidget {
 class DataBuilderState<T, D extends Data<T>> extends State<DataBuilder<T, D>> {
   late D _data;
 
-  void _observer() {
+  late final _observer = Observer(() {
     setState(() {});
-  }
+  });
 
   @override
   void initState() {

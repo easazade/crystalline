@@ -41,9 +41,9 @@ class WhenDataBuilder<T, D extends Data<T>> extends StatefulWidget {
 class _WhenDataBuilderState<T, D extends Data<T>> extends State<WhenDataBuilder<T, D>> {
   late D _data;
 
-  void _observer() {
+  late final _observer = Observer(() {
     setState(() {});
-  }
+  });
 
   @override
   void initState() {
