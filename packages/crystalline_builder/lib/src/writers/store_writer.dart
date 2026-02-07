@@ -44,11 +44,11 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
     buffer.writeln(
       '''
       mixin $mixinName on $className{
-        // override
+        @override
         List<Data<Object?>> get states => [${dataProperties.map((e) => e.displayName).join(',')}];
 
-        // override
-        String? get name => '$className';
+        @override
+        String? get name => '$storeClassName';
       }
       ''',
     );
