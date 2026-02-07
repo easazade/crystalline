@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -86,7 +85,6 @@ class _TestStore extends Store {
 
   // this field should not cause a rebuild, since it is not part of the states
   var nonData = 'something';
-
 
   @override
   List<Data<Object?>> get states => [userName, age, points];

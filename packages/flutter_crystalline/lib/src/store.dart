@@ -15,9 +15,15 @@ abstract class Store extends Data<void> {
 
   List<Data<Object?>> get states;
 
+  Future<void> onInstantiate() async {}
+
   Future<void> init() async {}
 
-  Future<void> onInstantiate() async {}
+  void onObserverAdded(Observer observer) {}
+
+  void onObserverRemoved(Observer observer) {}
+
+  void clear() {}
 
   void _triggerInit() {
     if (!_initTriggered) {
@@ -66,7 +72,17 @@ class StoreObservers extends DataObservers {
 
   @override
   void add(Observer observer) {
-    _store._triggerInit();
     super.add(observer);
+    _store._triggerInit();
+    _store.onObserverAdded(observer);
+  }
+
+  @override
+  void remove(Observer observer) {
+    super.remove(observer);
+    _store.onObserverRemoved(observer);
+    if (!hasObservers) {
+      _store.clear();
+    }
   }
 }
