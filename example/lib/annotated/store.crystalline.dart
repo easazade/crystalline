@@ -7,7 +7,7 @@ class GeneralStore extends _GeneralStore with _GeneralStoreMixin {}
 
 mixin _GeneralStoreMixin on _GeneralStore {
   // override
-  List<Data<Object?>> get states => [user];
+  List<Data<Object?>> get states => [user, ope];
 
   // override
   String? get name => '_GeneralStore';

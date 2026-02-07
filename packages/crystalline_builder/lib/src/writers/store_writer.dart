@@ -3,6 +3,7 @@ import 'package:analyzer/dart/element/type.dart';
 // ignore: unused_import
 import 'package:crystalline/crystalline.dart';
 import 'package:crystalline_builder/src/utils/extensions.dart';
+import 'package:crystalline_builder/src/utils/functions.dart';
 import 'package:crystalline_builder/src/utils/type_checkers.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -20,13 +21,17 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
     final mixinName = '${className}Mixin';
     final storeClassName = className.replaceAll('_', '');
 
-    final dataProperties = cls.fields2.where((e) => e.type.displayName == 'Data');
-
-    for (var property in dataProperties) {
+    for (var property in cls.fields2) {
       print(property.displayName);
+      print(superclassChainOfFieldType(property.type).map((e)=> e.displayName));
       print(property.type.displayNameWithNullability);
       print((property.type as ParameterizedType).typeArguments);
     }
+
+    final dataProperties = cls.fields2.where((e) =>
+        e.type.displayName == 'Data' ||
+        superclassChainOfFieldType(e.type)
+            .any((interfaceType) => interfaceType.displayName == 'Data'));
 
     // write store class implementation
     buffer.writeln(

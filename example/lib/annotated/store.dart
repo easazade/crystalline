@@ -6,8 +6,5 @@ part 'store.crystalline.dart';
 @store()
 abstract class _GeneralStore extends Store {
   final user = Data<String>();
-}
-
-awD() {
-  GeneralStore().addListener(() {});
+  final ope = OperationData();
 }
