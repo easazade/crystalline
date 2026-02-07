@@ -4,6 +4,7 @@
 part of 'store.dart';
 
 class GeneralStore extends _GeneralStore with _GeneralStoreMixin {
+  // constructor
   GeneralStore(
     super.key, {
     required super.token,

@@ -39,7 +39,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
     final positionalParams = cls.unnamedConstructor2!.formalParameters
         .where((p) => p.isPositional)
         .map((p) => 'super.${p.displayName}')
-        .join(',');
+        .join(',').trim();
     final namedParams = cls.unnamedConstructor2!.formalParameters.where((p) => p.isNamed).map((p) {
       var fragment = 'super.${p.displayName}';
       if (p.isRequired) {
@@ -50,12 +50,16 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
       }
 
       return fragment;
-    }).join(',');
+    }).join(',').trim();
 
     buffer.writeln(
       '''
         class $storeClassName extends $className with $mixinName {
-          $storeClassName($positionalParams, {$namedParams});
+          // constructor
+          $storeClassName(
+            ${positionalParams.isNotEmpty ? "$positionalParams, " : ""}
+            ${namedParams.isNotEmpty ? "{$namedParams}" : ""}
+          );
         }
       ''',
     );
