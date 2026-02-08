@@ -8,11 +8,8 @@ abstract interface class observable<T> {
   T get value;
 }
 
-class base_data<T> extends observable<T> {
+class base_data<T> {
   T? _value;
-
-  @override
-  T get value => _value!;
 }
 
 mixin modifiable_data<T> on base_data<T> implements modifiable<T> {
@@ -20,7 +17,12 @@ mixin modifiable_data<T> on base_data<T> implements modifiable<T> {
   set value(T value) => _value = value;
 }
 
-class _data<T> extends base_data<T> with modifiable_data<T> {}
+mixin observable_data<T> on base_data<T> implements observable<T> {
+  @override
+  T get value => _value!;
+}
+
+class _data<T> extends base_data<T> with modifiable_data<T>, observable_data<T> {}
 
 void sss() {
   final d = _data<String>();
