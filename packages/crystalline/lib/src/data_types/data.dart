@@ -11,49 +11,6 @@ import 'package:crystalline/src/semantics/side_effects.dart';
 
 part 'refresh_data.dart';
 
-/// Base interface for observable data that provides read-only access to data properties.
-abstract interface class BaseObservableData<T> {
-  T get value;
-  T? get valueOrNull;
-  Failure get consumeFailure;
-  Failure get failure;
-  Failure? get failureOrNull;
-  bool get hasFailure;
-  bool get hasValue;
-  bool get hasNoValue;
-  bool get isCreating;
-  bool get isDeleting;
-  bool get isReading;
-  bool get isUpdating;
-  bool get hasCustomOperation;
-  bool get isAnyOperation;
-  Operation get operation;
-  bool get isAllowedToNotify;
-
-  bool valueEqualsTo(T? otherValue);
-  Data<T> copy();
-  @override
-  String toString();
-  @override
-  bool operator ==(Object other);
-  @override
-  int get hashCode;
-}
-
-/// Base interface for modifiable data that provides methods to modify data properties.
-abstract interface class BaseModifiableData<T> {
-  set failure(Failure? failure);
-  set operation(Operation operation);
-  set value(T? value);
-
-  void modify(void Function(Data<T> data) fn);
-  Future<void> modifyAsync(Future<void> Function(Data<T> data) fn);
-  void updateFrom(Data<T> data);
-  void reset();
-  void allowNotify();
-  void disallowNotify();
-}
-
 class Data<T> {
   Data({
     T? value,
