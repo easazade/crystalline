@@ -22,7 +22,7 @@ class CrystallineBuilder implements Builder {
     final library = await resolver.libraryFor(buildStep.inputId);
 
     writeDataClass(buffer, library);
-    
+
     writeStoreClass(buffer, library);
 
     final outputId = buildStep.inputId.changeExtension('.crystalline.dart');

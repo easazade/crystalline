@@ -7,7 +7,6 @@ class CollectionDataTestImpl<T> extends CollectionData<T> {
   CollectionDataTestImpl(this.items);
   @override
   final List<Data<T>> items;
-
 }
 
 void main() {

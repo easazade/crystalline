@@ -32,7 +32,6 @@ class Events {
     }
   }
 
-
   void allowNotify() => _allowedToNotify = true;
 
   void disallowNotify() => _allowedToNotify = false;

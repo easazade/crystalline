@@ -20,13 +20,6 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
     final mixinName = '${className}Mixin';
     final storeClassName = className.replaceAll('_', '');
 
-    // for (var property in cls.fields2) {
-    //   print(property.displayName);
-    //   print(superclassChainOfFieldType(property.type).map((e) => e.displayName));
-    //   print(property.type.displayNameWithNullability);
-    //   print((property.type as ParameterizedType).typeArguments);
-    // }
-
     final dataProperties = cls.fields2.where(
       (e) =>
           e.type.displayName == 'Data' ||
@@ -39,18 +32,24 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
     final positionalParams = cls.unnamedConstructor2!.formalParameters
         .where((p) => p.isPositional)
         .map((p) => 'super.${p.displayName}')
-        .join(',').trim();
-    final namedParams = cls.unnamedConstructor2!.formalParameters.where((p) => p.isNamed).map((p) {
-      var fragment = 'super.${p.displayName}';
-      if (p.isRequired) {
-        fragment = 'required $fragment';
-      }
-      if (p.hasDefaultValue) {
-        fragment = '$fragment = ${p.defaultValueCode}';
-      }
+        .join(',')
+        .trim();
 
-      return fragment;
-    }).join(',').trim();
+    final namedParams = cls.unnamedConstructor2!.formalParameters
+        .where((p) => p.isNamed)
+        .map((p) {
+          var fragment = 'super.${p.displayName}';
+          if (p.isRequired) {
+            fragment = 'required $fragment';
+          }
+          if (p.hasDefaultValue) {
+            fragment = '$fragment = ${p.defaultValueCode}';
+          }
+
+          return fragment;
+        })
+        .join(',')
+        .trim();
 
     buffer.writeln(
       '''

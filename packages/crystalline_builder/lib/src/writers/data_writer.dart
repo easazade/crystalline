@@ -8,35 +8,35 @@ import 'package:source_gen/source_gen.dart';
 void writeDataClass(
   StringBuffer buffer,
   LibraryElement2 library,
-){
-      for (var cls in library.classes) {
-      if (!dataTypeChecker.hasAnnotationOfExact(cls)) continue;
+) {
+  for (var cls in library.classes) {
+    if (!dataTypeChecker.hasAnnotationOfExact(cls)) continue;
 
-      final dataAnnotation = dataTypeChecker.firstAnnotationOfExact(cls);
-      final reader = ConstantReader(dataAnnotation);
-      final customDataClassName = cls.displayName.replaceAll('_', '');
-      final customOperations = reader.read('customOperations').listValue.map((e) => ConstantReader(e).stringValue);
-      final customOperationClassName = '${customDataClassName}Operation';
-      final valueType = reader.read('valueType').typeValue.displayNameWithNullability;
+    final dataAnnotation = dataTypeChecker.firstAnnotationOfExact(cls);
+    final reader = ConstantReader(dataAnnotation);
+    final customDataClassName = cls.displayName.replaceAll('_', '');
+    final customOperations = reader.read('customOperations').listValue.map((e) => ConstantReader(e).stringValue);
+    final customOperationClassName = '${customDataClassName}Operation';
+    final valueType = reader.read('valueType').typeValue.displayNameWithNullability;
 
-      // Generating custom operation class
-      buffer.writeln('// Custom Data $customDataClassName with custom operations: $customOperations');
+    // Generating custom operation class
+    buffer.writeln('// Custom Data $customDataClassName with custom operations: $customOperations');
 
-      buffer.writeln('class $customOperationClassName extends Operation {');
-      buffer.writeln('const $customOperationClassName(String name) : super(name);\n');
-      for (final operation in Operation.defaultOperations) {
-        buffer.writeln(
-            "static const $customOperationClassName ${operation.name} = $customOperationClassName('${operation.name}');");
-      }
-      buffer.writeln('// custom operations');
-      for (final operation in customOperations) {
-        buffer.writeln("static const Operation ${operation.camelCase} = Operation('$operation');");
-      }
-      buffer.writeln('}');
+    buffer.writeln('class $customOperationClassName extends Operation {');
+    buffer.writeln('const $customOperationClassName(String name) : super(name);\n');
+    for (final operation in Operation.defaultOperations) {
+      buffer.writeln(
+          "static const $customOperationClassName ${operation.name} = $customOperationClassName('${operation.name}');");
+    }
+    buffer.writeln('// custom operations');
+    for (final operation in customOperations) {
+      buffer.writeln("static const Operation ${operation.camelCase} = Operation('$operation');");
+    }
+    buffer.writeln('}');
 
-      // Generating mixin for custom data class
+    // Generating mixin for custom data class
 
-      buffer.writeln('''
+    buffer.writeln('''
         class $customDataClassName extends Data<$valueType>{
           $customDataClassName({
             $valueType? value,
@@ -53,5 +53,5 @@ void writeDataClass(
           );
         }
       ''');
-    }
+  }
 }
