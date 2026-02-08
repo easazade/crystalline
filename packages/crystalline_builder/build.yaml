@@ -12,3 +12,14 @@ builders:
     #   generate_for:
     #     - "lib/**"
 
+  unified_crystalline:
+    import: "package:crystalline_builder/crystalline_builder.dart"
+    builder_factories: ["unifiedCrystallineBuilder"]
+    auto_apply: dependents
+    build_to: source
+    build_extensions:
+      "^lib/main.dart": ["lib/crystalline_generated.dart"]
+    defaults:
+      generate_for:
+        - "lib/main.dart"
+
