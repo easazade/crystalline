@@ -22,7 +22,7 @@ class OperationData extends Data<void> {
   }
 
   @override
-  void updateFrom(Data<dynamic> data) {
+  void updateFrom(BaseModifiableData<dynamic> data) {
     disallowNotify();
     operation = data.operation;
     failure = data.failureOrNull;
