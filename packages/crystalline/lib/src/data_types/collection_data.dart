@@ -207,7 +207,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   }
 
   @override
-  void updateFrom(BaseModifiableData<List<Data<T>>> data) {
+  void updateFrom(Data<List<Data<T>>> data) {
     disallowNotify();
     final old = copy();
     for (var e in items) {

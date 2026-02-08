@@ -43,7 +43,7 @@ class ContextData<T, C> extends Data<T> {
   }
 
   @override
-  void updateFrom(BaseModifiableData<T> data) {
+  void updateFrom(Data<T> data) {
     if (data is! ContextData<T, C>) {
       throw CannotUpdateFromTypeException(this, data);
     }
