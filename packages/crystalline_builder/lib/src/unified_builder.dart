@@ -1,6 +1,9 @@
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:crystalline_builder/src/utils/extensions.dart';
 import 'package:crystalline_builder/src/utils/file_header.dart';
+import 'package:crystalline_builder/src/utils/type_checkers.dart';
+import 'package:crystalline_builder/src/writers/shared_store_writer.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:glob/glob.dart';
 
@@ -55,6 +58,7 @@ class UnifiedCrystallineBuilder implements Builder {
 
     final buffer = StringBuffer();
     final processedLibraries = <String>{};
+    final storeLibraries = <LibraryElement2>[];
 
     // Process each library file
     for (final inputId in sourceFiles) {
@@ -68,13 +72,23 @@ class UnifiedCrystallineBuilder implements Builder {
         // Skip if we've already processed this library
         if (processedLibraries.contains(libraryUri)) {
           continue;
+        } else {
+          processedLibraries.add(libraryUri);
         }
-        processedLibraries.add(libraryUri);
-        buffer.writeln('// $libraryUri');
+
+        // detect files with annotated @store classes
+        final hasStoreAnnotatedClass = library.classes.any((cls) => storeTypeChecker.hasAnnotationOfExact(cls));
+        if (hasStoreAnnotatedClass) {
+          storeLibraries.add(library);
+        }
       } catch (e) {
         // Skip files that can't be resolved (e.g., test files, etc.)
         continue;
       }
+    }
+
+    if (storeLibraries.isNotEmpty) {
+      writeSharedStoreClass(buffer, storeLibraries);
     }
 
     final code = buffer.toString();
@@ -86,7 +100,7 @@ class UnifiedCrystallineBuilder implements Builder {
     // Add necessary imports
     var content = '''
     $generatedFileHeader
-    import 'package:crystalline/crystalline.dart';
+    import 'package:flutter_crystalline/flutter_crystalline.dart';
 
     $code
     ''';

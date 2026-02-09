@@ -25,6 +25,15 @@ extension DartTypeX on DartType {
       return nullabilitySuffix == NullabilitySuffix.question ? '$type?' : type;
     }
   }
+
+  String get displayNameWithGenericTypes {
+    var value = '$displayName';
+    final genericArgs = (this as InterfaceType).typeArguments;
+    if (genericArgs.isNotEmpty) {
+      value = '$value<${genericArgs.join(',')}>';
+    }
+    return value;
+  }
 }
 
 extension AssetIdX on AssetId {

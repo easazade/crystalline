@@ -11,3 +11,7 @@ class data {
 class store {
   const store();
 }
+
+class sharedData {
+  const sharedData();
+}

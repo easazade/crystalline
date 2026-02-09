@@ -1,5 +1,6 @@
 // ignore_for_file: unused_element_parameter
 
+import 'package:example/cart/models/cart_item.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 
 part 'store.crystalline.dart';
@@ -12,6 +13,9 @@ abstract class _GeneralStore extends Store {
   final int token;
   final double? degree;
   final bool withDefault;
+
+  @sharedData()
+  Data<CartItem> get cartItem;
 
   final user = Data<String>();
   final ope = OperationData();
