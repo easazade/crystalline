@@ -15,6 +15,9 @@ class CrystallineBuilder implements Builder {
 
   @override
   Future<void> build(BuildStep buildStep) async {
+    // Explicitly read the input file to ensure build runner tracks it as a dependency
+    await buildStep.readAsString(buildStep.inputId);
+    
     final buffer = StringBuffer();
 
     final resolver = buildStep.resolver;

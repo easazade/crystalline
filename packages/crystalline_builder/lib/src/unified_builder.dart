@@ -21,6 +21,9 @@ class UnifiedCrystallineBuilder implements Builder {
 
   @override
   Future<void> build(BuildStep buildStep) async {
+    // Explicitly read the input file to ensure build runner tracks it as a dependency
+    await buildStep.readAsString(buildStep.inputId);
+
     // Only process the trigger file - this ensures the builder runs once per package
     final triggerFile = 'lib/main.dart';
     if (buildStep.inputId.path != triggerFile) {
