@@ -88,7 +88,7 @@ class UnifiedCrystallineBuilder implements Builder {
     }
 
     if (storeLibraries.isNotEmpty) {
-      writeSharedStoreClass(buffer, storeLibraries);
+      writeSharedStateClass(buffer, storeLibraries);
     }
 
     final code = buffer.toString();

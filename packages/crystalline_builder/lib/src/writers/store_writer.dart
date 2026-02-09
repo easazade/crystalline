@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:crystalline/crystalline.dart';
 import 'package:crystalline_builder/src/utils/extensions.dart';
 import 'package:crystalline_builder/src/utils/functions.dart';
 import 'package:crystalline_builder/src/utils/type_checkers.dart';
@@ -50,14 +49,27 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
         .join(',')
         .trim();
 
+    final sharedDataGetters = cls.getters.where((getter) => sharedDataTypeChecker.hasAnnotationOfExact(getter));
+
+    final sharedPropertiesPart = sharedDataGetters.map((getter) {
+      return 'final ${sharedPropertyName(getter.displayName)} =  ${getter.returnType.displayNameWithGenericTypes}();';
+    }).join('\n');
+    final storeClassSharedPropertiesPart = sharedDataGetters.map((getter) {
+      return 'final ${getter.displayName} =  ${sharedPropertyName(getter.displayName)};';
+    }).join('\n');
+
     buffer.writeln(
       '''
+        $sharedPropertiesPart
+
         class $storeClassName extends $className with $mixinName {
           // constructor
           $storeClassName(
             ${positionalParams.isNotEmpty ? "$positionalParams, " : ""}
             ${namedParams.isNotEmpty ? "{$namedParams}" : ""}
           );
+
+          $storeClassSharedPropertiesPart
         }
       ''',
     );

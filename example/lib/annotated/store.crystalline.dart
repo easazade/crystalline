@@ -1,7 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_string_interpolations, unused_field
+// ignore_for_file: unnecessary_string_interpolations, unused_field, duplicate_import, unused_import
 
 part of 'store.dart';
+
+final $$cartItemSharedProperty = Data<CartItem>();
 
 class GeneralStore extends _GeneralStore with _GeneralStoreMixin {
   // constructor
@@ -11,6 +13,8 @@ class GeneralStore extends _GeneralStore with _GeneralStoreMixin {
     super.degree,
     super.withDefault = true,
   });
+
+  final cartItem = $$cartItemSharedProperty;
 }
 
 mixin _GeneralStoreMixin on _GeneralStore {

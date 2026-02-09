@@ -16,3 +16,5 @@ List<InterfaceType> superclassChainOfFieldType(DartType fieldType) {
   }
   return result;
 }
+
+String sharedPropertyName(String getterName) => '\$\$${getterName}SharedProperty';

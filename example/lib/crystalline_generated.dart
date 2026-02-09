@@ -1,19 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_string_interpolations, unused_field
+// ignore_for_file: unnecessary_string_interpolations, unused_field, duplicate_import, unused_import
 
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 
-// package:example/annotated/store.dart
-class SharedStore extends Store {
-  // fragments: [fragmentOf: Data<CartItem> get cartItem]
-  // return type: Data cartItem
-  // type: null
-  // typeParameters: []
-  // --: [CartItem]
-  final cartItem = Data<CartItem>();
-  @override
-  List<Data<Object?>> get states => [cartItem];
+import 'package:example/annotated/store.dart';
+import 'package:example/cart/models/cart_item.dart';
+import 'package:flutter_crystalline/flutter_crystalline.dart';
+import 'dart:core';
 
-  @override
-  String? get name => 'SharedStore';
+class SharedState {
+  static SharedState? _instance;
+  static SharedState get instance {
+    if (_instance == null) {
+      _instance = SharedState();
+    }
+
+    return _instance!;
+  }
+
+  final cartItem = $$cartItemSharedProperty;
 }
