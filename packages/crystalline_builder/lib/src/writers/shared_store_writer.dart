@@ -33,11 +33,9 @@ void writeSharedStateClass(
       '''
       class SharedState {
         static SharedState? _instance;
+        
         static SharedState get instance {
-          if (_instance == null) {
-            _instance = SharedState();
-          }
-
+          _instance ??= SharedState();
           return _instance!;
         }
       ''',

@@ -54,8 +54,10 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
     final sharedPropertiesPart = sharedDataGetters.map((getter) {
       return 'final ${sharedPropertyName(getter.displayName)} =  ${getter.returnType.displayNameWithGenericTypes}();';
     }).join('\n');
+
     final storeClassSharedPropertiesPart = sharedDataGetters.map((getter) {
-      return 'final ${getter.displayName} =  ${sharedPropertyName(getter.displayName)};';
+      return '@override'
+          'final ${getter.displayName} =  ${sharedPropertyName(getter.displayName)};';
     }).join('\n');
 
     buffer.writeln(
@@ -77,7 +79,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
     // write mixin
     buffer.writeln(
       '''
-      mixin $mixinName on $className{
+      mixin $mixinName on $className {
         @override
         List<Data<Object?>> get states => [${dataProperties.map((e) => e.displayName).join(',')}];
 
