@@ -14,6 +14,7 @@ class GeneralStore extends _GeneralStore with _GeneralStoreMixin {
     super.withDefault = true,
   });
 
+  @override
   final cartItem = $$cartItemSharedProperty;
 }
 

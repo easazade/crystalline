@@ -10,11 +10,9 @@ import 'dart:core';
 
 class SharedState {
   static SharedState? _instance;
-  static SharedState get instance {
-    if (_instance == null) {
-      _instance = SharedState();
-    }
 
+  static SharedState get instance {
+    _instance ??= SharedState();
     return _instance!;
   }
 

@@ -56,7 +56,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
     }).join('\n');
 
     final storeClassSharedPropertiesPart = sharedDataGetters.map((getter) {
-      return '@override'
+      return '@override\n'
           'final ${getter.displayName} =  ${sharedPropertyName(getter.displayName)};';
     }).join('\n');
 
