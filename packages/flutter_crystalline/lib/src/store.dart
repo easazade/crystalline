@@ -30,8 +30,8 @@ abstract class Store extends Data<void> {
       _initTriggered = true;
       init().then((_) {
         _initializationCompleter.complete();
+        publish();
       });
-      publish();
     }
   }
 
