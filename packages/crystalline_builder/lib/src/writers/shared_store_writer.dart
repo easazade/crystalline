@@ -26,6 +26,8 @@ void writeSharedStateClass(
       .map((cls) => cls.getters.where((getter) => sharedDataTypeChecker.hasAnnotationOfExact(getter)))
       .flattened;
 
+  validateThereIsNoDuplicateSharedDataPropertyName(sharedDataGetters);
+
   if (sharedDataGetters.isNotEmpty) {
     buffer.writeln(
       '''
@@ -46,5 +48,16 @@ void writeSharedStateClass(
       buffer.writeln('final ${getter.displayName} = ${sharedPropertyName(getter.displayName)};');
     }
     buffer.writeln('}'); // end of shared state class
+  }
+}
+
+void validateThereIsNoDuplicateSharedDataPropertyName(Iterable<GetterElement> getters) {
+  final getterNames = getters.map((e) => e.displayName);
+  final uniqueGetterNames = getterNames.toSet();
+  if (uniqueGetterNames.length != getterNames.length) {
+    throw Exception(
+      'Store classes cannot have duplicate names for shared data properties annotated with @sharedData among all stores.'
+      'current names: $getterNames',
+    );
   }
 }
