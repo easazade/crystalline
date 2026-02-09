@@ -5,7 +5,7 @@ import 'package:flutter_crystalline/flutter_crystalline.dart';
 
 part 'store.crystalline.dart';
 
-@store()
+@StoreClass()
 abstract class _GeneralStore extends Store {
   _GeneralStore(this.key, {required this.token, this.degree, this.withDefault = true});
 
@@ -14,7 +14,7 @@ abstract class _GeneralStore extends Store {
   final double? degree;
   final bool withDefault;
 
-  @sharedData()
+  @SharedData()
   Data<CartItem> get cartItem;
 
   final user = Data<String>();

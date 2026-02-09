@@ -1,17 +1,17 @@
-class data {
+class DataClass {
   final List<String>? customOperations;
   final Type valueType;
 
-  const data({
+  const DataClass({
     this.customOperations,
     required this.valueType,
   });
 }
 
-class store {
-  const store();
+class StoreClass {
+  const StoreClass();
 }
 
-class sharedData {
-  const sharedData();
+class SharedData {
+  const SharedData();
 }

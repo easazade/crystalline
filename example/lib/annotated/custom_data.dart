@@ -1,11 +1,10 @@
 // ignore_for_file: unused_element
 
-import 'package:flutter_crystalline/annotations.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 
 part 'custom_data.crystalline.dart';
 
-@data(
+@DataClass(
   valueType: String,
   customOperations: ['DeleteUser', 'UpdateProfile'],
 )
