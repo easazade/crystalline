@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:crystalline_builder/src/utils/extensions.dart';
 import 'package:crystalline_builder/src/utils/file_header.dart';
@@ -58,7 +58,7 @@ class UnifiedCrystallineBuilder implements Builder {
 
     final buffer = StringBuffer();
     final processedLibraries = <String>{};
-    final storeLibraries = <LibraryElement2>[];
+    final storeLibraries = <LibraryElement>[];
 
     // Process each library file
     for (final inputId in sourceFiles) {

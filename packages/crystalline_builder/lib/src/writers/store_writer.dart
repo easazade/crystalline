@@ -1,12 +1,11 @@
-import 'package:analyzer/dart/element/element2.dart';
-// ignore: unused_import
+import 'package:analyzer/dart/element/element.dart';
 import 'package:crystalline/crystalline.dart';
 import 'package:crystalline_builder/src/utils/extensions.dart';
 import 'package:crystalline_builder/src/utils/functions.dart';
 import 'package:crystalline_builder/src/utils/type_checkers.dart';
 import 'package:source_gen/source_gen.dart';
 
-void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
+void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
   for (var cls in library.classes) {
     if (!storeTypeChecker.hasAnnotationOfExact(cls)) continue;
     validateSourceSyntaxForStoreAnnotatedClass(cls);
@@ -20,7 +19,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
     final mixinName = '${className}Mixin';
     final storeClassName = className.replaceAll('_', '');
 
-    final dataProperties = cls.fields2.where(
+    final dataProperties = cls.fields.where(
       (e) =>
           e.type.displayName == 'Data' ||
           superclassChainOfFieldType(e.type).any((interfaceType) => interfaceType.displayName == 'Data'),
@@ -29,13 +28,13 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
     // write store class implementation
 
     // write constructor args for generate StoreClass
-    final positionalParams = cls.unnamedConstructor2!.formalParameters
+    final positionalParams = cls.unnamedConstructor!.formalParameters
         .where((p) => p.isPositional)
         .map((p) => 'super.${p.displayName}')
         .join(',')
         .trim();
 
-    final namedParams = cls.unnamedConstructor2!.formalParameters
+    final namedParams = cls.unnamedConstructor!.formalParameters
         .where((p) => p.isNamed)
         .map((p) {
           var fragment = 'super.${p.displayName}';
@@ -81,12 +80,12 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement2 library) {
   }
 }
 
-void validateSourceSyntaxForStoreAnnotatedClass(ClassElement2 cls) {
+void validateSourceSyntaxForStoreAnnotatedClass(ClassElement cls) {
   if (!cls.isPrivate || !cls.isAbstract) {
     throw Exception('!!! ->>> Annotated store classes with @store() need to be private and abstract');
   }
 
-  if (cls.unnamedConstructor2 == null) {
+  if (cls.unnamedConstructor == null) {
     throw Exception('!!! ->>> Annotated store classes with @store must have an unnamed constructor');
   }
 }

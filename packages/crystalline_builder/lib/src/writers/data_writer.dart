@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:crystalline/crystalline.dart';
 import 'package:crystalline_builder/src/utils/extensions.dart';
 import 'package:crystalline_builder/src/utils/type_checkers.dart';
@@ -7,7 +7,7 @@ import 'package:source_gen/source_gen.dart';
 
 void writeDataClass(
   StringBuffer buffer,
-  LibraryElement2 library,
+  LibraryElement library,
 ) {
   for (var cls in library.classes) {
     if (!dataTypeChecker.hasAnnotationOfExact(cls)) continue;

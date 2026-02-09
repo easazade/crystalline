@@ -15,10 +15,10 @@ extension DartFormatterX on DartFormatter {
 }
 
 extension DartTypeX on DartType {
-  String? get displayName => element3?.displayName;
+  String? get displayName => element?.displayName;
 
   String? get displayNameWithNullability {
-    final type = element3?.displayName;
+    final type = element?.displayName;
     if (type == null) {
       return null;
     } else {

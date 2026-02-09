@@ -1,11 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: unnecessary_string_interpolations, unused_field
 
-import 'package:example/cart/models/cart_item.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 
+// package:example/annotated/store.dart
 class SharedStore extends Store {
-  // fragments: [Data<CartItem> get cartItem]
+  // fragments: [fragmentOf: Data<CartItem> get cartItem]
   // return type: Data cartItem
   // type: null
   // typeParameters: []
