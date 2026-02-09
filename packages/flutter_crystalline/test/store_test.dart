@@ -19,9 +19,10 @@ void main() {
   });
 
   test(
-    'Should only notify listeners when publish method is called',
+    'Should only notify listeners when publish method is called and once after init is called',
     () {
-      expect(publishCallsCount, 0);
+      // should be one publish call count since after observer is added init callback is called.
+      expect(publishCallsCount, 1);
 
       store.age.value = 0;
       store.operation = Operation.none;
@@ -29,11 +30,11 @@ void main() {
       store.userName.operation = Operation.read;
       store.points.failure = Failure('failed to get points');
 
-      expect(publishCallsCount, 0);
+      expect(publishCallsCount, 1);
 
       store.publish();
 
-      expect(publishCallsCount, 1);
+      expect(publishCallsCount, 2);
     },
   );
 

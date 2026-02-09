@@ -31,6 +31,7 @@ abstract class Store extends Data<void> {
       init().then((_) {
         _initializationCompleter.complete();
       });
+      publish();
     }
   }
 
