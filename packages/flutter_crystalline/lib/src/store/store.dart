@@ -20,14 +20,19 @@ abstract class Store extends Data<void> {
 
   List<Data<Object?>> get states;
 
+  @protected
   Future<void> onInstantiate() async {}
 
+  @protected
   Future<void> init() async {}
 
+  @protected
   void onObserverAdded(Observer observer) {}
 
+  @protected
   void onObserverRemoved(Observer observer) {}
 
+  @protected
   void clear() {}
 
   void _triggerInit() {
@@ -48,6 +53,7 @@ abstract class Store extends Data<void> {
   @override
   String? get name;
 
+  @protected
   void publish() {
     // setting forceNotify:true, since StoreObservers is disallowed notify by design.
     observers.notify(forceNotify: true);
