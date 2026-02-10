@@ -1,5 +1,4 @@
 import 'package:crystalline/crystalline.dart';
-import 'package:crystalline/src/semantics/events.dart';
 import 'package:test/test.dart';
 
 void main() {

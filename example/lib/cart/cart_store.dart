@@ -18,7 +18,4 @@ class CartStore extends Store {
 
   @override
   List<Data<Object?>> get states => [cartItems];
-
-  @override
-  String get storeName => 'CartStore';
 }
