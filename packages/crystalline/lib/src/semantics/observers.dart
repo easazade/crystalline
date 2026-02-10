@@ -31,10 +31,9 @@ class DataObservers {
 
   @mustCallSuper
   void notify({bool forceNotify = false}) {
-    final stateChangeLog = CrystallineGlobalConfig.logger.globalLogFilter(_data);
-    if (stateChangeLog != null) {
-      CrystallineGlobalConfig.logger.log(stateChangeLog);
-    }
+    final stateChangeLog = _data.toString();
+    CrystallineGlobalConfig.logger.log(stateChangeLog);
+
     if (_allowedToNotify || forceNotify) {
       for (final observer in _observers) {
         observer.callback();

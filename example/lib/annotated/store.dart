@@ -19,4 +19,8 @@ abstract class _GeneralStore extends Store {
 
   final user = Data<String>();
   final ope = OperationData();
+
+  Future<void> doSomething() async {
+    log.info('message');
+  }
 }

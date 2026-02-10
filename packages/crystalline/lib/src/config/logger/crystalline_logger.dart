@@ -28,7 +28,5 @@ abstract class CrystallineLogger {
 
   String generateToStringForFailure(Failure failure);
 
-  String? globalLogFilter(Data<dynamic> data);
-
   void log(dynamic object);
 }

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:crystalline/crystalline.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_crystalline/src/store/store_logger.dart';
 
 abstract class Store extends Data<void> {
   Store() {
@@ -10,6 +12,9 @@ abstract class Store extends Data<void> {
   bool _initTriggered = false;
 
   final _initializationCompleter = Completer();
+
+  @protected
+  late final log = StoreLogger(this);
 
   Future<void> ensureInitialized() => _initializationCompleter.future;
 
