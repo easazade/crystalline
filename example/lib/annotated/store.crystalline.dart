@@ -5,7 +5,7 @@ part of 'store.dart';
 
 final $$cartItemSharedProperty = Data<CartItem>();
 
-class GeneralStore extends _GeneralStore with _GeneralStoreMixin {
+class GeneralStore extends _GeneralStore {
   // constructor
   GeneralStore(
     super.key, {
@@ -16,12 +16,35 @@ class GeneralStore extends _GeneralStore with _GeneralStoreMixin {
 
   @override
   final cartItem = $$cartItemSharedProperty;
-}
 
-mixin _GeneralStoreMixin on _GeneralStore {
   @override
   List<Data<Object?>> get states => [cartItem, user, ope];
 
   @override
   String? get name => 'GeneralStore';
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! GeneralStore) return false;
+
+    return other.runtimeType == runtimeType &&
+        failureOrNull == other.failureOrNull &&
+        operation == other.operation &&
+        const ListEquality().equals(
+          sideEffects.all.toList(),
+          other.sideEffects.all.toList(),
+        ) &&
+        const ListEquality().equals(states, other.states);
+  }
+
+  @override
+  int get hashCode =>
+      (failureOrNull?.hashCode ?? 9) +
+      sideEffects.all.hashCode +
+      states.hashCode +
+      operation.hashCode +
+      runtimeType.hashCode;
+
+  @override
+  Stream<GeneralStore> get stream => streamController.stream.map((e) => this);
 }

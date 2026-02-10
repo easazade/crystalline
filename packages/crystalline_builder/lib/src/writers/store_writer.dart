@@ -15,7 +15,6 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
     final reader = ConstantReader(storeAnnotation);
 
     final className = cls.displayName;
-    final mixinName = '${className}Mixin';
     final storeClassName = className.replaceAll('_', '');
 
     final dataProperties = cls.fields.where(
@@ -64,7 +63,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
       '''
         $sharedPropertiesPart
 
-        class $storeClassName extends $className with $mixinName {
+        class $storeClassName extends $className {
           // constructor
           $storeClassName(
             ${positionalParams.isNotEmpty ? "$positionalParams, " : ""}
@@ -72,20 +71,36 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
           );
 
           $storeClassSharedPropertiesPart
+
+          @override
+          List<Data<Object?>> get states => [${dataProperties.map((e) => e.displayName).join(',')}];
+
+          @override
+          String? get name => '$storeClassName';
+
+          @override
+          bool operator ==(Object other) {
+            if (other is! $storeClassName) return false;
+
+            return other.runtimeType == runtimeType &&
+                failureOrNull == other.failureOrNull &&
+                operation == other.operation &&
+                const ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList()) &&
+                const ListEquality().equals(states, other.states);
+          }
+
+          @override
+          int get hashCode =>
+              (failureOrNull?.hashCode ?? 9) +
+              sideEffects.all.hashCode +
+              states.hashCode +
+              operation.hashCode +
+              runtimeType.hashCode;
+
+                  
+          @override
+          Stream<$storeClassName> get stream => streamController.stream.map((e) => this);
         }
-      ''',
-    );
-
-    // write mixin
-    buffer.writeln(
-      '''
-      mixin $mixinName on $className {
-        @override
-        List<Data<Object?>> get states => [${dataProperties.map((e) => e.displayName).join(',')}];
-
-        @override
-        String? get name => '$storeClassName';
-      }
       ''',
     );
 

@@ -74,6 +74,28 @@ abstract class Store extends Data<void> {
 
     return buffer.toString();
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Store) return false;
+
+    return other.runtimeType == runtimeType &&
+        failureOrNull == other.failureOrNull &&
+        operation == other.operation &&
+        ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList()) &&
+        ListEquality().equals(states, other.states);
+  }
+
+  @override
+  int get hashCode =>
+      (failureOrNull?.hashCode ?? 9) +
+      sideEffects.all.hashCode +
+      states.hashCode +
+      operation.hashCode +
+      runtimeType.hashCode;
+
+  @override
+  Stream<Store> get stream => streamController.stream.map((e) => this);
 }
 
 class StoreObservers extends DataObservers {
