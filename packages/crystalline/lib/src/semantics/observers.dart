@@ -18,7 +18,12 @@ class DataObservers {
 
   Iterable<Observer> get all => _observers.toList().where((observer) => observer is! Internal);
 
-  void add(Observer observer) => _observers.add(observer);
+  void add(Observer observer, {bool emitCurrent = false}) {
+    _observers.add(observer);
+    if (emitCurrent) {
+      observer.callback();
+    }
+  }
 
   void remove(Observer observer) => _observers.remove(observer);
 
@@ -52,7 +57,7 @@ class CollectionDataObservers extends DataObservers {
   CollectionDataObservers(this._collectionData) : super(_collectionData);
 
   @override
-  void add(Observer observer) {
+  void add(Observer observer, {bool emitCurrent = false}) {
     super.add(observer);
     for (var item in _collectionData.items) {
       item.observers.add(observer);
@@ -74,7 +79,7 @@ class RefreshDataObservers extends DataObservers {
   RefreshDataObservers(this._refreshData) : super(_refreshData);
 
   @override
-  void add(Observer observer) {
+  void add(Observer observer, {bool emitCurrent = false}) {
     if (_refreshData.hasNoValue) _refreshData.refresh(allowRetry: false);
     super.add(observer);
   }

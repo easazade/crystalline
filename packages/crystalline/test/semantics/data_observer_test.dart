@@ -143,6 +143,47 @@ void main() {
       observers.notify();
       expect(callbackCalled, isTrue);
     });
+
+    test('Should notify internal observers', () {
+      var callbackCalled = false;
+      final observer = InternalObserver(() {
+        callbackCalled = true;
+      });
+
+      observers.add(observer);
+      observers.notify();
+      expect(callbackCalled, isTrue);
+    });
+
+    test('Should notify only added observer instantly if passed argument emitCurrent=true', () {
+      var callbackCalled = false;
+      final observer = Observer(() {
+        callbackCalled = true;
+      });
+
+      observers.add(observer, emitCurrent: true);
+      expect(callbackCalled, isTrue);
+    });
+
+    test('Should NOT notify added observer instantly if passed argument emitCurrent=false', () {
+      var callbackCalled = false;
+      final observer = Observer(() {
+        callbackCalled = true;
+      });
+
+      observers.add(observer, emitCurrent: false); 
+      expect(callbackCalled, isFalse);
+    });
+
+    test('Should NOT notify added observer instantly if no value passed for argument emitCurrent', () {
+      var callbackCalled = false;
+      final observer = Observer(() {
+        callbackCalled = true;
+      });
+
+      observers.add(observer); // by default emitCurrent= false
+      expect(callbackCalled, isFalse);
+    });
   });
 
   group('all getter -', () {

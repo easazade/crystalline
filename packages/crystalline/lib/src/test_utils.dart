@@ -1,9 +1,5 @@
-import 'package:crystalline/src/semantics/events.dart';
-import 'package:crystalline/src/semantics/observers.dart';
+import 'package:crystalline/crystalline.dart';
 import 'package:meta/meta.dart';
-
-import 'data_types/collection_data.dart';
-import 'data_types/data.dart';
 
 @visibleForTesting
 class DataTestObserver<T, D extends Data<T>> {

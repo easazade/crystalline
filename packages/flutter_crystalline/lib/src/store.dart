@@ -72,7 +72,7 @@ class StoreObservers extends DataObservers {
   }
 
   @override
-  void add(Observer observer) {
+  void add(Observer observer, {bool emitCurrent = false}) {
     super.add(observer);
     _store._triggerInit();
     _store.onObserverAdded(observer);
