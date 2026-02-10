@@ -771,5 +771,23 @@ void main() {
 
       expect(emitted.single.value, 'updated');
     });
+
+    test('should still emit if oldData equals to newData', () async {
+      final initialDataHash = data.hashCode;
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      data.value = 'updated';
+      final oldDataHash = data.hashCode;
+      data.value = 'updated';
+      final newDataHash = data.hashCode;
+
+      // waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(initialDataHash, isNot(equals(newDataHash)));
+      expect(oldDataHash, equals(newDataHash));
+      expect(emitted.length, 2);
+    });
   });
 }

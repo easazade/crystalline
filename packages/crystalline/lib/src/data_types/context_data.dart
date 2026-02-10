@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/exceptions.dart';
+import 'package:meta/meta.dart';
 
 class ContextData<T, C> extends Data<T> {
   ContextData({
@@ -78,4 +80,25 @@ class ContextData<T, C> extends Data<T> {
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
+
+  @override
+  @mustBeOverridden
+  bool operator ==(Object other) {
+    if (other is! ContextData<T, C>) return false;
+
+    return other.runtimeType == runtimeType &&
+        failureOrNull == other.failureOrNull &&
+        valueOrNull == other.valueOrNull &&
+        operation == other.operation &&
+        ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList());
+  }
+
+  @override
+  @mustBeOverridden
+  int get hashCode =>
+      (failureOrNull?.hashCode ?? 13) +
+      (valueOrNull?.hashCode ?? 8) +
+      sideEffects.all.hashCode +
+      operation.hashCode +
+      runtimeType.hashCode;
 }

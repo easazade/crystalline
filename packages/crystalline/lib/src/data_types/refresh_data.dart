@@ -115,6 +115,27 @@ class RefreshData<T> extends Data<T> {
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
+
+  @override
+  @mustBeOverridden
+  bool operator ==(Object other) {
+    if (other is! RefreshData<T>) return false;
+
+    return other.runtimeType == runtimeType &&
+        failureOrNull == other.failureOrNull &&
+        valueOrNull == other.valueOrNull &&
+        operation == other.operation &&
+        ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList());
+  }
+
+  @override
+  @mustBeOverridden
+  int get hashCode =>
+      (failureOrNull?.hashCode ?? 13) +
+      (valueOrNull?.hashCode ?? 8) +
+      sideEffects.all.hashCode +
+      operation.hashCode +
+      runtimeType.hashCode;
 }
 
 enum RefreshStatus { done, failed }

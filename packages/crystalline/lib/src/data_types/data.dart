@@ -204,17 +204,25 @@ class Data<T> {
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 
   @override
+  @mustBeOverridden
   bool operator ==(Object other) {
     if (other is! Data<T>) return false;
 
     return other.runtimeType == runtimeType &&
         _failure == other._failure &&
         _value == other._value &&
-        _operation == other._operation;
+        _operation == other._operation &&
+        ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList());
   }
 
   @override
-  int get hashCode => (_failure?.hashCode ?? 0) + (_value?.hashCode ?? 4) + _operation.hashCode + runtimeType.hashCode;
+  @mustBeOverridden
+  int get hashCode =>
+      (_failure?.hashCode ?? 0) +
+      (_value?.hashCode ?? 4) +
+      sideEffects.all.hashCode +
+      _operation.hashCode +
+      runtimeType.hashCode;
 
   void allowNotify() {
     _allowedToNotify = true;

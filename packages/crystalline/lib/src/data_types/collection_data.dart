@@ -397,7 +397,20 @@ class ListData<T> extends CollectionData<T> {
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
-  
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! ListData<T>) return false;
+
+    return runtimeType == other.runtimeType &&
+        ListEquality<Data<T>>().equals(items, other.items) &&
+        operation == other.operation &&
+        failureOrNull == other.failureOrNull;
+  }
+
+  @override
+  int get hashCode => items.hashCode + operation.hashCode + (failureOrNull?.hashCode ?? 1);
+
   @override
   Stream<ListData<T>> get stream => streamController.stream.map((e) => this);
 }

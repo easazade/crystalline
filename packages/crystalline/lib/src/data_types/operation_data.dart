@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/mutators/mutators.dart';
+import 'package:meta/meta.dart';
 
 class OperationData extends Data<void> {
   OperationData({
@@ -39,10 +41,25 @@ class OperationData extends Data<void> {
         sideEffects: sideEffects.all,
       );
 
-
   @override
   Stream<OperationData> get stream => streamController.stream.map((e) => this);
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
+
+  @override
+  @mustBeOverridden
+  bool operator ==(Object other) {
+    if (other is! OperationData) return false;
+
+    return other.runtimeType == runtimeType &&
+        failureOrNull == other.failureOrNull &&
+        operation == other.operation &&
+        ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList());
+  }
+
+  @override
+  @mustBeOverridden
+  int get hashCode =>
+      (failureOrNull?.hashCode ?? 13) + sideEffects.all.hashCode + operation.hashCode + runtimeType.hashCode;
 }
