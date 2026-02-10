@@ -1,3 +1,5 @@
+// ignore_for_file: missing_override_of_must_be_overridden
+
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 

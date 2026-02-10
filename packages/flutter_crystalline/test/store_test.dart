@@ -268,6 +268,7 @@ void main() {
   });
 }
 
+// ignore: missing_override_of_must_be_overridden
 class _TestStore extends Store {
   final userName = Data<String>(value: 'alireza');
   final age = Data<int>();

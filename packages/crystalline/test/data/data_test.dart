@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:crystalline/crystalline.dart';
 import 'package:test/test.dart';
 
