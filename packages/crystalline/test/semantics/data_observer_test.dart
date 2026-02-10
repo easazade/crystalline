@@ -171,7 +171,7 @@ void main() {
         callbackCalled = true;
       });
 
-      observers.add(observer, emitCurrent: false); 
+      observers.add(observer, emitCurrent: false);
       expect(callbackCalled, isFalse);
     });
 
