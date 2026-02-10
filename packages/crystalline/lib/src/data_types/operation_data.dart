@@ -39,6 +39,10 @@ class OperationData extends Data<void> {
         sideEffects: sideEffects.all,
       );
 
+
+  @override
+  Stream<OperationData> get stream => streamController.stream.map((e) => this);
+
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 }

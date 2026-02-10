@@ -3,8 +3,10 @@ import 'package:crystalline/src/semantics/events.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 
 class SideEffects<T> {
+  SideEffects(this.data, this._onNotify);
+
   final Data<T> data;
-  SideEffects(this.data);
+  final void Function() _onNotify;
 
   final List<dynamic> _sideEffects = [];
 
@@ -19,13 +21,13 @@ class SideEffects<T> {
       ),
     );
     data.events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    data.observers.notify();
+    _onNotify();
   }
 
   void addAll(Iterable<dynamic> sideEffects) {
     _sideEffects.addAll(sideEffects);
     data.events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    data.observers.notify();
+    _onNotify();
   }
 
   void remove(dynamic sideEffect) {
@@ -37,7 +39,7 @@ class SideEffects<T> {
       ),
     );
     data.events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    data.observers.notify();
+    _onNotify();
   }
 
   bool get isEmpty => _sideEffects.isEmpty;
@@ -47,7 +49,7 @@ class SideEffects<T> {
   void clear() {
     _sideEffects.clear();
     data.events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
-    data.observers.notify();
+    _onNotify();
   }
 }
 

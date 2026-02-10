@@ -74,5 +74,8 @@ class ContextData<T, C> extends Data<T> {
       );
 
   @override
+  Stream<ContextData<T, C>> get stream => streamController.stream.map((e) => this);
+
+  @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 }

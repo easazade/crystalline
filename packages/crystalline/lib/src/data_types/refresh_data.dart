@@ -111,6 +111,9 @@ class RefreshData<T> extends Data<T> {
   RefreshStatus get status => _status;
 
   @override
+  Stream<RefreshData<T>> get stream => streamController.stream.map((e) => this);
+
+  @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 }
 

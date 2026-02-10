@@ -623,5 +623,153 @@ void main() {
     );
   });
 
-  
+  group('stream -', () {
+    test('should emit when value is set', () async {
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      data.value = 'hello';
+
+      //a simple trick for waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted.length, 1);
+      expect(emitted.first, same(data));
+      expect(emitted.first.value, 'hello');
+    });
+
+    test('should emit when operation is set', () async {
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      data.operation = Operation.create;
+
+      //a simple trick for waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted.length, 1);
+      expect(emitted.first.operation, Operation.create);
+    });
+
+    test('should emit when failure is set', () async {
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      final failure = Failure('error message');
+      data.failure = failure;
+
+      //a simple trick for waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted.length, 1);
+      expect(emitted.first.failureOrNull, failure);
+    });
+
+    test('should emit when side effect is added', () async {
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      data.sideEffects.add('effect1');
+
+      //a simple trick for waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted.length, 1);
+      expect(emitted.first.sideEffects.all, ['effect1']);
+    });
+
+    test('should emit multiple times for multiple changes', () async {
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      data.value = 'first';
+      data.operation = Operation.read;
+      data.value = 'second';
+
+      //a simple trick for waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted.length, 3);
+    });
+
+    test('should emit only once when modify is used for bulk changes', () async {
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      data.modify((d) {
+        d.value = 'apple';
+        d.operation = Operation.create;
+        d.failure = Failure('oops');
+        d.sideEffects.add('effect');
+      });
+
+      //a simple trick for waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted.length, 1);
+    });
+
+    test('should emit only once when modifyAsync is used for bulk changes', () async {
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      await data.modifyAsync((d) async {
+        d.value = 'async';
+        d.operation = Operation.update;
+        d.sideEffects.add('async-effect');
+      });
+
+      //a simple trick for waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted.length, 1);
+    });
+
+    test('should emit when updateFrom is called', () async {
+      final source = Data<String>(
+        value: 'from source',
+        operation: Operation.read,
+        sideEffects: ['source-effect'],
+      );
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      data.updateFrom(source);
+
+      //a simple trick for waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted.length, 1);
+      expect(emitted.first.value, 'from source');
+    });
+
+    test('should support multiple listeners (broadcast)', () async {
+      final emitted1 = <Data<String>>[];
+      final emitted2 = <Data<String>>[];
+      data.stream.listen(emitted1.add);
+      data.stream.listen(emitted2.add);
+
+      data.value = 'broadcast test';
+
+      //a simple trick for waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted1.length, 1);
+      expect(emitted2.length, 1);
+      expect(emitted1.first.value, 'broadcast test');
+      expect(emitted2.first.value, 'broadcast test');
+    });
+
+    test('should emit Data instance with current state', () async {
+      data.value = 'initial';
+      final emitted = <Data<String>>[];
+      data.stream.listen(emitted.add);
+
+      data.value = 'updated';
+      // waiting for listen callback to complete.
+      await Future<void>.value();
+
+      expect(emitted.single.value, 'updated');
+    });
+  });
 }

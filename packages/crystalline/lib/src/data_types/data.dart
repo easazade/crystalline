@@ -8,6 +8,7 @@ import 'package:crystalline/src/semantics/events.dart';
 import 'package:crystalline/src/semantics/observers.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 import 'package:crystalline/src/semantics/side_effects.dart';
+import 'package:meta/meta.dart';
 
 part 'refresh_data.dart';
 
@@ -32,11 +33,17 @@ class Data<T> {
 
   bool _allowedToNotify = true;
 
-  late final sideEffects = SideEffects(this);
+  late final sideEffects = SideEffects(this, () => notifyObserversAndStreamListeners());
   late final observers = DataObservers(this);
   final events = Events();
 
   final String? name;
+
+  @protected
+  final streamController = StreamController<bool>.broadcast(sync: true);
+
+  @mustBeOverridden
+  Stream<Data<T>> get stream => streamController.stream.map((e) => this);
 
   T get value {
     if (_value == null) {
@@ -90,13 +97,13 @@ class Data<T> {
     if (failure != null) {
       events.dispatch(FailureEvent(failure));
     }
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   set operation(final Operation operation) {
     _operation = operation;
     events.dispatch(OperationEvent(operation));
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   Operation get operation => _operation;
@@ -106,7 +113,7 @@ class Data<T> {
     if (value != null) {
       events.dispatch(ValueEvent(value));
     }
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   void modify(void Function(Data<T> data) fn) {
@@ -128,7 +135,7 @@ class Data<T> {
       events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
 
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   Future<void> modifyAsync(Future<void> Function(Data<T> data) fn) async {
@@ -150,7 +157,7 @@ class Data<T> {
       events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
 
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   void updateFrom(Data<T> data) {
@@ -176,7 +183,7 @@ class Data<T> {
       events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
 
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   /// Resets the Data by setting value & failure to null, sets operation to Operation.none and removes all side-effects
@@ -222,4 +229,12 @@ class Data<T> {
   }
 
   bool get isAllowedToNotify => _allowedToNotify;
+
+  @protected
+  void notifyObserversAndStreamListeners() {
+    observers.notify();
+    if (_allowedToNotify) {
+      streamController.add(true);
+    }
+  }
 }

@@ -397,4 +397,7 @@ class ListData<T> extends CollectionData<T> {
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
+  
+  @override
+  Stream<ListData<T>> get stream => streamController.stream.map((e) => this);
 }
