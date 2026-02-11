@@ -6,3 +6,4 @@ environment:
   
 dev_dependencies:
   melos: 6.3.3
+  args: ^2.7.0
