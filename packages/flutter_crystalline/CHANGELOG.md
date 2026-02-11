@@ -1,3 +1,18 @@
+## 0.7.0
+
+- Add feature to generate a store class using @StoreClass annotation
+- Add a simple temporary document in README
+- Bump [crystalline](https://pub.dev/packages/crystalline) to 0.7.0
+- Update Store and builders to override equals == and hashCode
+- Make methods that must be used only in Store and its subclasses @protected
+- Add logger to Store class so that it can be used internally
+- Update Store so it publishes changes after init callback is done
+- Add tests for Store class
+- Add lifecycle callbacks to Store
+- Update Store so it is no longer uses both ChangeNotifier and observer pattern for updates
+- Change namings of builder and widgets to be close to flutter conventions
+- Fix bad import
+
 ## 0.6.0
 
 - **REFACTOR**(flutter_crystalline): Rewrite Store.

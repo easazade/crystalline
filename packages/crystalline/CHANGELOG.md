@@ -1,3 +1,28 @@
+## 0.7.0
+
+- Add a simple temporary document in README
+- Fix failing tests
+- Make == operator and hashCode mandatory for override for children of Data class
+- Add stream getter to Data classes, allowing data objects to be listened to via stream.
+- Update data.observer.add() to allow emitCurrent flag argument
+- Rename annotations to avoid conflict with variables and args
+- Fix missing exports
+- Isolate side effects feature into its own unit
+- Isolate observers functionality into its own unit
+- Fix failing tests
+- Isolate events functionality into its own unit
+- Remove interfaces
+- Add dispose method to RefreshData
+- Fix recursive loop bug for RefreshData
+- Fix toString method not working for some data types & Fix infinite loop when RefreshData failed to refresh
+- Add tests and logs for RefreshData
+- Add new data type called RefreshData
+- Add missing constructor argument (name) to ContextData
+- Add semantic side effects feature
+- Add tests for reset method
+- Add reset method in data types
+- Fix ansi colors failing on console for iOS
+
 ## 0.6.0
 
 - **REFACTOR**(crystalline): Rename clearAllSideEffects to removeAllSideEffects.

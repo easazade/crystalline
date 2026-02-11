@@ -511,19 +511,31 @@ Future<List<String>> getCommitsBetweenVersions(String previousVersion) async {
   }
 
   try {
-    // Check if tag exists
+    // Try unified tag (v0.6.0) first, then package-prefixed tags (crystalline-v0.6.0)
+    String refToUse = tagName;
     final tagCheck = await Process.run('git', ['tag', '-l', tagName]);
     if (tagCheck.stdout.toString().trim().isEmpty) {
-      print(
-          'Warning: Tag $tagName not found, cannot fetch commits for changelog');
-      return [];
+      final globCheck = await Process.run('git', ['tag', '-l', '*$tagName']);
+      final matchingTags = globCheck.stdout
+          .toString()
+          .trim()
+          .split('\n')
+          .where((t) => t.isNotEmpty)
+          .toList();
+      if (matchingTags.isNotEmpty) {
+        refToUse = matchingTags.first;
+      } else {
+        print(
+            'Warning: Tag $tagName not found, cannot fetch commits for changelog');
+        return [];
+      }
     }
 
     // Get commits between tag and HEAD
     final process = await Process.run('git', [
       'log',
       '--pretty=format:%s',
-      '$tagName..HEAD',
+      '$refToUse..HEAD',
     ]);
 
     if (process.exitCode == 0) {
@@ -543,6 +555,9 @@ String normalizeScope(String scope) {
   return scope.toLowerCase().replaceAll('-', '_').replaceAll(' ', '_');
 }
 
+/// Conventional commit types that should be excluded from changelogs.
+const _ignoredCommitTypes = {'chore', 'style', 'ci'};
+
 List<String> filterCommitsForPackage(List<String> commits, String packageName) {
   // Normalize package name for comparison
   final normalizedPackageName = normalizeScope(packageName);
@@ -558,7 +573,13 @@ List<String> filterCommitsForPackage(List<String> commits, String packageName) {
       continue;
     }
 
-    // If commit has no scope, add to all packages
+    // Ignore chore, style, ci commits
+    final type = parsed['type']?.toLowerCase();
+    if (type != null && _ignoredCommitTypes.contains(type)) {
+      continue;
+    }
+
+    // If commit has no scope, add to all packages (shared, put on top)
     final scope = parsed['scope'];
     if (scope == null || scope.isEmpty) {
       filteredCommits.add(commit);
@@ -568,7 +589,7 @@ List<String> filterCommitsForPackage(List<String> commits, String packageName) {
     // Normalize scope for comparison
     final normalizedScope = normalizeScope(scope);
 
-    // If scope matches package, add it
+    // If scope matches package, add it only to this package's changelog
     if (normalizedScope == normalizedPackageName) {
       filteredCommits.add(commit);
     }

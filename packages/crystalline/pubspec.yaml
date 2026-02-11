@@ -1,6 +1,6 @@
 name: crystalline
 description: Crystal clear state management
-version: 0.6.0
+version: 0.7.0
 repository: https://github.com/easazade/crystalline
 
 environment:

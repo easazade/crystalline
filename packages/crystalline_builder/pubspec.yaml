@@ -1,14 +1,14 @@
 name: crystalline_builder
 description: builder for crystalline
 repository: https://github.com/easazade/crystalline
-version: 0.6.0
+version: 0.7.0
 
 environment:
   sdk: ">=3.0.3 <4.0.0"
 
 dependencies:
-  crystalline: ^0.6.0
-  flutter_crystalline: ^0.6.0
+  crystalline: ^0.7.0
+  flutter_crystalline: ^0.7.0
   build: ">=3.0.0 <5.0.0"
   analyzer: '>=9.0.0 <11.0.0'
   source_gen: ">=3.0.0 <5.0.0"
