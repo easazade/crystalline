@@ -2,7 +2,7 @@
 
 <p align="center"> <img alt="CI Build Checks" src="https://img.shields.io/github/actions/workflow/status/easazade/crystalline/build.yaml?branch=main&style=flat-square"> <img alt="Pub Version" src="https://img.shields.io/pub/v/crystalline?style=flat-square"> <img alt="Pub Popularity" src="https://img.shields.io/pub/popularity/crystalline?style=flat-square"> <img alt="Pub Points" src="https://img.shields.io/pub/points/crystalline?style=flat-square"> <img alt="Pub Likes" src="https://img.shields.io/pub/likes/crystalline?style=flat-square"> <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/easazade/crystalline?style=flat-square"> <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/easazade/crystalline?style=flat-square"> <img alt="Pub Publisher" src="https://img.shields.io/pub/publisher/crystalline?style=flat-square"> <img alt="GitHub" src="https://img.shields.io/github/license/easazade/crystalline?style=flat-square"> </p>
 
-<img src="https://raw.githubusercontent.com/easazade/crystalline/refs/heads/main/logo-banner.png">
+<img src="https://raw.githubusercontent.com/easazade/crystalline/refs/heads/main/banner.png">
 
 > **Note**: This library is currently in early development. Documentation is not yet ready, and the API is subject to changes as I continue to refine the core concepts.
 
