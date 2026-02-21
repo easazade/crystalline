@@ -362,6 +362,54 @@ void main() {
     );
   });
 
+  group('listenable', () {
+    test(
+      'should notify listeners when publish is called',
+      () async {
+        final testStore = TestStore();
+        var notifyCount = 0;
+        void listener() => notifyCount++;
+
+        testStore.listenable.addListener(listener);
+        testStore.observers.add(Observer(() {}));
+        await testStore.ensureInitialized();
+
+        expect(notifyCount, 0);
+
+        testStore.operation = Operation.create;
+        testStore.publish();
+
+        await Future<void>.value();
+        expect(notifyCount, 1);
+
+        testStore.publish();
+
+        await Future<void>.value();
+        expect(notifyCount, 2);
+        testStore.listenable.removeListener(listener);
+      },
+    );
+
+    test(
+      'should not notify after listener is removed',
+      () async {
+        final testStore = TestStore();
+        var notifyCount = 0;
+        void listener() => notifyCount++;
+
+        testStore.listenable.addListener(listener);
+        testStore.observers.add(Observer(() {}));
+        await testStore.ensureInitialized();
+
+        testStore.listenable.removeListener(listener);
+        testStore.publish();
+        await Future<void>.value();
+        
+        expect(notifyCount, 0);
+      },
+    );
+  });
+
   group('ensureInitialized', () {
     test(
       'should complete when init completes',

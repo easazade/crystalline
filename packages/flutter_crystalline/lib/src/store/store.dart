@@ -14,6 +14,8 @@ abstract class Store extends Data<void> {
 
   final _initializationCompleter = Completer();
 
+  late final Listenable listenable = _StoreListenable(this);
+
   @protected
   late final log = StoreLogger(this);
 
@@ -97,6 +99,31 @@ abstract class Store extends Data<void> {
 
   @override
   Stream<Store> get stream => streamController.stream.map((e) => this);
+}
+
+class _StoreListenable extends ChangeNotifier {
+  _StoreListenable(this._store);
+
+  final Store _store;
+  StreamSubscription<Store>? _subscription;
+
+  @override
+  void addListener(VoidCallback listener) {
+    final hadListeners = hasListeners;
+    super.addListener(listener);
+    if (!hadListeners) {
+      _subscription = _store.stream.listen((_) => notifyListeners());
+    }
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
+    if (!hasListeners) {
+      _subscription?.cancel();
+      _subscription = null;
+    }
+  }
 }
 
 class StoreObservers extends DataObservers {
