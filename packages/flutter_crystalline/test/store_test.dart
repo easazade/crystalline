@@ -23,16 +23,20 @@ void main() {
   });
 
   test(
-    'Should only notify listeners when publish method is called and once after init is called',
+    'Should only notify listeners when publish method is called',
     () {
-      // should be one publish call count since after observer is added init callback is called.
-      expect(publishCallsCount, 1);
+      // Publish is no longer auto-called after init; it falls to the user to call it.
+      expect(publishCallsCount, 0);
 
       store.age.value = 0;
       store.operation = Operation.none;
       store.failure = Failure('some error message!!!!!');
       store.userName.operation = Operation.read;
       store.points.failure = Failure('failed to get points');
+
+      expect(publishCallsCount, 0);
+
+      store.publish();
 
       expect(publishCallsCount, 1);
 
@@ -239,20 +243,19 @@ void main() {
         testStore.observers.add(Observer(() {}));
         await testStore.ensureInitialized();
 
-        // Initial emission from init's publish
-        expect(emitted.length, 1);
+        expect(emitted.length, 0);
 
         testStore.operation = Operation.create;
         testStore.failure = Failure('error');
         testStore.sideEffects.add('effect');
 
-        expect(emitted.length, 1);
+        expect(emitted.length, 0);
 
         testStore.publish();
 
         await Future<void>.value();
 
-        expect(emitted.length, 2);
+        expect(emitted.length, 1);
         expect(emitted.last.operation, Operation.create);
         expect(emitted.last.failureOrNull?.message, 'error');
         expect(emitted.last.sideEffects.all, contains('effect'));
@@ -269,7 +272,7 @@ void main() {
         testStore.observers.add(Observer(() {}));
         await testStore.ensureInitialized();
 
-        expect(emitted.length, 1);
+        expect(emitted.length, 0);
 
         testStore.age.value = 0;
         testStore.operation = Operation.none;
@@ -281,13 +284,13 @@ void main() {
 
         await Future<void>.value();
 
-        expect(emitted.length, 1);
+        expect(emitted.length, 0);
 
         testStore.publish();
 
         await Future<void>.value();
 
-        expect(emitted.length, 2);
+        expect(emitted.length, 1);
       },
     );
 
@@ -301,7 +304,7 @@ void main() {
         testStore.observers.add(Observer(() {}));
         await testStore.ensureInitialized();
 
-        expect(emitted.length, 1);
+        expect(emitted.length, 0);
 
         testStore.userName.value = 'updated';
         testStore.age.value = 42;
@@ -311,7 +314,7 @@ void main() {
 
         await Future<void>.value();
 
-        expect(emitted.length, 2);
+        expect(emitted.length, 1);
         expect(emitted.last.userName.value, 'updated');
         expect(emitted.last.age.value, 42);
         expect(emitted.last.points.value, 100.0);
@@ -323,9 +326,38 @@ void main() {
 
         await Future<void>.value();
 
-        expect(emitted.length, 3);
+        expect(emitted.length, 2);
         expect(emitted.last.userName.value, 'updated again');
         expect(emitted.last.age.value, 99);
+      },
+    );
+
+    test(
+      'should emit for each publish when init overrides and calls publish multiple times',
+      () async {
+        late TestStore testStore;
+        testStore = TestStore(
+          initCallback: () async {
+            testStore.publish();
+            testStore.publish();
+            testStore.publish();
+          },
+        );
+
+        final observerCalls = <int>[];
+        final emitted = <TestStore>[];
+
+        testStore.stream.listen(emitted.add);
+        testStore.observers.add(Observer(() {
+          observerCalls.add(observerCalls.length + 1);
+        }));
+
+        await testStore.ensureInitialized();
+
+        await Future<void>.value();
+
+        expect(observerCalls.length, 3);
+        expect(emitted.length, 3);
       },
     );
   });
