@@ -5,6 +5,8 @@ import 'dart:async';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+part 'store_test.crystalline.dart';
+
 void main() {
   late _TestStore store;
   late Observer observer;
@@ -268,7 +270,7 @@ void main() {
   });
 }
 
-// ignore: missing_override_of_must_be_overridden
+@StoreClass()
 class _TestStore extends Store {
   final userName = Data<String>(value: 'alireza');
   final age = Data<int>();

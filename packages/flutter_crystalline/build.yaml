@@ -1,0 +1,10 @@
+# Run crystalline builders only in test/ for writing tests.
+targets:
+  $default:
+    builders:
+      crystalline_builder|crystalline:
+        generate_for:
+          - test/**
+      crystalline_builder|unified_crystalline:
+        generate_for:
+          - test/**

@@ -13,3 +13,6 @@ dependencies:
 dev_dependencies:
   test: ^1.21.0
   lints: ^6.0.0
+  build_runner: ^2.6.0
+  crystalline_builder:
+    path: ../crystalline_builder
