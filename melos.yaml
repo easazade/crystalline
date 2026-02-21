@@ -33,4 +33,4 @@ scripts:
     description: Run all tests .
 
   gen:
-    run: melos exec  -c 1 --scope="example" -- dart run build_runner build
+    run: melos exec  -c 1 -- dart run build_runner build

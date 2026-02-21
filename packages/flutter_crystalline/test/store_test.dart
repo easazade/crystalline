@@ -8,13 +8,13 @@ import 'package:flutter_test/flutter_test.dart';
 part 'store_test.crystalline.dart';
 
 void main() {
-  late _TestStore store;
+  late TestStore store;
   late Observer observer;
   late int publishCallsCount;
 
   setUp(() {
     publishCallsCount = 0;
-    store = _TestStore();
+    store = TestStore();
     observer = Observer(() {
       publishCallsCount += 1;
     });
@@ -70,7 +70,7 @@ void main() {
       'onInstantiate should be called when store is created',
       () async {
         bool onInstantiateCalled = false;
-        _TestStore(
+        TestStore(
           onInstantiateCallback: () async {
             onInstantiateCalled = true;
           },
@@ -87,7 +87,7 @@ void main() {
       'init should be called when first observer is added',
       () async {
         bool initCalled = false;
-        final testStore = _TestStore(
+        final testStore = TestStore(
           initCallback: () async {
             initCalled = true;
           },
@@ -109,7 +109,7 @@ void main() {
       'init should only be called once even if multiple observers are added',
       () async {
         int initCallCount = 0;
-        final testStore = _TestStore(
+        final testStore = TestStore(
           initCallback: () async {
             initCallCount++;
           },
@@ -136,7 +136,7 @@ void main() {
       'onObserverAdded should be called when observer is added',
       () {
         final addedObservers = <Observer>[];
-        final testStore = _TestStore(
+        final testStore = TestStore(
           onObserverAddedCallback: (observer) {
             addedObservers.add(observer);
           },
@@ -158,7 +158,7 @@ void main() {
       'onObserverRemoved should be called when observer is removed',
       () {
         final removedObservers = <Observer>[];
-        final testStore = _TestStore(
+        final testStore = TestStore(
           onObserverRemovedCallback: (observer) {
             removedObservers.add(observer);
           },
@@ -183,7 +183,7 @@ void main() {
       'clear should be called when last observer is removed',
       () {
         bool clearCalled = false;
-        final testStore = _TestStore(
+        final testStore = TestStore(
           clearCallback: () {
             clearCalled = true;
           },
@@ -209,7 +209,7 @@ void main() {
       'clear should not be called when observers remain after removal',
       () {
         bool clearCalled = false;
-        final testStore = _TestStore(
+        final testStore = TestStore(
           clearCallback: () {
             clearCalled = true;
           },
@@ -228,12 +228,114 @@ void main() {
     );
   });
 
+  group('stream', () {
+    test(
+      'should emit when store-level properties change and publish is called',
+      () async {
+        final testStore = TestStore();
+        final emitted = <TestStore>[];
+        testStore.stream.listen(emitted.add);
+
+        testStore.observers.add(Observer(() {}));
+        await testStore.ensureInitialized();
+
+        // Initial emission from init's publish
+        expect(emitted.length, 1);
+
+        testStore.operation = Operation.create;
+        testStore.failure = Failure('error');
+        testStore.sideEffects.add('effect');
+
+        expect(emitted.length, 1);
+
+        testStore.publish();
+
+        await Future<void>.value();
+
+        expect(emitted.length, 2);
+        expect(emitted.last.operation, Operation.create);
+        expect(emitted.last.failureOrNull?.message, 'error');
+        expect(emitted.last.sideEffects.all, contains('effect'));
+      },
+    );
+
+    test(
+      'should only emit when publish is called, not on changes alone',
+      () async {
+        final testStore = TestStore();
+        final emitted = <TestStore>[];
+        testStore.stream.listen(emitted.add);
+
+        testStore.observers.add(Observer(() {}));
+        await testStore.ensureInitialized();
+
+        expect(emitted.length, 1);
+
+        testStore.age.value = 0;
+        testStore.operation = Operation.none;
+        testStore.failure = Failure('some error');
+        testStore.userName.operation = Operation.read;
+        testStore.points.failure = Failure('failed');
+        testStore.sideEffects.add('effect1');
+        testStore.sideEffects.add('effect2');
+
+        await Future<void>.value();
+
+        expect(emitted.length, 1);
+
+        testStore.publish();
+
+        await Future<void>.value();
+
+        expect(emitted.length, 2);
+      },
+    );
+
+    test(
+      'should emit when child data properties change and publish is called, and again on subsequent change and publish',
+      () async {
+        final testStore = TestStore();
+        final emitted = <TestStore>[];
+        testStore.stream.listen(emitted.add);
+
+        testStore.observers.add(Observer(() {}));
+        await testStore.ensureInitialized();
+
+        expect(emitted.length, 1);
+
+        testStore.userName.value = 'updated';
+        testStore.age.value = 42;
+        testStore.points.value = 100.0;
+
+        testStore.publish();
+
+        await Future<void>.value();
+
+        expect(emitted.length, 2);
+        expect(emitted.last.userName.value, 'updated');
+        expect(emitted.last.age.value, 42);
+        expect(emitted.last.points.value, 100.0);
+
+        testStore.userName.value = 'updated again';
+        testStore.age.value = 99;
+
+        testStore.publish();
+
+        await Future<void>.value();
+
+        expect(emitted.length, 3);
+        expect(emitted.last.userName.value, 'updated again');
+        expect(emitted.last.age.value, 99);
+      },
+    );
+  });
+
   group('ensureInitialized', () {
     test(
       'should complete when init completes',
       () async {
         final completer = Completer<void>();
-        final testStore = _TestStore(
+        final testStore = TestStore(
           initCallback: () async {
             await Future.delayed(const Duration(milliseconds: 50));
             completer.complete();
@@ -252,7 +354,7 @@ void main() {
     test(
       'should return the same future for multiple calls',
       () async {
-        final testStore = _TestStore();
+        final testStore = TestStore();
         final observer1 = Observer(() {});
 
         testStore.observers.add(observer1);
@@ -271,7 +373,7 @@ void main() {
 }
 
 @StoreClass()
-class _TestStore extends Store {
+abstract class _TestStore extends Store {
   final userName = Data<String>(value: 'alireza');
   final age = Data<int>();
   final points = Data<double>();

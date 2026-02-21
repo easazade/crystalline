@@ -6,6 +6,7 @@ import 'package:flutter_crystalline/src/store/store_logger.dart';
 
 abstract class Store extends Data<void> {
   Store() {
+    disallowNotify();
     unawaited(onInstantiate());
   }
 
@@ -56,6 +57,7 @@ abstract class Store extends Data<void> {
   @protected
   void publish() {
     // setting forceNotify:true, since StoreObservers is disallowed notify by design.
+    streamController.add(true);
     observers.notify(forceNotify: true);
   }
 
