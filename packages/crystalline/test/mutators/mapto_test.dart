@@ -8,9 +8,9 @@ void main() {
       () {
         final intData = Data<int>();
         intData.value = 30;
-        final stringData = intData.mapTo<String, Data<String>>(
-          Data<String>(),
-          (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
+        final stringData = intData.mapTo(
+          mapped: Data<String>(),
+          mapper: (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
         );
 
         final DataTestObserver<String, Data<String>> data2TestObserver = DataTestObserver(stringData);
@@ -27,9 +27,9 @@ void main() {
       'be updated whenever Data<int> updates',
       () {
         final intData = Data<int>();
-        final stringData = intData.mapTo<String, Data<String>>(
-          Data<String>(),
-          (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
+        final stringData = intData.mapTo(
+          mapped: Data<String>(),
+          mapper: (origin, mapData) => mapData.value = origin.valueOrNull?.toString(),
         );
 
         final DataTestObserver<String, Data<String>> testObserver = DataTestObserver(stringData);
@@ -50,9 +50,9 @@ void main() {
           Data(value: '2'),
         ]);
 
-        final intListData = stringListData.mapTo<List<Data<int>>, ListData<int>>(
-          ListData<int>([]),
-          (origin, mutated) {},
+        final intListData = stringListData.mapTo(
+          mapped: ListData<int>([]),
+          mapper: (origin, mutated) {},
         );
 
         expect(intListData, isA<ListData<int>>());

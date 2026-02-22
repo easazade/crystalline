@@ -12,9 +12,9 @@ class OperationData extends Data<void> {
   });
 
   factory OperationData.from(Data<dynamic> data) {
-    return data.mapTo<dynamic, OperationData>(
-      OperationData(),
-      (origin, mutated) {
+    return data.mapTo(
+      mapped: OperationData(),
+      mapper: (origin, mutated) {
         mutated.failure = origin.failureOrNull;
         mutated.operation = origin.operation;
         mutated.sideEffects.clear();

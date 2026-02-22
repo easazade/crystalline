@@ -26,13 +26,23 @@ class _Mapper<T1, T2, D1 extends Data<T1>, D2 extends Data<T2>> {
 }
 
 extension MapperX<T1, D1 extends Data<T1>> on D1 {
-  /// maps this data to specified [mapped] data using the [mapper] function passed.
-  /// the [mapped] data will listen to updates from the original data and [mapper]
-  /// callback will be called each time original data updates.
-  D2 mapTo<T2, D2 extends Data<T2>>(
-    D2 mapped,
-    void Function(D1 origin, D2 mutated) mapper,
-  ) {
+  /// Maps this data to [mapped] using the [mapper] callback.
+  ///
+  /// The [mapped] data will listen to updates from this data, and [mapper] will
+  /// be called whenever this data changes. Type arguments are inferred from
+  /// [mapped], so you typically don't need to pass them explicitly.
+  ///
+  /// Example:
+  /// ```dart
+  /// final stringData = intData.mapTo(
+  ///   Data<String>(),
+  ///   (origin, mapped) => mapped.value = origin.valueOrNull?.toString(),
+  /// );
+  /// ```
+  D2 mapTo<T2, D2 extends Data<T2>>({
+    required D2 mapped,
+    required void Function(D1 origin, D2 mutated) mapper,
+  }) {
     return _Mapper<T1, T2, D1, D2>(this, mapped, mapper).mappedMutation;
   }
 }
