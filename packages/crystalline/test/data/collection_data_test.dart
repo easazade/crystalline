@@ -14,7 +14,7 @@ class CollectionDataTestImpl<T> extends CollectionData<T> {
 void main() {
   late CollectionDataTestImpl<String> collectionData;
   late List<Data<String>> items1;
-  late CollectionDataTestObserver<String> testObserver;
+  // late CollectionDataTestObserver<String> testObserver;
 
   setUpAll(() {
     CrystallineGlobalConfig.logger = CrystallineTestLogger();
@@ -23,14 +23,14 @@ void main() {
   setUp(() {
     collectionData = CollectionDataTestImpl([]);
     items1 = ['apple', 'orange', 'ananas', 'banana'].map((e) => Data(value: e)).toList();
-    testObserver = DataTestObserver(collectionData);
+    // testObserver = DataTestObserver(collectionData);
   });
 
   group('copy', () {
     test('Should copy() correctly', () {
       collectionData.addAll(items1);
       final copied = collectionData.copy();
-      
+
       expect(copied, collectionData);
     });
   });
