@@ -198,7 +198,12 @@ class Data<T> {
   }
 
   /// returns a new instance of data object which is copy of this object.
-  Data<T> copy() => Data<T>(value: _value, failure: _failure, operation: _operation);
+  Data<T> copy() => Data<T>(
+        value: _value,
+        failure: _failure,
+        operation: _operation,
+        sideEffects: sideEffects.all,
+      );
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);

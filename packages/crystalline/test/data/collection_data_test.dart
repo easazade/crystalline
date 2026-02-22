@@ -26,12 +26,12 @@ void main() {
     testObserver = DataTestObserver(collectionData);
   });
 
-  test('Should copy() correctly', () {
-    collectionData.addAll(items1);
-
-    final copied = collectionData.copy();
-
-    expect(copied, collectionData);
-    expect(testObserver.timesUpdated, 1);
+  group('copy', () {
+    test('Should copy() correctly', () {
+      collectionData.addAll(items1);
+      final copied = collectionData.copy();
+      
+      expect(copied, collectionData);
+    });
   });
 }

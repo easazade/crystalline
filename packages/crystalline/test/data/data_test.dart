@@ -256,6 +256,21 @@ void main() {
       },
     );
 
+    test('Should copy data including sideEffects', () {
+      data.value = 'test';
+      data.operation = Operation.read;
+      data.sideEffects.addAll(['effect1', 'effect2']);
+      data.failure = Failure('err');
+
+      final copied = data.copy();
+
+      expect(copied.valueOrNull, data.valueOrNull);
+      expect(copied.operation, data.operation);
+      expect(copied.failureOrNull?.message, data.failureOrNull?.message);
+      expect(copied.sideEffects.all, data.sideEffects.all);
+      expect(copied, data);
+    });
+
     test('Should reset data without any issue', () {
       final dataName = 'string-data';
       final data = Data<String>(
@@ -583,6 +598,24 @@ void main() {
           4,
           (event) => expect(event, SideEffectsUpdatedEvent(['effect'])),
         );
+      },
+    );
+
+    test(
+      'should NOT dispatch SideEffectsUpdatedEvent when modify does not change sideEffects',
+      () {
+        data.sideEffects.add('effect');
+        testListener.expectNthDispatch(1, (event) => expect(event, isA<AddSideEffectEvent>()));
+        testListener.expectNthDispatch(2, (event) => expect(event, isA<SideEffectsUpdatedEvent>()));
+
+        data.modify((d) {
+          d.value = 'updated';
+          d.operation = Operation.read;
+        });
+
+        testListener.expectNthDispatch(3, (event) => expect(event, ValueEvent('updated')));
+        testListener.expectNthDispatch(4, (event) => expect(event, OperationEvent(Operation.read)));
+        expect(testListener.timesDispatched, 4);
       },
     );
 

@@ -22,52 +22,54 @@ void main() {
     store.observers.add(observer);
   });
 
-  test(
-    'Should only notify listeners when publish method is called',
-    () {
-      // Publish is no longer auto-called after init; it falls to the user to call it.
-      expect(publishCallsCount, 0);
+  group('publish', () {
+    test(
+      'Should only notify listeners when publish method is called',
+      () {
+        // Publish is no longer auto-called after init; it falls to the user to call it.
+        expect(publishCallsCount, 0);
 
-      store.age.value = 0;
-      store.operation = Operation.none;
-      store.failure = Failure('some error message!!!!!');
-      store.userName.operation = Operation.read;
-      store.points.failure = Failure('failed to get points');
+        store.age.value = 0;
+        store.operation = Operation.none;
+        store.failure = Failure('some error message!!!!!');
+        store.userName.operation = Operation.read;
+        store.points.failure = Failure('failed to get points');
 
-      expect(publishCallsCount, 0);
+        expect(publishCallsCount, 0);
 
-      store.publish();
+        store.publish();
 
-      expect(publishCallsCount, 1);
+        expect(publishCallsCount, 1);
 
-      store.publish();
+        store.publish();
 
-      expect(publishCallsCount, 2);
-    },
-  );
+        expect(publishCallsCount, 2);
+      },
+    );
 
-  test(
-    'toString should contain the states and should not contain data out of the state',
-    () {
-      store.age.value = 0;
-      store.operation = Operation.create;
-      store.failure = Failure('some error message!!!!!');
-      store.userName.operation = Operation.read;
-      store.points.failure = Failure('failed to get points');
-      // this should not be shown in Store.toString() result since it is
-      // not part of state
-      store.nonData = 'Non data';
+    test(
+      'toString should contain the states and should not contain data out of the state',
+      () {
+        store.age.value = 0;
+        store.operation = Operation.create;
+        store.failure = Failure('some error message!!!!!');
+        store.userName.operation = Operation.read;
+        store.points.failure = Failure('failed to get points');
+        // this should not be shown in Store.toString() result since it is
+        // not part of state
+        store.nonData = 'Non data';
 
-      final toString = store.toString();
+        final toString = store.toString();
 
-      expect(toString, contains('0'));
-      expect(toString, contains('create'));
-      expect(toString, contains('some error message!!!!!'));
-      expect(toString, contains('read'));
-      expect(toString, contains('failed to get points'));
-      expect(toString, isNot(contains('Non data')));
-    },
-  );
+        expect(toString, contains('0'));
+        expect(toString, contains('create'));
+        expect(toString, contains('some error message!!!!!'));
+        expect(toString, contains('read'));
+        expect(toString, contains('failed to get points'));
+        expect(toString, isNot(contains('Non data')));
+      },
+    );
+  });
 
   group('Lifecycle callbacks', () {
     test(
@@ -404,7 +406,7 @@ void main() {
         testStore.listenable.removeListener(listener);
         testStore.publish();
         await Future<void>.value();
-        
+
         expect(notifyCount, 0);
       },
     );
