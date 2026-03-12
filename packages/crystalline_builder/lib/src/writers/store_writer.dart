@@ -111,7 +111,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
 
           Stream<$storeClassName> _streamWithSkipUntilInitialized() {
             var hadSkippedEmission = false;
-            final sc = StreamController<Store>(sync: true);
+            final sc = StreamController<$storeClassName>(sync: true);
             StreamSubscription<bool>? streamSub;
 
             sc.onListen = () {

@@ -49,16 +49,16 @@ class GeneralStore extends _GeneralStore {
   Stream<GeneralStore> get stream => streamController.stream.map((e) => this);
 
   @override
-  Stream<Store> streamWith({bool skipUntilInitialized = false}) {
+  Stream<GeneralStore> streamWith({bool skipUntilInitialized = false}) {
     if (!skipUntilInitialized) {
       return streamController.stream.map((e) => this);
     }
     return _streamWithSkipUntilInitialized();
   }
 
-  Stream<Store> _streamWithSkipUntilInitialized() {
+  Stream<GeneralStore> _streamWithSkipUntilInitialized() {
     var hadSkippedEmission = false;
-    final sc = StreamController<Store>(sync: true);
+    final sc = StreamController<GeneralStore>(sync: true);
     StreamSubscription<bool>? streamSub;
 
     sc.onListen = () {
