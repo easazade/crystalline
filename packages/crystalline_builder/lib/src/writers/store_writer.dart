@@ -102,12 +102,37 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
           Stream<$storeClassName> get stream => streamController.stream.map((e) => this);
 
           @override
-          Stream<$storeClassName> streamWith({bool skipUntilInitialized = false}) {
-            var base = streamController.stream;
-            if (skipUntilInitialized) {
-              base = base.where((_) => isInitialized);
+          Stream<Store> streamWith({bool skipUntilInitialized = false}) {
+            if (!skipUntilInitialized) {
+              return streamController.stream.map((e) => this);
             }
-            return base.map((e) => this);
+            return _streamWithSkipUntilInitialized();
+          }
+
+          Stream<Store> _streamWithSkipUntilInitialized() {
+            var hadSkippedEmission = false;
+            final sc = StreamController<Store>(sync: true);
+            StreamSubscription<bool>? streamSub;
+
+            sc.onListen = () {
+              streamSub = streamController.stream.listen((_) {
+                if (isInitialized) {
+                  if (!sc.isClosed) sc.add(this);
+                } else {
+                  hadSkippedEmission = true;
+                }
+              });
+
+              ensureInitialized().then((_) {
+                if (hadSkippedEmission && !sc.isClosed) {
+                  sc.add(this);
+                }
+              });
+            };
+
+            sc.onCancel = () => streamSub?.cancel();
+
+            return sc.stream;
           }
 
         }

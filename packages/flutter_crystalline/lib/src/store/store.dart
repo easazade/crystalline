@@ -105,14 +105,39 @@ abstract class Store extends Data<void> {
   /// Returns a stream with configurable behavior.
   ///
   /// [skipUntilInitialized] When true, events emitted before [onInitialize]
-  /// completes are not forwarded. Use this to avoid reacting to intermediate
-  /// state during store setup.
+  /// completes are not forwarded. When initialization completes, the stream
+  /// emits once only if at least one [publish] was skipped during init.
   Stream<Store> streamWith({bool skipUntilInitialized = false}) {
-    var base = streamController.stream;
-    if (skipUntilInitialized) {
-      base = base.where((_) => isInitialized);
+    if (!skipUntilInitialized) {
+      return streamController.stream.map((e) => this);
     }
-    return base.map((e) => this);
+    return _streamWithSkipUntilInitialized();
+  }
+
+  Stream<Store> _streamWithSkipUntilInitialized() {
+    var hadSkippedEmission = false;
+    final sc = StreamController<Store>(sync: true);
+    StreamSubscription<bool>? streamSub;
+
+    sc.onListen = () {
+      streamSub = streamController.stream.listen((_) {
+        if (isInitialized) {
+          if (!sc.isClosed) sc.add(this);
+        } else {
+          hadSkippedEmission = true;
+        }
+      });
+
+      _initializationCompleter.future.then((_) {
+        if (hadSkippedEmission && !sc.isClosed) {
+          sc.add(this);
+        }
+      });
+    };
+
+    sc.onCancel = () => streamSub?.cancel();
+
+    return sc.stream;
   }
 }
 

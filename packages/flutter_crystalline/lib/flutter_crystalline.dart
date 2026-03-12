@@ -6,3 +6,6 @@ export 'src/builders/when_data_builder.dart';
 export 'src/store/store.dart';
 export 'src/store/store_logger.dart';
 export 'src/widgets/when_data.dart';
+
+// required exports for generated code
+export 'dart:async';
