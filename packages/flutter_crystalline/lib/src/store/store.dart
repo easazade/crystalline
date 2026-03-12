@@ -40,10 +40,10 @@ abstract class Store extends Data<void> {
   @protected
   void clear() {}
 
-  void initialize() {
+  Future<void> initialize() async{
     if (!_isInitializeTriggered) {
       _isInitializeTriggered = true;
-      onInitialize().then((_) {
+      await onInitialize().then((_) {
         _initializationCompleter.complete();
       });
     }
@@ -175,7 +175,7 @@ class StoreObservers extends DataObservers {
   @override
   void add(Observer observer, {bool emitCurrent = false}) {
     super.add(observer);
-    _store.initialize();
+    unawaited(_store.initialize());
     _store.onObserverAdded(observer);
   }
 

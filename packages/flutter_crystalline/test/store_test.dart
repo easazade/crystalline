@@ -242,8 +242,7 @@ void main() {
         final emitted = <TestStore>[];
         testStore.stream.listen(emitted.add);
 
-        testStore.observers.add(Observer(() {}));
-        await testStore.ensureInitialized();
+        await testStore.initialize();
 
         expect(emitted.length, 0);
 
@@ -271,8 +270,7 @@ void main() {
         final emitted = <TestStore>[];
         testStore.stream.listen(emitted.add);
 
-        testStore.observers.add(Observer(() {}));
-        await testStore.ensureInitialized();
+        await testStore.initialize();
 
         expect(emitted.length, 0);
 
@@ -303,8 +301,7 @@ void main() {
         final emitted = <TestStore>[];
         testStore.stream.listen(emitted.add);
 
-        testStore.observers.add(Observer(() {}));
-        await testStore.ensureInitialized();
+        await testStore.initialize();
 
         expect(emitted.length, 0);
 
@@ -364,6 +361,86 @@ void main() {
     );
   });
 
+  group('streamWith', () {
+    test(
+      'with skipUntilInitialized: false should behave like stream and emit on every publish',
+      () async {
+        final testStore = TestStore();
+        final emitted = <TestStore>[];
+        testStore.streamWith(skipUntilInitialized: false).listen(emitted.add);
+
+        await testStore.initialize();
+
+        testStore.publish();
+        await Future<void>.value();
+        expect(emitted.length, 1);
+
+        testStore.publish();
+        await Future<void>.value();
+        expect(emitted.length, 2);
+      },
+    );
+
+    test(
+      'with skipUntilInitialized: true should skip emissions during init and emit once when init completes',
+      () async {
+        late TestStore testStore;
+        testStore = TestStore(
+          initCallback: () async {
+            testStore.publish();
+            testStore.publish();
+            testStore.publish();
+          },
+        );
+
+        final emitted = <TestStore>[];
+        testStore.streamWith(skipUntilInitialized: true).listen(emitted.add);
+        await testStore.initialize();
+
+        await Future<void>.value();
+
+        expect(emitted.length, 1);
+      },
+    );
+
+    test(
+      'with skipUntilInitialized: true should not emit when init completes if no publish was called during init',
+      () async {
+        final testStore = TestStore(
+          initCallback: () async {
+            await Future.delayed(const Duration(milliseconds: 10));
+          },
+        );
+
+        final emitted = <TestStore>[];
+        testStore.streamWith(skipUntilInitialized: true).listen(emitted.add);
+        await testStore.initialize();
+
+        await Future<void>.value();
+
+        expect(emitted.length, 0);
+      },
+    );
+
+    test(
+      'with skipUntilInitialized: true should emit on every publish after init completes',
+      () async {
+        final testStore = TestStore();
+        final emitted = <TestStore>[];
+        testStore.streamWith(skipUntilInitialized: true).listen(emitted.add);
+        await testStore.initialize();
+
+        testStore.publish();
+        await Future<void>.value();
+        expect(emitted.length, 1);
+
+        testStore.publish();
+        await Future<void>.value();
+        expect(emitted.length, 2);
+      },
+    );
+  });
+
   group('listenable', () {
     test(
       'should notify listeners when publish is called',
@@ -373,8 +450,7 @@ void main() {
         void listener() => notifyCount++;
 
         testStore.listenable.addListener(listener);
-        testStore.observers.add(Observer(() {}));
-        await testStore.ensureInitialized();
+        await testStore.initialize();
 
         expect(notifyCount, 0);
 
@@ -400,8 +476,7 @@ void main() {
         void listener() => notifyCount++;
 
         testStore.listenable.addListener(listener);
-        testStore.observers.add(Observer(() {}));
-        await testStore.ensureInitialized();
+        await testStore.initialize();
 
         testStore.listenable.removeListener(listener);
         testStore.publish();
