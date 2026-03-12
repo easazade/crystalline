@@ -99,6 +99,19 @@ abstract class Store extends Data<void> {
 
   @override
   Stream<Store> get stream => streamController.stream.map((e) => this);
+
+  /// Returns a stream with configurable behavior.
+  ///
+  /// [skipUntilInitialized] When true, events emitted before [onInitialize]
+  /// completes are not forwarded. Use this to avoid reacting to intermediate
+  /// state during store setup.
+  Stream<Store> streamWith({bool skipUntilInitialized = false}) {
+    var base = streamController.stream;
+    if (skipUntilInitialized) {
+      base = base.where((_) => _initializationCompleter.isCompleted);
+    }
+    return base.map((e) => this);
+  }
 }
 
 class _StoreListenable extends ChangeNotifier {
