@@ -109,7 +109,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
             return _streamWithSkipUntilInitialized();
           }
 
-          Stream<Store> _streamWithSkipUntilInitialized() {
+          Stream<$storeClassName> _streamWithSkipUntilInitialized() {
             var hadSkippedEmission = false;
             final sc = StreamController<Store>(sync: true);
             StreamSubscription<bool>? streamSub;
