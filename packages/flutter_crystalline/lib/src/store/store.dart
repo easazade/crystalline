@@ -10,7 +10,7 @@ abstract class Store extends Data<void> {
     unawaited(onInstantiate());
   }
 
-  bool _initTriggered = false;
+  bool _isInitializeTriggered = false;
 
   final _initializationCompleter = Completer();
 
@@ -27,7 +27,7 @@ abstract class Store extends Data<void> {
   Future<void> onInstantiate() async {}
 
   @protected
-  Future<void> init() async {}
+  Future<void> onInitialize() async {}
 
   @protected
   void onObserverAdded(Observer observer) {}
@@ -38,10 +38,10 @@ abstract class Store extends Data<void> {
   @protected
   void clear() {}
 
-  void _triggerInit() {
-    if (!_initTriggered) {
-      _initTriggered = true;
-      init().then((_) {
+  void initialize() {
+    if (!_isInitializeTriggered) {
+      _isInitializeTriggered = true;
+      onInitialize().then((_) {
         _initializationCompleter.complete();
       });
     }
@@ -135,7 +135,7 @@ class StoreObservers extends DataObservers {
   @override
   void add(Observer observer, {bool emitCurrent = false}) {
     super.add(observer);
-    _store._triggerInit();
+    _store.initialize();
     _store.onObserverAdded(observer);
   }
 

@@ -486,7 +486,7 @@ abstract class _TestStore extends Store {
   }
 
   @override
-  Future<void> init() async {
+  Future<void> onInitialize() async {
     await initCallback?.call();
   }
 
