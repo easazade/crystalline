@@ -92,7 +92,6 @@ void main() {
       );
 
       expect(find.text(testStore.userName.value), findsOneWidget);
-      // there is a publish() triggered by init() callback of store which needs to be pumped
       await tester.pumpAndSettle();
 
       testStore.userName.value = 'easazade';
