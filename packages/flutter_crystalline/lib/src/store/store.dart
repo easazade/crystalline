@@ -19,6 +19,8 @@ abstract class Store extends Data<void> {
   @protected
   late final log = StoreLogger(this);
 
+  bool get isInitialized => _initializationCompleter.isCompleted;
+
   Future<void> ensureInitialized() => _initializationCompleter.future;
 
   List<Data<Object?>> get states;
@@ -108,7 +110,7 @@ abstract class Store extends Data<void> {
   Stream<Store> streamWith({bool skipUntilInitialized = false}) {
     var base = streamController.stream;
     if (skipUntilInitialized) {
-      base = base.where((_) => _initializationCompleter.isCompleted);
+      base = base.where((_) => isInitialized);
     }
     return base.map((e) => this);
   }

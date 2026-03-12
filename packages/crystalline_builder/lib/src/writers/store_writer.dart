@@ -100,6 +100,16 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
                   
           @override
           Stream<$storeClassName> get stream => streamController.stream.map((e) => this);
+
+          @override
+          Stream<$storeClassName> streamWith({bool skipUntilInitialized = false}) {
+            var base = streamController.stream;
+            if (skipUntilInitialized) {
+              base = base.where((_) => isInitialized);
+            }
+            return base.map((e) => this);
+          }
+
         }
       ''',
     );

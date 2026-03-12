@@ -43,4 +43,13 @@ class TestStore extends _TestStore {
 
   @override
   Stream<TestStore> get stream => streamController.stream.map((e) => this);
+
+  @override
+  Stream<TestStore> streamWith({bool skipUntilInitialized = false}) {
+    var base = streamController.stream;
+    if (skipUntilInitialized) {
+      base = base.where((_) => isInitialized);
+    }
+    return base.map((e) => this);
+  }
 }
