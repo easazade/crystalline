@@ -102,7 +102,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
           Stream<$storeClassName> get stream => streamController.stream.map((e) => this);
 
           @override
-          Stream<Store> streamWith({bool skipUntilInitialized = false}) {
+          Stream<$storeClassName> streamWith({bool skipUntilInitialized = false}) {
             if (!skipUntilInitialized) {
               return streamController.stream.map((e) => this);
             }
