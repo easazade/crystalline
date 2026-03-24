@@ -73,10 +73,10 @@ void main() {
 
   group('operation and failure', () {
     test('Should set the operation', () {
-      expect(contextData.operation, Operation.none);
+      expect(contextData.operationOrNull, null);
       final expectedOperation = Operation.defaultOperations.randomItem!;
       contextData.operation = expectedOperation;
-      expect(contextData.operation, expectedOperation);
+      expect(contextData.operationOrNull, expectedOperation);
     });
 
     test('Should set failure', () {

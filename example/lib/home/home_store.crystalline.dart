@@ -20,31 +20,21 @@
 // ####################################################################################
 // ####################################################################################
 
-part of 'store.dart';
+part of 'home_store.dart';
 
-final $$cartItemSharedProperty = Data<CartItem>();
-
-class GeneralStore extends _GeneralStore {
+class HomeStore extends _HomeStore {
   // constructor
-  GeneralStore(
-    super.key, {
-    required super.token,
-    super.degree,
-    super.withDefault = true,
-  });
+  HomeStore();
 
   @override
-  final cartItem = $$cartItemSharedProperty;
+  List<Data<Object?>> get states => [title, number];
 
   @override
-  List<Data<Object?>> get states => [cartItem, user, ope];
-
-  @override
-  String? get name => 'GeneralStore';
+  String? get name => 'HomeStore';
 
   @override
   bool operator ==(Object other) {
-    if (other is! GeneralStore) return false;
+    if (other is! HomeStore) return false;
 
     return other.runtimeType == runtimeType &&
         failureOrNull == other.failureOrNull &&
@@ -65,14 +55,14 @@ class GeneralStore extends _GeneralStore {
       runtimeType.hashCode;
 
   @override
-  Stream<GeneralStore> get stream => streamController.stream.map((e) => this);
+  Stream<HomeStore> get stream => streamController.stream.map((e) => this);
 
   @override
-  Stream<GeneralStore> streamWith({
+  Stream<HomeStore> streamWith({
     bool skipUntilInitialized = false,
     bool skipOperations = false,
   }) {
-    Stream<GeneralStore> stream = streamController.stream.map((e) => this);
+    Stream<HomeStore> stream = streamController.stream.map((e) => this);
 
     if (skipUntilInitialized) {
       stream = _streamWithSkipUntilInitialized();
@@ -85,9 +75,9 @@ class GeneralStore extends _GeneralStore {
     return stream;
   }
 
-  Stream<GeneralStore> _streamWithSkipUntilInitialized() {
+  Stream<HomeStore> _streamWithSkipUntilInitialized() {
     var hadSkippedEmission = false;
-    final sc = StreamController<GeneralStore>(sync: true);
+    final sc = StreamController<HomeStore>(sync: true);
     StreamSubscription<bool>? streamSub;
 
     sc.onListen = () {

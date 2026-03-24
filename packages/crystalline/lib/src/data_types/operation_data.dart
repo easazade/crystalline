@@ -16,7 +16,7 @@ class OperationData extends Data<void> {
       mapped: OperationData(),
       mapper: (origin, mutated) {
         mutated.failure = origin.failureOrNull;
-        mutated.operation = origin.operation;
+        mutated.operation = origin.operationOrNull;
         mutated.sideEffects.clear();
         mutated.sideEffects.addAll(origin.sideEffects.all);
       },
@@ -26,7 +26,7 @@ class OperationData extends Data<void> {
   @override
   void updateFrom(Data<dynamic> data) {
     disallowNotify();
-    operation = data.operation;
+    operation = data.operationOrNull;
     failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);
@@ -36,7 +36,7 @@ class OperationData extends Data<void> {
 
   @override
   OperationData copy() => OperationData(
-        operation: operation,
+        operation: operationOrNull,
         failure: failureOrNull,
         sideEffects: sideEffects.all,
       );
@@ -54,12 +54,15 @@ class OperationData extends Data<void> {
 
     return other.runtimeType == runtimeType &&
         failureOrNull == other.failureOrNull &&
-        operation == other.operation &&
+        operationOrNull == other.operationOrNull &&
         ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList());
   }
 
   @override
   @mustBeOverridden
   int get hashCode =>
-      (failureOrNull?.hashCode ?? 13) + sideEffects.all.hashCode + operation.hashCode + runtimeType.hashCode;
+      (failureOrNull?.hashCode ?? 13) +
+      sideEffects.all.hashCode +
+      (operationOrNull?.hashCode ?? 14) +
+      runtimeType.hashCode;
 }

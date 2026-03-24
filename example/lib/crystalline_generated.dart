@@ -27,6 +27,14 @@ import 'package:example/cart/models/cart_item.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 import 'dart:core';
 
+import 'package:example/home/home_store.dart';
+import 'package:flutter_crystalline/flutter_crystalline.dart';
+import 'dart:core';
+
+import 'package:example/profile/profile_store.dart';
+import 'package:flutter_crystalline/flutter_crystalline.dart';
+import 'dart:core';
+
 class SharedState {
   static SharedState? _instance;
 

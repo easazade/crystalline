@@ -104,7 +104,7 @@ void main() {
       expect(listData.items, items1);
       expect(listData.sideEffects.all.length, equals(1));
       expect(listData.sideEffects.all, equals(['effect1']));
-      expect(listData.operation, Operation.read);
+      expect(listData.operationOrNull, Operation.read);
       expect(listData.failureOrNull?.message, 'error message');
 
       listData.reset();
@@ -112,7 +112,7 @@ void main() {
       expect(listData.hasValue, isFalse);
       expect(listData.items, isEmpty);
       expect(listData.sideEffects.all, isEmpty);
-      expect(listData.operation, Operation.none);
+      expect(listData.operationOrNull, null);
       expect(listData.hasFailure, isFalse);
     });
   });
@@ -417,7 +417,7 @@ void main() {
       () {
         bool overrideFunc(
           List<Data<String>> value,
-          Operation operation,
+          Operation? operation,
           Failure? failure,
         ) {
           return false;
@@ -470,7 +470,7 @@ void main() {
       () {
         bool overrideFunc(
           List<Data<String>> value,
-          Operation operation,
+          Operation? operation,
           Failure? failure,
         ) {
           return false;

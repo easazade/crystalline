@@ -68,7 +68,7 @@ class RefreshData<T> extends Data<T> {
         if (_status == RefreshStatus.done) {
           _log(
             CrystallineGlobalConfig.logger.greenText(
-              '✅ Refreshed on Retry attempt $retryCount ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operation | value: $valueOrNull',
+              '✅ Refreshed on Retry attempt $retryCount ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operationOrNull | value: $valueOrNull',
             ),
           );
         } else {
@@ -81,11 +81,11 @@ class RefreshData<T> extends Data<T> {
       } else {
         _log(
           CrystallineGlobalConfig.logger.greenText(
-            '✅ Refreshed ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operation | value: $valueOrNull',
+            '✅ Refreshed ${name ?? "RefreshData<$T>"} | status: $_status | operation: $operationOrNull | value: $valueOrNull',
           ),
         );
 
-        if (operation != Operation.none) {
+        if (hasAnyOperation) {
           _log(
             CrystallineGlobalConfig.logger.orangeText(
               '⚠️ Operation after successful refresh was not set to Operation.none. '
@@ -124,7 +124,7 @@ class RefreshData<T> extends Data<T> {
     return other.runtimeType == runtimeType &&
         failureOrNull == other.failureOrNull &&
         valueOrNull == other.valueOrNull &&
-        operation == other.operation &&
+        operationOrNull == other.operationOrNull &&
         ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList());
   }
 
@@ -134,7 +134,7 @@ class RefreshData<T> extends Data<T> {
       (failureOrNull?.hashCode ?? 13) +
       (valueOrNull?.hashCode ?? 8) +
       sideEffects.all.hashCode +
-      operation.hashCode +
+      (operationOrNull?.hashCode ?? 14) +
       runtimeType.hashCode;
 }
 

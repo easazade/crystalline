@@ -51,7 +51,7 @@ class ContextData<T, C> extends Data<T> {
     }
     disallowNotify();
     value = data.valueOrNull;
-    operation = data.operation;
+    operation = data.operationOrNull;
     failure = data.failureOrNull;
     context = data.context;
     sideEffects.clear();
@@ -70,7 +70,7 @@ class ContextData<T, C> extends Data<T> {
   ContextData<T, C> copy() => ContextData(
         value: valueOrNull,
         failure: failureOrNull,
-        operation: operation,
+        operation: operationOrNull,
         context: contextOrNull,
         sideEffects: sideEffects.all.toList(),
       );
@@ -89,7 +89,7 @@ class ContextData<T, C> extends Data<T> {
     return other.runtimeType == runtimeType &&
         failureOrNull == other.failureOrNull &&
         valueOrNull == other.valueOrNull &&
-        operation == other.operation &&
+        operationOrNull == other.operationOrNull &&
         ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList());
   }
 
@@ -99,6 +99,6 @@ class ContextData<T, C> extends Data<T> {
       (failureOrNull?.hashCode ?? 13) +
       (valueOrNull?.hashCode ?? 8) +
       sideEffects.all.hashCode +
-      operation.hashCode +
+      (operationOrNull?.hashCode ?? 14) +
       runtimeType.hashCode;
 }

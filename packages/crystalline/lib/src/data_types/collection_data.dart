@@ -6,7 +6,7 @@ import 'package:crystalline/src/semantics/events.dart';
 import 'package:crystalline/src/semantics/observers.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 
-typedef DataPredicate<T> = bool Function(List<Data<T>> value, Operation operation, Failure? failure)?;
+typedef DataPredicate<T> = bool Function(List<Data<T>> value, Operation? operation, Failure? failure)?;
 
 class AddItemEvent<T> extends Event {
   AddItemEvent(this.newItem, this.items)
@@ -171,8 +171,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (old.items != items) {
       events.dispatch(ItemsUpdatedEvent(items));
     }
-    if (old.operation != operation) {
-      events.dispatch(OperationEvent(operation));
+    if (old.operationOrNull != operationOrNull) {
+      events.dispatch(OperationEvent(operationOrNull));
     }
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       events.dispatch(FailureEvent(failure));
@@ -194,8 +194,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (old.items != items) {
       events.dispatch(ItemsUpdatedEvent(items));
     }
-    if (old.operation != operation) {
-      events.dispatch(OperationEvent(operation));
+    if (old.operationOrNull != operationOrNull) {
+      events.dispatch(OperationEvent(operationOrNull));
     }
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       events.dispatch(FailureEvent(failure));
@@ -218,7 +218,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     for (var e in items) {
       _addObserversToItem(e);
     }
-    operation = data.operation;
+    operation = data.operationOrNull;
     failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);
@@ -226,8 +226,8 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (old.items != items) {
       events.dispatch(ItemsUpdatedEvent(items));
     }
-    if (old.operation != operation) {
-      events.dispatch(OperationEvent(operation));
+    if (old.operationOrNull != operationOrNull) {
+      events.dispatch(OperationEvent(operationOrNull));
     }
     if (old.failureOrNull != failureOrNull && failureOrNull != null) {
       events.dispatch(FailureEvent(failure));
@@ -242,7 +242,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   void reset() {
     modify((collection) {
       collection.removeAll();
-      collection.operation = Operation.none;
+      collection.operation = null;
       collection.failure = null;
       collection.sideEffects.clear();
     });
@@ -263,7 +263,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   @override
   CollectionData<T> copy() => ListData(
         items.toList().map((data) => data.copy()).toList(),
-        operation: operation,
+        operation: operationOrNull,
         failure: failureOrNull,
         sideEffects: sideEffects.all.toList(),
       );
@@ -274,12 +274,12 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
 
     return runtimeType == other.runtimeType &&
         ListEquality<Data<T>>().equals(items, other.items) &&
-        operation == other.operation &&
+        operationOrNull == other.operationOrNull &&
         failureOrNull == other.failureOrNull;
   }
 
   @override
-  int get hashCode => items.hashCode + operation.hashCode + (failureOrNull?.hashCode ?? 1);
+  int get hashCode => items.hashCode + (operationOrNull?.hashCode ?? 14) + (failureOrNull?.hashCode ?? 1);
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
@@ -288,7 +288,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
 class ListData<T> extends CollectionData<T> {
   ListData(
     this.items, {
-    Operation operation = Operation.none,
+    Operation? operation,
     Failure? failure,
     List<dynamic>? sideEffects,
     this.hasAnyOperationStrategy,
@@ -323,53 +323,53 @@ class ListData<T> extends CollectionData<T> {
 
   @override
   bool get hasAnyOperation {
-    return hasAnyOperationStrategy?.call(value, operation, failureOrNull) ?? super.hasAnyOperation;
+    return hasAnyOperationStrategy?.call(value, operationOrNull, failureOrNull) ?? super.hasAnyOperation;
   }
 
   @override
   bool get hasFailure {
-    return hasFailureStrategy?.call(value, operation, failureOrNull) ?? super.hasFailure;
+    return hasFailureStrategy?.call(value, operationOrNull, failureOrNull) ?? super.hasFailure;
   }
 
   @override
   bool get hasValue {
-    return hasValueStrategy?.call(value, operation, failureOrNull) ?? super.hasValue;
+    return hasValueStrategy?.call(value, operationOrNull, failureOrNull) ?? super.hasValue;
   }
 
   @override
   bool get hasNoValue {
-    return hasNoValueStrategy?.call(value, operation, failureOrNull) ?? super.hasNoValue;
+    return hasNoValueStrategy?.call(value, operationOrNull, failureOrNull) ?? super.hasNoValue;
   }
 
   @override
   bool get isCreating {
-    return isCreatingStrategy?.call(value, operation, failureOrNull) ?? super.isCreating;
+    return isCreatingStrategy?.call(value, operationOrNull, failureOrNull) ?? super.isCreating;
   }
 
   @override
   bool get isDeleting {
-    return isDeletingStrategy?.call(value, operation, failureOrNull) ?? super.isDeleting;
+    return isDeletingStrategy?.call(value, operationOrNull, failureOrNull) ?? super.isDeleting;
   }
 
   @override
   bool get isReading {
-    return isReadingStrategy?.call(value, operation, failureOrNull) ?? super.isReading;
+    return isReadingStrategy?.call(value, operationOrNull, failureOrNull) ?? super.isReading;
   }
 
   @override
   bool get isUpdating {
-    return isUpdatingStrategy?.call(value, operation, failureOrNull) ?? super.isUpdating;
+    return isUpdatingStrategy?.call(value, operationOrNull, failureOrNull) ?? super.isUpdating;
   }
 
   @override
   bool get hasCustomOperation {
-    return hasCustomOperationStrategy?.call(value, operation, failureOrNull) ?? super.hasCustomOperation;
+    return hasCustomOperationStrategy?.call(value, operationOrNull, failureOrNull) ?? super.hasCustomOperation;
   }
 
   @override
   ListData<T> copy() => ListData(
         items.toList().map((data) => data.copy()).toList(),
-        operation: operation,
+        operation: operationOrNull,
         failure: failureOrNull,
         sideEffects: sideEffects.all.toList(),
         hasAnyOperationStrategy: hasAnyOperationStrategy,
@@ -404,12 +404,12 @@ class ListData<T> extends CollectionData<T> {
 
     return runtimeType == other.runtimeType &&
         ListEquality<Data<T>>().equals(items, other.items) &&
-        operation == other.operation &&
+        operationOrNull == other.operationOrNull &&
         failureOrNull == other.failureOrNull;
   }
 
   @override
-  int get hashCode => items.hashCode + operation.hashCode + (failureOrNull?.hashCode ?? 1);
+  int get hashCode => items.hashCode + (operationOrNull?.hashCode ?? 14) + (failureOrNull?.hashCode ?? 1);
 
   @override
   Stream<ListData<T>> get stream => streamController.stream.map((e) => this);

@@ -86,7 +86,7 @@ abstract class Store extends Data<void> {
 
     return other.runtimeType == runtimeType &&
         failureOrNull == other.failureOrNull &&
-        operation == other.operation &&
+        operationOrNull == other.operationOrNull &&
         ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList()) &&
         ListEquality().equals(states, other.states);
   }
@@ -96,7 +96,7 @@ abstract class Store extends Data<void> {
       (failureOrNull?.hashCode ?? 9) +
       sideEffects.all.hashCode +
       states.hashCode +
-      operation.hashCode +
+      (operationOrNull?.hashCode ?? 14) +
       runtimeType.hashCode;
 
   @override

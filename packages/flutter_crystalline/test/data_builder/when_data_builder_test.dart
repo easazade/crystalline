@@ -85,7 +85,7 @@ void main() {
       expect(find.text('like-photo'), findsOneWidget);
       expect(find.text('delete'), findsNothing);
 
-      data.operation = Operation.none;
+      data.operation = null;
       data.failure = Failure('oops error !!!');
       await tester.pumpAndSettle();
       expect(find.text('oops error !!!'), findsOneWidget);

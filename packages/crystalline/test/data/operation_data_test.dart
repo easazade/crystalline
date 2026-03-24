@@ -29,7 +29,7 @@ void main() {
     test(
       'Should Update operationData successfully',
       () {
-        expect(operationData.operation, Operation.none);
+        assert(operationData.hasNoOperation);
         expect(operationData.failureOrNull, isNull);
         expect(operationData.sideEffects, isEmpty);
 
@@ -49,15 +49,15 @@ void main() {
 
   group('updateFrom', () {
     test(
-      'OperationData should update from another data using updateFrom()',
+      'OperationData should update from another data using updateFrom().',
       () {
-        expect(operationData.operation, Operation.none);
+        assert(operationData.hasNoOperation);
         expect(operationData.failureOrNull, isNull);
         expect(operationData.sideEffects.all, isEmpty);
 
         operationData.updateFrom(data);
 
-        expect(operationData.operation, data.operation);
+        expect(operationData.operationOrNull, data.operationOrNull);
         expect(operationData.failureOrNull, data.failureOrNull);
         expect(operationData.sideEffects.all, data.sideEffects.all);
         expect(operationData.sideEffects.all.length, 1);

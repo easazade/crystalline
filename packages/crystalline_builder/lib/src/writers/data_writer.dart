@@ -47,7 +47,7 @@ void writeDataClass(
           }): super(
             value: value,
             failure: failure,
-            operation: operation,
+            operation: operationOrNull,
             sideEffects: sideEffects,
             name: name,
           );

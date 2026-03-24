@@ -39,7 +39,7 @@ void main() async {
       }
 
       // check initial build
-      expect(listData.operation, Operation.none);
+      assert(listData.hasNoOperation);
       expect(listData.failureOrNull, isNull);
       expect(listData.sideEffects, isEmpty);
 
@@ -61,7 +61,7 @@ void main() async {
 
       // check rendering of failures
       listData.failure = Failure('Oops Error !!!');
-      listData.operation = Operation.none;
+      listData.operation = null;
       await tester.pumpAndSettle();
       expect(find.text('Oops Error !!!'), findsOneWidget);
     },
@@ -97,7 +97,7 @@ void main() async {
       }
 
       // check initial build
-      expect(listData.operation, Operation.none);
+      assert(listData.hasNoOperation);
       expect(listData.failureOrNull, isNull);
       expect(listData.sideEffects, isEmpty);
 

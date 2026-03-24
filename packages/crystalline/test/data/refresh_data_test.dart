@@ -25,7 +25,7 @@ void main() {
       final refreshData = RefreshData<String>(
         refresh: (data) async {
           data.value = 'refreshed';
-          data.operation = Operation.none;
+          data.operation = null;
           return RefreshStatus.done;
         },
       );

@@ -30,7 +30,6 @@ class CustomDataOperation extends Operation {
   static const CustomDataOperation read = CustomDataOperation('read');
   static const CustomDataOperation update = CustomDataOperation('update');
   static const CustomDataOperation delete = CustomDataOperation('delete');
-  static const CustomDataOperation none = CustomDataOperation('none');
   // custom operations
   static const Operation deleteUser = Operation('DeleteUser');
   static const Operation updateProfile = Operation('UpdateProfile');
@@ -40,13 +39,13 @@ class CustomData extends Data<String> {
   CustomData({
     String? value,
     Failure? failure,
-    CustomDataOperation operation = CustomDataOperation.none,
+    CustomDataOperation? operation,
     Iterable<dynamic>? sideEffects,
     String? name,
   }) : super(
          value: value,
          failure: failure,
-         operation: operation,
+         operation: operationOrNull,
          sideEffects: sideEffects,
          name: name,
        );

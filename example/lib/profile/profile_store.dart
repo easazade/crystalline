@@ -1,8 +1,11 @@
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 
+part 'profile_store.crystalline.dart';
+
 final profileStore = ProfileStore();
 
-class ProfileStore extends Store {
+@StoreClass()
+abstract class _ProfileStore extends Store {
   final profileImage = Data<String>();
 
   Future update() async {
@@ -13,7 +16,7 @@ class ProfileStore extends Store {
     await Future.delayed(const Duration(seconds: 3));
 
     profileImage.value = 'image url 2';
-    operation = Operation.none;
+    operation = null;
     failure = null;
   }
 

@@ -84,7 +84,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
 
             return other.runtimeType == runtimeType &&
                 failureOrNull == other.failureOrNull &&
-                operation == other.operation &&
+                operationOrNull == other.operationOrNull &&
                 const ListEquality().equals(sideEffects.all.toList(), other.sideEffects.all.toList()) &&
                 const ListEquality().equals(states, other.states);
           }
@@ -94,7 +94,7 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
               (failureOrNull?.hashCode ?? 9) +
               sideEffects.all.hashCode +
               states.hashCode +
-              operation.hashCode +
+              (operationOrNull?.hashCode ?? 14) +
               runtimeType.hashCode;
 
                   
@@ -156,10 +156,10 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
 
 void validateSourceSyntaxForStoreAnnotatedClass(ClassElement cls) {
   if (!cls.isPrivate || !cls.isAbstract) {
-    throw Exception('!!! ->>> Annotated store classes with @store() need to be private and abstract');
+    throw Exception('!!! ->>> Annotated store classes with @StoreClass need to be private and abstract');
   }
 
   if (cls.unnamedConstructor == null) {
-    throw Exception('!!! ->>> Annotated store classes with @store must have an unnamed constructor');
+    throw Exception('!!! ->>> Annotated store classes with @StoreClass must have an unnamed constructor');
   }
 }

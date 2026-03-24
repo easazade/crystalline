@@ -68,9 +68,9 @@ class Event {
 }
 
 class OperationEvent extends Event {
-  OperationEvent(this.operation) : super(operation.name);
+  OperationEvent(this.operation) : super(operation?.name ?? 'null');
 
-  final Operation operation;
+  final Operation? operation;
 }
 
 class ValueEvent<T> extends Event {

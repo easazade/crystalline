@@ -44,7 +44,7 @@ class TestStore extends _TestStore {
 
     return other.runtimeType == runtimeType &&
         failureOrNull == other.failureOrNull &&
-        operation == other.operation &&
+        operationOrNull == other.operationOrNull &&
         const ListEquality().equals(
           sideEffects.all.toList(),
           other.sideEffects.all.toList(),
@@ -57,7 +57,7 @@ class TestStore extends _TestStore {
       (failureOrNull?.hashCode ?? 9) +
       sideEffects.all.hashCode +
       states.hashCode +
-      operation.hashCode +
+      (operationOrNull?.hashCode ?? 14) +
       runtimeType.hashCode;
 
   @override

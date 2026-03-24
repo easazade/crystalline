@@ -4,9 +4,8 @@ class Operation {
   static const Operation read = Operation('read');
   static const Operation update = Operation('update');
   static const Operation delete = Operation('delete');
-  static const Operation none = Operation('none');
 
-  static final List<Operation> defaultOperations = [create, read, update, delete, none];
+  static final List<Operation> defaultOperations = [create, read, update, delete];
 
   final String name;
 

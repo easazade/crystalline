@@ -16,7 +16,7 @@ class Data<T> {
   Data({
     T? value,
     Failure? failure,
-    Operation operation = Operation.none,
+    Operation? operation,
     Iterable<dynamic>? sideEffects,
     this.name,
   })  : _value = value,
@@ -29,7 +29,7 @@ class Data<T> {
 
   T? _value;
   Failure? _failure;
-  Operation _operation;
+  Operation? _operation;
 
   bool _allowedToNotify = true;
 
@@ -86,9 +86,11 @@ class Data<T> {
 
   bool get isUpdating => _operation == Operation.update;
 
-  bool get hasCustomOperation => _operation.isCustom;
+  bool get hasCustomOperation => _operation?.isCustom == true;
 
-  bool get hasAnyOperation => _operation != Operation.none;
+  bool get hasAnyOperation => _operation != null;
+
+  bool get hasNoOperation => _operation == null;
 
   bool valueEqualsTo(T? otherValue) => _value == otherValue;
 
@@ -100,13 +102,21 @@ class Data<T> {
     notifyObserversAndStreamListeners();
   }
 
-  set operation(final Operation operation) {
+  set operation(final Operation? operation) {
     _operation = operation;
     events.dispatch(OperationEvent(operation));
     notifyObserversAndStreamListeners();
   }
 
-  Operation get operation => _operation;
+  Operation get operation {
+    if (_operation == null) {
+      throw OperationNotAvailableException();
+    }
+
+    return _operation!;
+  }
+
+  Operation? get operationOrNull => _operation;
 
   set value(final T? value) {
     _value = value;
@@ -125,8 +135,8 @@ class Data<T> {
     if (old._value != _value && hasValue) {
       events.dispatch(ValueEvent(value));
     }
-    if (old.operation != operation) {
-      events.dispatch(OperationEvent(operation));
+    if (old.operationOrNull != _operation) {
+      events.dispatch(OperationEvent(_operation));
     }
     if (old._failure != _failure && _failure != null) {
       events.dispatch(FailureEvent(_failure!));
@@ -147,7 +157,7 @@ class Data<T> {
     if (old._value != _value && hasValue) {
       events.dispatch(ValueEvent(value));
     }
-    if (old.operation != operation) {
+    if (old.operationOrNull != _operation) {
       events.dispatch(OperationEvent(operation));
     }
     if (old._failure != _failure && _failure != null) {
@@ -164,7 +174,7 @@ class Data<T> {
     disallowNotify();
     final old = copy();
     value = data.valueOrNull;
-    operation = data.operation;
+    operation = data.operationOrNull;
     failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);
@@ -173,8 +183,8 @@ class Data<T> {
     if (old._value != _value && hasValue) {
       events.dispatch(ValueEvent(value));
     }
-    if (old.operation != operation) {
-      events.dispatch(OperationEvent(operation));
+    if (old.operationOrNull != _operation) {
+      events.dispatch(OperationEvent(_operation));
     }
     if (old._failure != _failure && _failure != null) {
       events.dispatch(FailureEvent(_failure!));
@@ -191,7 +201,7 @@ class Data<T> {
   void reset() {
     modify((data) {
       data.value = null;
-      data.operation = Operation.none;
+      data.operation = null;
       data.failure = null;
       data.sideEffects.clear();
     });
@@ -226,7 +236,7 @@ class Data<T> {
       (_failure?.hashCode ?? 0) +
       (_value?.hashCode ?? 4) +
       sideEffects.all.hashCode +
-      _operation.hashCode +
+      (operationOrNull?.hashCode ?? 14) +
       runtimeType.hashCode;
 
   void allowNotify() {

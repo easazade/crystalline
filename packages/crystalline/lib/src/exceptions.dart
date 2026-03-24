@@ -12,6 +12,18 @@ class ValueNotAvailableException implements Exception {
   }
 }
 
+class OperationNotAvailableException implements Exception {
+  const OperationNotAvailableException();
+
+  @override
+  String toString() {
+    return '${super.toString()}\n'
+        'Data has no operation please check for availability of operation in Data before calling value\n'
+        'this can be done by calling `hasAnyOperation` getter method first'
+        '\n';
+  }
+}
+
 class FailureIsNullException implements Exception {
   const FailureIsNullException();
 

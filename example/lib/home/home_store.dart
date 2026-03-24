@@ -1,10 +1,11 @@
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 
-final homeStore = HomeStore._();
+part 'home_store.crystalline.dart';
 
-class HomeStore extends Store {
-  HomeStore._();
+final homeStore = HomeStore();
 
+@StoreClass()
+abstract class _HomeStore extends Store {
   final Data<String> title = Data(value: 'THIS TITLE');
   final Data<int> number = Data(value: 0);
 
@@ -14,7 +15,7 @@ class HomeStore extends Store {
 
     await Future.delayed(const Duration(seconds: 1));
     title.value = (title.value == 'THIS TITLE') ? 'THAT TITLE' : 'THIS TITLE';
-    title.operation = Operation.none;
+    title.operation = null;
     publish();
   }
 
@@ -27,7 +28,7 @@ class HomeStore extends Store {
 
     await Future.delayed(const Duration(seconds: 1));
     number.value = newValue;
-    number.operation = Operation.none;
+    number.operation = null;
     publish();
 
     await Future.delayed(const Duration(seconds: 1));

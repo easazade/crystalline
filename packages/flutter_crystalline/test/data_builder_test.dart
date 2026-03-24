@@ -116,14 +116,14 @@ void main() {
     'Builder should update widget when operation is '
     'updated on data and observe is set to true on DataBuilder',
     (tester) async {
-      final Operation operation = Operation.defaultOperations.randomItem(exceptionValues: [Operation.none]);
+      final Operation operation = Operation.defaultOperations.randomItem();
 
       await tester.pumpWidget(
         Testable(
           child: DataBuilder(
             data: data,
             builder: (context, data) {
-              return Text(data.operation.name);
+              return Text(data.operationOrNull?.name ?? 'null');
             },
           ),
         ),
@@ -131,7 +131,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text(Operation.none.name), matchers.findsOneWidget);
+      expect(find.text('null'), matchers.findsOneWidget);
 
       // when data value changes
       data.operation = operation;

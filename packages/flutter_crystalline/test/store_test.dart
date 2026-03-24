@@ -28,7 +28,7 @@ void main() {
         expect(publishCallsCount, 0);
 
         store.age.value = 0;
-        store.operation = Operation.none;
+        store.operation = null;
         store.failure = Failure('some error message!!!!!');
         store.userName.operation = Operation.read;
         store.points.failure = Failure('failed to get points');
@@ -273,7 +273,7 @@ void main() {
         expect(emitted.length, 0);
 
         testStore.age.value = 0;
-        testStore.operation = Operation.none;
+        testStore.operation = null;
         testStore.failure = Failure('some error');
         testStore.userName.operation = Operation.read;
         testStore.points.failure = Failure('failed');
@@ -472,7 +472,7 @@ void main() {
 
         expect(emitted.length, 0);
 
-        testStore.operation = Operation.none;
+        testStore.operation = null;
         testStore.publish();
         await Future<void>.value();
 
@@ -502,7 +502,7 @@ void main() {
 
         expect(emitted.length, 0);
 
-        testStore.operation = Operation.none;
+        testStore.operation = null;
         testStore.publish();
         await Future<void>.value();
 

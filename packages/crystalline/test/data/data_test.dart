@@ -38,10 +38,10 @@ void main() {
     );
 
     test('Should set the operation', () {
-      expect(data.operation, Operation.none);
+      assert(data.hasNoOperation);
       final expectedOperation = Operation.defaultOperations.randomItem!;
       data.operation = expectedOperation;
-      expect(data.operation, expectedOperation);
+      expect(data.operationOrNull, expectedOperation);
       expect(testObserver.timesUpdated, 1);
     });
 
@@ -82,7 +82,7 @@ void main() {
       'Should return true on data.operation.isCustom when a custom '
       'operation is set on data and vise versa',
       () async {
-        expect(data.operation.isCustom, false);
+        expect(data.hasCustomOperation, false);
 
         data.operation = Operation('set-user-profile');
         expect(data.operation.isCustom, true);
@@ -196,7 +196,6 @@ void main() {
       () {
         data = Data(name: 'varName');
         final string = data.toString();
-        expect(string, contains(data.operation.name));
         expect(string, contains(data.valueOrNull.toString()));
       },
     );
@@ -292,7 +291,7 @@ void main() {
 
       expect(data.hasValue, isFalse);
       expect(data.sideEffects.isNotEmpty, isFalse);
-      expect(data.operation, Operation.none);
+      assert(data.hasNoOperation);
       expect(data.hasFailure, isFalse);
       // the data name should not change on reset. since it is just a name of the data
       expect(data.name, dataName);

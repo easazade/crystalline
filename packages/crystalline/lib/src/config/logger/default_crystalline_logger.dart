@@ -76,10 +76,10 @@ class DefaultCrystallineLogger extends CrystallineLogger {
       );
     }
 
-    if (data.operation == Operation.none) {
-      buffer.write('operation: ${data.operation.name}');
+    if (data.hasNoOperation) {
+      buffer.write('operation: ${data.operationOrNull?.name}');
     } else {
-      buffer.write('operation: ${whiteTextBlueBg(data.operation.name)}');
+      buffer.write('operation: ${whiteTextBlueBg(data.operationOrNull?.name)}');
     }
 
     if (data.hasValue) {

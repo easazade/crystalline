@@ -112,7 +112,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('delete-photo'), matchers.findsOneWidget);
 
-      data.operation = Operation.none;
+      data.operation = null;
       await tester.pumpAndSettle();
       expect(find.text(data.value), matchers.findsOneWidget);
     },
@@ -180,7 +180,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('update-user-profile'), matchers.findsOneWidget);
 
-      data.operation = Operation.none;
+      data.operation = null;
       rebuildParent();
       await tester.pumpAndSettle();
       expect(find.text(data.value), matchers.findsOneWidget);
@@ -235,7 +235,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('data has no value'), matchers.findsOneWidget);
 
-      data.operation = Operation.none;
+      data.operation = null;
       await tester.pumpAndSettle();
       expect(find.text('data has no value'), matchers.findsOneWidget);
     },
@@ -290,7 +290,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('operating'), matchers.findsOneWidget);
 
-      data.operation = Operation.none;
+      data.operation = null;
       await tester.pumpAndSettle();
       expect(find.text(data.value), matchers.findsOneWidget);
     },
@@ -339,7 +339,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('operating'), matchers.findsOneWidget);
 
-      data.operation = Operation.none;
+      data.operation = null;
       await tester.pumpAndSettle();
       expect(find.text(data.value), matchers.findsOneWidget);
 
@@ -392,7 +392,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('operating'), matchers.findsOneWidget);
 
-      data.operation = Operation.none;
+      data.operation = null;
       await tester.pumpAndSettle();
       expect(find.text(data.value), matchers.findsOneWidget);
 
@@ -436,7 +436,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(failure.message), matchers.findsOneWidget);
 
-      data.operation = Operation.none;
+      data.operation = null;
       await tester.pumpAndSettle();
       expect(find.text(failure.message), matchers.findsOneWidget);
     },
