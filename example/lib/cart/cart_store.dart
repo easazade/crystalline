@@ -1,9 +1,12 @@
 import 'package:example/cart/models/cart_item.dart';
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 
+part 'cart_store.crystalline.dart';
+
 final cartStore = CartStore();
 
-class CartStore extends Store {
+@StoreClass()
+abstract class _CartStore extends Store {
   final cartItems = ListData<CartItem>([]);
 
   void addItem(CartItem item) {

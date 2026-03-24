@@ -3,7 +3,6 @@ import 'dart:developer' as dev;
 import 'package:crystalline/src/config/logger/crystalline_logger.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
-import 'package:crystalline/src/semantics/operation.dart';
 import 'package:meta/meta.dart';
 
 class DefaultCrystallineLogger extends CrystallineLogger {
