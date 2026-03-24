@@ -64,11 +64,21 @@ class TestStore extends _TestStore {
   Stream<TestStore> get stream => streamController.stream.map((e) => this);
 
   @override
-  Stream<TestStore> streamWith({bool skipUntilInitialized = false}) {
-    if (!skipUntilInitialized) {
-      return streamController.stream.map((e) => this);
+  Stream<TestStore> streamWith({
+    bool skipUntilInitialized = false,
+    bool skipOperations = false,
+  }) {
+    Stream<TestStore> stream = streamController.stream.map((e) => this);
+
+    if (skipUntilInitialized) {
+      stream = _streamWithSkipUntilInitialized();
     }
-    return _streamWithSkipUntilInitialized();
+
+    if (skipOperations) {
+      stream = stream.skipWhile((e) => e.hasAnyOperation);
+    }
+
+    return stream;
   }
 
   Stream<TestStore> _streamWithSkipUntilInitialized() {

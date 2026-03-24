@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
             Builder(
               builder: (context) {
                 print('home store being rebuilt');
-                if (homeStore.isAnyOperation) {
+                if (homeStore.hasAnyOperation) {
                   return const Text(
                     'on of required data in Home Store'
                     ' has null value aka not available',

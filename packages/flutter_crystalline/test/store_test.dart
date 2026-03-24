@@ -1,7 +1,5 @@
 // ignore_for_file: invalid_use_of_protected_member
 
-import 'dart:async';
-
 import 'package:flutter_crystalline/flutter_crystalline.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -437,6 +435,78 @@ void main() {
         testStore.publish();
         await Future<void>.value();
         expect(emitted.length, 2);
+      },
+    );
+
+    test(
+      'with skipOperations: false should emit on publish even when store has an operation',
+      () async {
+        final testStore = TestStore();
+        final emitted = <TestStore>[];
+        testStore.streamWith(skipOperations: false).listen(emitted.add);
+
+        await testStore.initialize();
+
+        testStore.operation = Operation.read;
+        testStore.publish();
+        await Future<void>.value();
+
+        expect(emitted.length, 1);
+      },
+    );
+
+    test(
+      'with skipOperations: true should skip emissions until store has no operation',
+      () async {
+        final testStore = TestStore();
+        final emitted = <TestStore>[];
+        testStore.streamWith(skipOperations: true).listen(emitted.add);
+
+        await testStore.initialize();
+
+        testStore.operation = Operation.read;
+        testStore.publish();
+        await Future<void>.value();
+        testStore.publish();
+        await Future<void>.value();
+
+        expect(emitted.length, 0);
+
+        testStore.operation = Operation.none;
+        testStore.publish();
+        await Future<void>.value();
+
+        expect(emitted.length, 1);
+      },
+    );
+
+    test(
+      'with skipUntilInitialized: true and skipOperations: true should compose',
+      () async {
+        late TestStore testStore;
+        testStore = TestStore(
+          initCallback: () async {
+            testStore.operation = Operation.read;
+            testStore.publish();
+            testStore.publish();
+          },
+        );
+
+        final emitted = <TestStore>[];
+        testStore
+            .streamWith(skipUntilInitialized: true, skipOperations: true)
+            .listen(emitted.add);
+
+        await testStore.initialize();
+        await Future<void>.value();
+
+        expect(emitted.length, 0);
+
+        testStore.operation = Operation.none;
+        testStore.publish();
+        await Future<void>.value();
+
+        expect(emitted.length, 1);
       },
     );
   });

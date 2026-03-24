@@ -51,7 +51,7 @@ class WhenData<T, D extends Data<T>> extends StatelessWidget {
     if (data.isUpdating && onUpdate != null) {
       return onUpdate!(context, data);
     }
-    if (data.isAnyOperation && onAnyOperation != null) {
+    if (data.hasAnyOperation && onAnyOperation != null) {
       return onAnyOperation!(context, data);
     }
     if (data.hasFailure && onFailure != null) {

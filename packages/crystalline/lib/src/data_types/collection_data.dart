@@ -291,7 +291,7 @@ class ListData<T> extends CollectionData<T> {
     Operation operation = Operation.none,
     Failure? failure,
     List<dynamic>? sideEffects,
-    this.isAnyOperationStrategy,
+    this.hasAnyOperationStrategy,
     this.hasFailureStrategy,
     this.hasValueStrategy,
     this.hasNoValueStrategy,
@@ -311,7 +311,7 @@ class ListData<T> extends CollectionData<T> {
   @override
   final List<Data<T>> items;
 
-  final DataPredicate<T> isAnyOperationStrategy;
+  final DataPredicate<T> hasAnyOperationStrategy;
   final DataPredicate<T> hasFailureStrategy;
   final DataPredicate<T> hasValueStrategy;
   final DataPredicate<T> hasNoValueStrategy;
@@ -322,8 +322,8 @@ class ListData<T> extends CollectionData<T> {
   final DataPredicate<T> hasCustomOperationStrategy;
 
   @override
-  bool get isAnyOperation {
-    return isAnyOperationStrategy?.call(value, operation, failureOrNull) ?? super.isAnyOperation;
+  bool get hasAnyOperation {
+    return hasAnyOperationStrategy?.call(value, operation, failureOrNull) ?? super.hasAnyOperation;
   }
 
   @override
@@ -372,7 +372,7 @@ class ListData<T> extends CollectionData<T> {
         operation: operation,
         failure: failureOrNull,
         sideEffects: sideEffects.all.toList(),
-        isAnyOperationStrategy: isAnyOperationStrategy,
+        hasAnyOperationStrategy: hasAnyOperationStrategy,
         hasFailureStrategy: hasFailureStrategy,
         hasValueStrategy: hasValueStrategy,
         hasNoValueStrategy: hasNoValueStrategy,

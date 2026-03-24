@@ -40,7 +40,7 @@ abstract class Store extends Data<void> {
   @protected
   void clear() {}
 
-  Future<void> initialize() async{
+  Future<void> initialize() async {
     if (!_isInitializeTriggered) {
       _isInitializeTriggered = true;
       await onInitialize().then((_) {
@@ -107,11 +107,24 @@ abstract class Store extends Data<void> {
   /// [skipUntilInitialized] When true, events emitted before [onInitialize]
   /// completes are not forwarded. When initialization completes, the stream
   /// emits once only if at least one [publish] was skipped during init.
-  Stream<Store> streamWith({bool skipUntilInitialized = false}) {
-    if (!skipUntilInitialized) {
-      return streamController.stream.map((e) => this);
+  ///
+  /// [skipOperations] When true, events emitted when there is an operation set
+  /// will be skipped.
+  Stream<Store> streamWith({
+    bool skipUntilInitialized = false,
+    bool skipOperations = false,
+  }) {
+    Stream<Store> stream = streamController.stream.map((e) => this);
+
+    if (skipUntilInitialized) {
+      stream = _streamWithSkipUntilInitialized();
     }
-    return _streamWithSkipUntilInitialized();
+
+    if (skipOperations) {
+      stream = stream.skipWhile((e) => e.hasAnyOperation);
+    }
+
+    return stream;
   }
 
   Stream<Store> _streamWithSkipUntilInitialized() {

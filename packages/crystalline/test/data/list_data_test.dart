@@ -445,7 +445,7 @@ void main() {
     test(
       'operation flag methods for ListData should behave as default expected',
       () {
-        expect(listData.isAnyOperation, isFalse);
+        expect(listData.hasAnyOperation, isFalse);
 
         listData.operation = Operation.create;
         expect(listData.isCreating, isTrue);
@@ -482,11 +482,11 @@ void main() {
           isDeletingStrategy: overrideFunc,
           isUpdatingStrategy: overrideFunc,
           isReadingStrategy: overrideFunc,
-          isAnyOperationStrategy: overrideFunc,
+          hasAnyOperationStrategy: overrideFunc,
           hasCustomOperationStrategy: overrideFunc,
         );
 
-        expect(listData.isAnyOperation, isFalse);
+        expect(listData.hasAnyOperation, isFalse);
 
         listData.operation = Operation.create;
         expect(listData.isCreating, isFalse);

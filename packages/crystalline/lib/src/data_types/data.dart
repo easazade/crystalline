@@ -88,7 +88,7 @@ class Data<T> {
 
   bool get hasCustomOperation => _operation.isCustom;
 
-  bool get isAnyOperation => _operation != Operation.none;
+  bool get hasAnyOperation => _operation != Operation.none;
 
   bool valueEqualsTo(T? otherValue) => _value == otherValue;
 

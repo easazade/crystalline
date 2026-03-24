@@ -79,7 +79,7 @@ void main() async {
                 children: [
                   if (items.sideEffects.isNotEmpty) Text(items.sideEffects.all.first.toString()),
                   ...items.map((item) {
-                    if (item.isAnyOperation) {
+                    if (item.hasAnyOperation) {
                       return CircularProgressIndicator();
                     } else {
                       return Text(item.value);

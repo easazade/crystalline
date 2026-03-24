@@ -163,11 +163,11 @@ void main() {
     );
 
     test(
-      'data.isAnyOperation should return true when operation is not Operation.none',
+      'data.hasAnyOperation should return true when operation is not Operation.none',
       () {
-        expect(data.isAnyOperation, isFalse);
+        expect(data.hasAnyOperation, isFalse);
         data.operation = Operation('custom');
-        expect(data.isAnyOperation, isTrue);
+        expect(data.hasAnyOperation, isTrue);
       },
     );
 

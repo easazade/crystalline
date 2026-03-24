@@ -76,7 +76,7 @@ class _WhenDataBuilderState<T, D extends Data<T>> extends State<WhenDataBuilder<
     if (_data.isUpdating && widget.onUpdate != null) {
       return widget.onUpdate!(context, _data);
     }
-    if (_data.isAnyOperation && widget.onAnyOperation != null) {
+    if (_data.hasAnyOperation && widget.onAnyOperation != null) {
       return widget.onAnyOperation!(context, _data);
     }
     if (_data.hasFailure && widget.onFailure != null) {
