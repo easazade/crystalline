@@ -66,8 +66,8 @@ class CollectionDataObservers extends DataObservers {
   @override
   void remove(Observer observer) {
     super.remove(observer);
-    for (var e in _collectionData.items) {
-      e.observers.remove(observer);
+    for (var item in _collectionData.items) {
+      item.observers.remove(observer);
     }
   }
 }

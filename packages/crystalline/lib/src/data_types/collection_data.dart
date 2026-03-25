@@ -10,9 +10,7 @@ typedef DataPredicate<T> = bool Function(List<Data<T>> value, Operation? operati
 
 class AddItemEvent<T> extends Event {
   AddItemEvent(this.newItem, this.items)
-      : super(
-          CrystallineGlobalConfig.logger.ellipsize(newItem.toString(), maxSize: 20),
-        );
+      : super(CrystallineGlobalConfig.logger.ellipsize(newItem.toString(), maxSize: 20));
 
   final Data<T> newItem;
   final Iterable<Data<T>> items;
@@ -20,9 +18,7 @@ class AddItemEvent<T> extends Event {
 
 class RemoveItemEvent<T> extends Event {
   RemoveItemEvent(this.removedItem, this.items)
-      : super(
-          CrystallineGlobalConfig.logger.ellipsize(removedItem.toString(), maxSize: 20),
-        );
+      : super(CrystallineGlobalConfig.logger.ellipsize(removedItem.toString(), maxSize: 20));
 
   final Data<T> removedItem;
   final Iterable<Data<T>> items;
