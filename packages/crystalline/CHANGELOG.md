@@ -1,3 +1,11 @@
+## 0.8.0
+
+- Remove operation.none
+- Remove operation-report & semantic side-effects
+- Improve mapTo extension function
+- Improve test coverage
+- Remove unneeded publish() call after Store initialization
+
 ## 0.7.0
 
 - Add a simple temporary document in README

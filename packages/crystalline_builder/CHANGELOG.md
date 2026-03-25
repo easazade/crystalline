@@ -1,3 +1,8 @@
+## 0.8.0
+
+- Add feature to generate custom side effect extensions
+- Bump [crystalline](https://pub.dev/packages/crystalline) to 0.8.0
+
 ## 0.7.0
 
 - Add feature to generate a store class using @StoreClass() annotation

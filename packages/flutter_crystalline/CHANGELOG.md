@@ -1,3 +1,12 @@
+## 0.8.0
+
+- Bump [crystalline](https://pub.dev/packages/crystalline) to 0.8.0
+- Add new skipOperations argument to streamWith method
+- Add streamWith method to Store
+- Add initialize method to Store and change init callback method name to onInitialize
+- Expose a Listenable from Store class
+- Fix Store stream not working
+
 ## 0.7.0
 
 - Add feature to generate a store class using @StoreClass annotation
