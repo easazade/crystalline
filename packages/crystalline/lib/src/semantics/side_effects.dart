@@ -1,6 +1,5 @@
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/semantics/events.dart';
-import 'package:crystalline/src/semantics/operation.dart';
 
 class SideEffects<T> {
   SideEffects(this.data, this._onNotify);
