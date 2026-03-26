@@ -713,6 +713,29 @@ Future<void> updateReadmeVersion(String newVersion) async {
   }
 }
 
+/// Order for listing and selecting packages in [publishPackages] (core library first,
+/// then Flutter integration, then code generation).
+const _packagePublishOrder = [
+  'crystalline',
+  'flutter_crystalline',
+  'crystalline_builder',
+];
+
+void sortPackagesByPublishOrder(List<Directory> packages) {
+  int rank(String dirName) {
+    final i = _packagePublishOrder.indexOf(dirName);
+    return i >= 0 ? i : _packagePublishOrder.length;
+  }
+
+  packages.sort((a, b) {
+    final nameA = a.path.split(Platform.pathSeparator).last;
+    final nameB = b.path.split(Platform.pathSeparator).last;
+    final r = rank(nameA).compareTo(rank(nameB));
+    if (r != 0) return r;
+    return nameA.compareTo(nameB);
+  });
+}
+
 Future<List<Directory>> getPackages() async {
   final packagesDir = Directory('packages');
   if (!await packagesDir.exists()) {
@@ -938,6 +961,8 @@ Future<void> publishPackages(bool dryRun) async {
     print('No valid packages found to publish');
     exit(0);
   }
+
+  sortPackagesByPublishOrder(validPackages);
 
   // List packages and ask user to select
   print('Available packages:');
