@@ -24,5 +24,5 @@ class Operation {
   }
 
   @override
-  int get hashCode => name.hashCode + 4;
+  int get hashCode => name.hashCode;
 }

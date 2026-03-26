@@ -90,12 +90,13 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
           }
 
           @override
-          int get hashCode =>
-              (failureOrNull?.hashCode ?? 9) +
-              sideEffects.all.hashCode +
-              states.hashCode +
-              (operationOrNull?.hashCode ?? 14) +
-              runtimeType.hashCode;
+          int get hashCode => Object.hashAll([
+                failureOrNull,
+                sideEffects.all,
+                states,
+                operationOrNull,
+                runtimeType,
+              ]);
 
                   
           @override

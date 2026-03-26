@@ -271,11 +271,18 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     return runtimeType == other.runtimeType &&
         ListEquality<Data<T>>().equals(items, other.items) &&
         operationOrNull == other.operationOrNull &&
+        sideEffects == other.sideEffects &&
         failureOrNull == other.failureOrNull;
   }
 
   @override
-  int get hashCode => items.hashCode + (operationOrNull?.hashCode ?? 14) + (failureOrNull?.hashCode ?? 1);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        items,
+        operationOrNull,
+        failureOrNull,
+        sideEffects.all,
+      ]);
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
@@ -401,11 +408,18 @@ class ListData<T> extends CollectionData<T> {
     return runtimeType == other.runtimeType &&
         ListEquality<Data<T>>().equals(items, other.items) &&
         operationOrNull == other.operationOrNull &&
+        sideEffects == other.sideEffects &&
         failureOrNull == other.failureOrNull;
   }
 
   @override
-  int get hashCode => items.hashCode + (operationOrNull?.hashCode ?? 14) + (failureOrNull?.hashCode ?? 1);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        items,
+        operationOrNull,
+        failureOrNull,
+        sideEffects
+      ]);
 
   @override
   Stream<ListData<T>> get stream => streamController.stream.map((e) => this);

@@ -60,9 +60,10 @@ class OperationData extends Data<void> {
 
   @override
   @mustBeOverridden
-  int get hashCode =>
-      (failureOrNull?.hashCode ?? 13) +
-      sideEffects.all.hashCode +
-      (operationOrNull?.hashCode ?? 14) +
-      runtimeType.hashCode;
+  int get hashCode => Object.hashAll([
+        failureOrNull,
+        sideEffects.all,
+        operationOrNull,
+        runtimeType,
+      ]);
 }

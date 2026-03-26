@@ -53,12 +53,13 @@ class TestStore extends _TestStore {
   }
 
   @override
-  int get hashCode =>
-      (failureOrNull?.hashCode ?? 9) +
-      sideEffects.all.hashCode +
-      states.hashCode +
-      (operationOrNull?.hashCode ?? 14) +
-      runtimeType.hashCode;
+  int get hashCode => Object.hashAll([
+        failureOrNull,
+        states,
+        operationOrNull,
+        runtimeType,
+        sideEffects.all,
+      ]);
 
   @override
   Stream<TestStore> get stream => streamController.stream.map((e) => this);

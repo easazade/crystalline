@@ -130,12 +130,13 @@ class RefreshData<T> extends Data<T> {
 
   @override
   @mustBeOverridden
-  int get hashCode =>
-      (failureOrNull?.hashCode ?? 13) +
-      (valueOrNull?.hashCode ?? 8) +
-      sideEffects.all.hashCode +
-      (operationOrNull?.hashCode ?? 14) +
-      runtimeType.hashCode;
+  int get hashCode => Object.hashAll([
+        failureOrNull,
+        valueOrNull,
+        sideEffects.all,
+        operationOrNull,
+        runtimeType,
+      ]);
 }
 
 enum RefreshStatus { done, failed }

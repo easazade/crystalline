@@ -76,12 +76,13 @@ class GeneralStore extends _GeneralStore {
   }
 
   @override
-  int get hashCode =>
-      (failureOrNull?.hashCode ?? 9) +
-      sideEffects.all.hashCode +
-      states.hashCode +
-      (operationOrNull?.hashCode ?? 14) +
-      runtimeType.hashCode;
+  int get hashCode => Object.hashAll([
+        failureOrNull,
+        sideEffects,
+        states,
+        operationOrNull,
+        runtimeType,
+      ]);
 
   @override
   Stream<GeneralStore> get stream => streamController.stream.map((e) => this);

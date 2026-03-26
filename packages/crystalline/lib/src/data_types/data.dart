@@ -232,12 +232,13 @@ class Data<T> {
 
   @override
   @mustBeOverridden
-  int get hashCode =>
-      (_failure?.hashCode ?? 0) +
-      (_value?.hashCode ?? 4) +
-      sideEffects.all.hashCode +
-      (operationOrNull?.hashCode ?? 14) +
-      runtimeType.hashCode;
+  int get hashCode => Object.hashAll([
+        _failure,
+        _value,
+        sideEffects.all,
+        _operation,
+        runtimeType,
+      ]);
 
   void allowNotify() {
     _allowedToNotify = true;

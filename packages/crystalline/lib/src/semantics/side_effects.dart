@@ -1,5 +1,4 @@
-import 'package:crystalline/src/data_types/data.dart';
-import 'package:crystalline/src/semantics/events.dart';
+import 'package:crystalline/crystalline.dart';
 
 class SideEffects<T> {
   SideEffects(this.data, this._onNotify);
@@ -50,4 +49,14 @@ class SideEffects<T> {
     data.events.dispatch(SideEffectsUpdatedEvent(_sideEffects));
     _onNotify();
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! SideEffects<T>) return false;
+
+    return runtimeType == other.runtimeType && ListEquality<dynamic>().equals(all.toList(), other.all.toList());
+  }
+
+  @override
+  int get hashCode => all.hashCode;
 }
