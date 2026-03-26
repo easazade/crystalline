@@ -67,7 +67,7 @@ class ContextData<T, C> extends Data<T> {
   }
 
   @override
-  ContextData<T, C> copy() => ContextData(
+  ContextData<T, C> copy() => ContextData<T, C>(
         value: valueOrNull,
         failure: failureOrNull,
         operation: operationOrNull,

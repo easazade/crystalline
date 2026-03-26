@@ -39,7 +39,7 @@ class InputData<T, I> extends Data<T> {
       }
       allowNotify();
     }
-    
+
     notifyObserversAndStreamListeners();
   }
 
@@ -85,7 +85,7 @@ class InputData<T, I> extends Data<T> {
   }
 
   @override
-  InputData<T, I> copy() => InputData(
+  InputData<T, I> copy() => InputData<T, I>(
         value: valueOrNull,
         failure: failureOrNull,
         operation: operationOrNull,

@@ -117,7 +117,7 @@ class RefreshData<T> extends Data<T> {
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 
   @override
-  RefreshData<T> copy() => RefreshData(
+  RefreshData<T> copy() => RefreshData<T>(
         value: valueOrNull,
         failure: failureOrNull,
         operation: operationOrNull,

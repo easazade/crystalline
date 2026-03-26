@@ -370,7 +370,7 @@ class ListData<T> extends CollectionData<T> {
   }
 
   @override
-  ListData<T> copy() => ListData(
+  ListData<T> copy() => ListData<T>(
         items.toList().map((data) => data.copy()).toList(),
         operation: operationOrNull,
         failure: failureOrNull,
