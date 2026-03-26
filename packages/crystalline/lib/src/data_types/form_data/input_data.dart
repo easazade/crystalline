@@ -7,17 +7,39 @@ class InputData<T, I> extends Data<T> {
     super.failure,
     super.operation,
     List<dynamic>? super.sideEffects,
+    this.validator,
     super.name,
-    this.hint,
-  }) : _input = input;
+    String? hint,
+  })  : _input = input,
+        _hint = hint;
 
   I? _input;
-  String? hint;
+  String? _hint;
+  final InputValidation Function(I input)? validator;
+
+  set hint(String? hint) {
+    _hint = hint;
+    notifyObserversAndStreamListeners();
+  }
+
+  String? get hint => _hint;
 
   bool get hasInput => _input != null;
 
   set input(I? input) {
     _input = input;
+
+    if (input != null && validator != null) {
+      disallowNotify();
+      final validation = validator!.call(input);
+      if (validation.hasFailure) {
+        failure = validation.failure;
+      } else if (validation.isValid || validation.isNeutral) {
+        failure = null;
+      }
+      allowNotify();
+    }
+    
     notifyObserversAndStreamListeners();
   }
 
@@ -68,6 +90,9 @@ class InputData<T, I> extends Data<T> {
         failure: failureOrNull,
         operation: operationOrNull,
         input: inputOrNull,
+        hint: _hint,
+        name: name,
+        validator: validator,
         sideEffects: sideEffects.all.toList(),
       );
 

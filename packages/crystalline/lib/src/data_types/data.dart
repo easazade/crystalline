@@ -208,6 +208,7 @@ class Data<T> {
   }
 
   /// returns a new instance of data object which is copy of this object.
+  @mustBeOverridden
   Data<T> copy() => Data<T>(
         value: _value,
         failure: _failure,

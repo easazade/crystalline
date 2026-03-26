@@ -413,13 +413,7 @@ class ListData<T> extends CollectionData<T> {
   }
 
   @override
-  int get hashCode => Object.hashAll([
-        runtimeType,
-        items,
-        operationOrNull,
-        failureOrNull,
-        sideEffects
-      ]);
+  int get hashCode => Object.hashAll([runtimeType, items, operationOrNull, failureOrNull, sideEffects]);
 
   @override
   Stream<ListData<T>> get stream => streamController.stream.map((e) => this);

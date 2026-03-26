@@ -117,6 +117,17 @@ class RefreshData<T> extends Data<T> {
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 
   @override
+  RefreshData<T> copy() => RefreshData(
+        value: valueOrNull,
+        failure: failureOrNull,
+        operation: operationOrNull,
+        maxRetry: maxRetry,
+        retryDelay: retryDelay,
+        sideEffects: sideEffects.all.toList(),
+        refresh: _refreshCallback,
+      );
+
+  @override
   @mustBeOverridden
   bool operator ==(Object other) {
     if (other is! RefreshData<T>) return false;
