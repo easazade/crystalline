@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:crystalline/crystalline.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_crystalline/src/extensions.dart';
 import 'package:flutter_crystalline/src/store/store_logger.dart';
 
 abstract class Store extends Data<void> {
@@ -14,7 +15,7 @@ abstract class Store extends Data<void> {
 
   final _initializationCompleter = Completer();
 
-  late final Listenable listenable = _StoreListenable(this);
+  late final Listenable listenable = StreamListenable(stream);
 
   @protected
   late final log = StoreLogger(this);
@@ -153,31 +154,6 @@ abstract class Store extends Data<void> {
     sc.onCancel = () => streamSub?.cancel();
 
     return sc.stream;
-  }
-}
-
-class _StoreListenable extends ChangeNotifier {
-  _StoreListenable(this._store);
-
-  final Store _store;
-  StreamSubscription<Store>? _subscription;
-
-  @override
-  void addListener(VoidCallback listener) {
-    final hadListeners = hasListeners;
-    super.addListener(listener);
-    if (!hadListeners) {
-      _subscription = _store.stream.listen((_) => notifyListeners());
-    }
-  }
-
-  @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    if (!hasListeners) {
-      _subscription?.cancel();
-      _subscription = null;
-    }
   }
 }
 
