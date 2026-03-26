@@ -20,7 +20,7 @@ class ContextData<T, C> extends Data<T> {
 
   set context(C? context) {
     _context = context;
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   C get context {
@@ -57,7 +57,7 @@ class ContextData<T, C> extends Data<T> {
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);
     allowNotify();
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   @override

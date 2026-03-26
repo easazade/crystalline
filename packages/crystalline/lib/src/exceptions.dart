@@ -48,6 +48,18 @@ class ContextIsNullException implements Exception {
   }
 }
 
+class InputIsNullException implements Exception {
+  const InputIsNullException();
+
+  @override
+  String toString() {
+    return '${super.toString()}\n'
+        'InputData has no input please check if InputData has input first\n'
+        'this can be done by calling `hasInput` getter method first\n'
+        'Alternatively you can use `inputOrNull`';
+  }
+}
+
 class CannotUpdateFromTypeException implements Exception {
   const CannotUpdateFromTypeException(this.source, this.other);
 

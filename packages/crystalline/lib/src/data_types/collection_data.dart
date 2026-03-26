@@ -65,7 +65,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     _addObserversToItem(value);
     events.dispatch(AddItemEvent(value, items));
     events.dispatch(ItemsUpdatedEvent(items));
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   Data<T> removeAt(int index) {
@@ -73,7 +73,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     _removeObserversFromItem(removedItem);
     events.dispatch(RemoveItemEvent(removedItem, items));
     events.dispatch(ItemsUpdatedEvent(items));
-    observers.notify();
+    notifyObserversAndStreamListeners();
     return removedItem;
   }
 
@@ -83,7 +83,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     }
     items.clear();
     events.dispatch(ItemsUpdatedEvent(items));
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   void add(Data<T> data) {
@@ -91,7 +91,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     _addObserversToItem(data);
     events.dispatch(AddItemEvent(data, items));
     events.dispatch(ItemsUpdatedEvent(items));
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   void insert(int index, Data<T> data) {
@@ -99,7 +99,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     _addObserversToItem(data);
     events.dispatch(AddItemEvent(data, items));
     events.dispatch(ItemsUpdatedEvent(items));
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   void addAll(Iterable<Data<T>> list) {
@@ -108,7 +108,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
       _addObserversToItem(item);
     }
     events.dispatch(ItemsUpdatedEvent(items));
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   void removeWhere(bool Function(Data<T> element) test) {
@@ -117,7 +117,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     }
     items.removeWhere(test);
     events.dispatch(ItemsUpdatedEvent(items));
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   void modifyItems(Iterable<Data<T>> Function(List<Data<T>> items) modifier) {
@@ -136,7 +136,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (oldItems != items) {
       events.dispatch(ItemsUpdatedEvent(items));
     }
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   Future<void> modifyItemsAsync(Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
@@ -155,7 +155,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (oldItems != items) {
       events.dispatch(ItemsUpdatedEvent(items));
     }
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   @override
@@ -176,7 +176,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (!ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
       events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   @override
@@ -199,7 +199,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (!ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
       events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   @override
@@ -231,7 +231,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     if (!ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
       events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
     }
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   @override

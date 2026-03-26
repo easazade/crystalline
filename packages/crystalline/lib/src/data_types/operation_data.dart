@@ -31,7 +31,7 @@ class OperationData extends Data<void> {
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);
     allowNotify();
-    observers.notify();
+    notifyObserversAndStreamListeners();
   }
 
   @override

@@ -60,6 +60,8 @@ abstract class Store extends Data<void> {
   @protected
   void publish() {
     // setting forceNotify:true, since StoreObservers is disallowed notify by design.
+    // DO NOT use notifyObserversAndStreamListeners() here since store has disallowed notify store object creation and
+    // it won't work.
     streamController.add(true);
     observers.notify(forceNotify: true);
   }

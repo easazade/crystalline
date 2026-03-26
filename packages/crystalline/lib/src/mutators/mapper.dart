@@ -19,7 +19,8 @@ class _Mapper<T1, T2, D1 extends Data<T1>, D2 extends Data<T2>> {
         mappedMutation.disallowNotify();
         mapper(origin, mappedMutation);
         mappedMutation.allowNotify();
-        mappedMutation.observers.notify();
+        // ignore: invalid_use_of_protected_member
+        mappedMutation.notifyObserversAndStreamListeners();
       }),
     );
   }
