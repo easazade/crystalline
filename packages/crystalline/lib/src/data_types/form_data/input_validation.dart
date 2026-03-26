@@ -1,4 +1,5 @@
-import 'package:crystalline/src/data_types/failure.dart';
+part of 'form_data.dart';
+
 
 enum InputValidationState { validated, invalid, ignore }
 

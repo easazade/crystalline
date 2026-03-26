@@ -72,6 +72,7 @@ class InputData<T, I> extends Data<T> {
     operation = data.operationOrNull;
     failure = data.failureOrNull;
     input = data.input;
+    hint = data.hint;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);
     allowNotify();
@@ -81,6 +82,7 @@ class InputData<T, I> extends Data<T> {
   @override
   void reset() {
     _input = null;
+    _hint = null;
     super.reset();
   }
 

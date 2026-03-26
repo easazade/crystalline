@@ -12,6 +12,7 @@ export 'src/data_types/context_data.dart';
 export 'src/data_types/data.dart';
 export 'src/data_types/extensions.dart';
 export 'src/data_types/failure.dart';
+export 'src/data_types/form_data/form_data.dart';
 export 'src/data_types/operation_data.dart';
 export 'src/exceptions.dart';
 export 'src/mutators/mutators.dart';

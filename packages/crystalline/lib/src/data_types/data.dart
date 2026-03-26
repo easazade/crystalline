@@ -170,6 +170,7 @@ class Data<T> {
     notifyObserversAndStreamListeners();
   }
 
+  @mustBeOverridden
   void updateFrom(Data<T> data) {
     disallowNotify();
     final old = copy();
