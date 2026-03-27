@@ -4,8 +4,8 @@ import 'package:test/test.dart';
 import '../../test_utils/test_logger.dart';
 
 void main() {
-  late InputData<int, String> inputData;
-  late DataTestObserver<int, InputData<int, String>> testObserver;
+  late InputData<String, int> inputData;
+  late DataTestObserver<int, InputData<String, int>> testObserver;
 
   setUpAll(() {
     CrystallineGlobalConfig.logger = CrystallineTestLogger();
@@ -57,7 +57,7 @@ void main() {
 
   group('validation', () {
     test('validator sets failure when input is invalid', () {
-      final validated = InputData<int, String>(
+      final validated = InputData<String, int>(
         validator: (_) => InputValidation.error('invalid'),
       );
       final observer = DataTestObserver(validated);
@@ -69,7 +69,7 @@ void main() {
     });
 
     test('validator clears failure when input becomes valid after invalid', () {
-      final validated = InputData<int, String>(
+      final validated = InputData<String, int>(
         validator: (s) => s == 'bad' ? InputValidation.error('no') : InputValidation.valid(),
       );
 
@@ -119,7 +119,7 @@ void main() {
 
   group('updateFrom', () {
     test('Should copy state from another InputData of the same type', () {
-      final other = InputData<int, String>(
+      final other = InputData<String, int>(
         value: 1,
         input: 'text',
         failure: Failure('f'),
@@ -173,7 +173,7 @@ void main() {
 
   group('constructor', () {
     test('Should accept initial input and report hasInput', () {
-      final prefilled = InputData<int, String>(input: 'initial');
+      final prefilled = InputData<String, int>(input: 'initial');
       expect(prefilled.hasInput, isTrue);
       expect(prefilled.input, 'initial');
       expect(testObserver.timesUpdated, 0);

@@ -1,6 +1,5 @@
 part of 'form_data.dart';
 
-
 enum InputValidationState { validated, invalid, ignore }
 
 class InputValidation {

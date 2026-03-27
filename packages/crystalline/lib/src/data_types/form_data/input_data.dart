@@ -1,21 +1,23 @@
 part of 'form_data.dart';
 
-class InputData<T, I> extends Data<T> {
+class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
   InputData({
     super.value,
-    I? input,
+    INPUT? input,
     super.failure,
     super.operation,
     List<dynamic>? super.sideEffects,
     this.validator,
+    this.processor,
     super.name,
     String? hint,
   })  : _input = input,
         _hint = hint;
 
-  I? _input;
+  INPUT? _input;
   String? _hint;
-  final InputValidation Function(I input)? validator;
+  final InputValidation Function(INPUT input)? validator;
+  final Future<OUTPUT> Function(INPUT input)? processor;
 
   set hint(String? hint) {
     _hint = hint;
@@ -26,7 +28,7 @@ class InputData<T, I> extends Data<T> {
 
   bool get hasInput => _input != null;
 
-  set input(I? input) {
+  set input(INPUT? input) {
     _input = input;
 
     if (input != null && validator != null) {
@@ -43,28 +45,28 @@ class InputData<T, I> extends Data<T> {
     notifyObserversAndStreamListeners();
   }
 
-  I get input {
+  INPUT get input {
     if (_input == null) {
       throw InputIsNullException();
     }
     return _input!;
   }
 
-  I? get inputOrNull => _input;
+  INPUT? get inputOrNull => _input;
 
   @override
-  void modify(void Function(InputData<T, I> data) fn) {
-    super.modify((data) => fn(data as InputData<T, I>));
+  void modify(void Function(InputData<INPUT, OUTPUT> data) fn) {
+    super.modify((data) => fn(data as InputData<INPUT, OUTPUT>));
   }
 
   @override
-  Future<void> modifyAsync(Future<void> Function(InputData<T, I> data) fn) {
-    return super.modifyAsync((data) => fn(data as InputData<T, I>));
+  Future<void> modifyAsync(Future<void> Function(InputData<INPUT, OUTPUT> data) fn) {
+    return super.modifyAsync((data) => fn(data as InputData<INPUT, OUTPUT>));
   }
 
   @override
-  void updateFrom(Data<T> data) {
-    if (data is! InputData<T, I>) {
+  void updateFrom(Data<OUTPUT> data) {
+    if (data is! InputData<INPUT, OUTPUT>) {
       throw CannotUpdateFromTypeException(this, data);
     }
     disallowNotify();
@@ -87,7 +89,7 @@ class InputData<T, I> extends Data<T> {
   }
 
   @override
-  InputData<T, I> copy() => InputData<T, I>(
+  InputData<INPUT, OUTPUT> copy() => InputData<INPUT, OUTPUT>(
         value: valueOrNull,
         failure: failureOrNull,
         operation: operationOrNull,
@@ -95,11 +97,12 @@ class InputData<T, I> extends Data<T> {
         hint: _hint,
         name: name,
         validator: validator,
+        processor: processor,
         sideEffects: sideEffects.all.toList(),
       );
 
   @override
-  Stream<InputData<T, I>> get stream => streamController.stream.map((e) => this);
+  Stream<InputData<INPUT, OUTPUT>> get stream => streamController.stream.map((e) => this);
 
   @override
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
@@ -107,7 +110,7 @@ class InputData<T, I> extends Data<T> {
   @override
   @mustBeOverridden
   bool operator ==(Object other) {
-    if (other is! InputData<T, I>) return false;
+    if (other is! InputData<INPUT, OUTPUT>) return false;
 
     return other.runtimeType == runtimeType &&
         failureOrNull == other.failureOrNull &&
