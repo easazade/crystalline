@@ -3,6 +3,21 @@ import 'package:test/test.dart';
 
 import '../../test_utils/test_logger.dart';
 
+/// Used where [onSubmit] is required but the test does not call [InputData.submit].
+Future<void> _noopOnSubmitStringInt(InputData<String, int> data) async {}
+
+Future<void> _noopOnSubmitIntInt(InputData<int, int> data) async {}
+
+/// Parses [String] input to [int] in [onSubmit], mirroring typical form commit behavior.
+Future<void> _parseStringToIntOnSubmit(InputData<String, int> data) async {
+  final parsedInt = int.tryParse(data.input);
+  if (parsedInt != null) {
+    data.value = parsedInt;
+  } else {
+    data.failure = Failure('Entered data is not valid');
+  }
+}
+
 void main() {
   late InputData<String, int> inputData;
   late DataTestObserver<int, InputData<String, int>> testObserver;
@@ -12,7 +27,11 @@ void main() {
   });
 
   setUp(() {
-    inputData = InputData();
+    // No validator: most tests assign arbitrary strings and assert notifications;
+    // validation is covered in group `validation` and `submit`.
+    inputData = InputData<String, int>(
+      onSubmit: _noopOnSubmitStringInt,
+    );
     testObserver = DataTestObserver(inputData);
   });
 
@@ -59,6 +78,7 @@ void main() {
     test('validator sets failure when input is invalid', () {
       final validated = InputData<String, int>(
         validator: (_) => InputValidationResult.error('invalid'),
+        onSubmit: _noopOnSubmitStringInt,
       );
       final observer = DataTestObserver(validated);
 
@@ -71,6 +91,7 @@ void main() {
     test('validator clears failure when input becomes valid after invalid', () {
       final validated = InputData<String, int>(
         validator: (s) => s == 'bad' ? InputValidationResult.error('no') : InputValidationResult.valid(),
+        onSubmit: _noopOnSubmitStringInt,
       );
 
       validated.input = 'bad';
@@ -88,6 +109,48 @@ void main() {
       inputData.input = 'value';
       expect(inputData.failureOrNull, same(failure));
       expect(testObserver.timesUpdated, 2);
+    });
+  });
+
+  group('submit', () {
+    late InputData<String, int> submitting;
+
+    setUp(() {
+      submitting = InputData<String, int>(
+        validator: (input) {
+          if (int.tryParse(input) != null) {
+            return InputValidationResult.valid();
+          } else {
+            return InputValidationResult.error('Entered number is not valid');
+          }
+        },
+        onSubmit: _parseStringToIntOnSubmit,
+      );
+    });
+
+    test('parses input into value when valid', () async {
+      submitting.input = '42';
+      await submitting.submit();
+      expect(submitting.valueOrNull, 42);
+      expect(submitting.hasFailure, isFalse);
+    });
+
+    test('sets failure when input does not parse after validation runs on submit', () async {
+      submitting.input = 'not-a-number';
+      await submitting.submit();
+      expect(submitting.hasFailure, isTrue);
+      expect(submitting.hasNoValue, isTrue);
+      // Validator runs in submit(); [onSubmit] then sets failure from parse attempt.
+      expect(submitting.failure.message, 'Entered data is not valid');
+    });
+
+    test('sets failure when submit ends with no value and no failure', () async {
+      submitting.input = '42';
+      await submitting.submit(
+        overrideOnSubmit: (_) async {},
+      );
+      expect(submitting.hasFailure, isTrue);
+      expect(submitting.failure.message, '! No value or failure resolved on submit');
     });
   });
 
@@ -124,6 +187,7 @@ void main() {
         input: 'text',
         failure: Failure('f'),
         operation: Operation.create,
+        onSubmit: _noopOnSubmitStringInt,
       );
 
       inputData.updateFrom(other);
@@ -132,7 +196,10 @@ void main() {
     });
 
     test('Should throw CannotUpdateFromTypeException for a different InputData type', () {
-      final other = InputData<int, int>(input: 42);
+      final other = InputData<int, int>(
+        input: 42,
+        onSubmit: _noopOnSubmitIntInt,
+      );
 
       expect(
         () => inputData.updateFrom(other),
@@ -173,10 +240,14 @@ void main() {
 
   group('constructor', () {
     test('Should accept initial input and report hasInput', () {
-      final prefilled = InputData<String, int>(input: 'initial');
+      final prefilled = InputData<String, int>(
+        input: 'initial',
+        onSubmit: _noopOnSubmitStringInt,
+      );
+      final prefilledObserver = DataTestObserver(prefilled);
       expect(prefilled.hasInput, isTrue);
       expect(prefilled.input, 'initial');
-      expect(testObserver.timesUpdated, 0);
+      expect(prefilledObserver.timesUpdated, 0);
     });
   });
 }

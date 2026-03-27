@@ -17,7 +17,7 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
   INPUT? _input;
   String? _hint;
   final InputValidationResult Function(INPUT input)? validator;
-  final Future<void> Function(InputData<INPUT, OUTPUT> input) onSubmit;
+  final Future<void> Function(InputData<INPUT, OUTPUT> data) onSubmit;
 
   set hint(String? hint) {
     _hint = hint;
