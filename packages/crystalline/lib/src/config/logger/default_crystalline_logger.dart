@@ -100,10 +100,14 @@ class DefaultCrystallineLogger extends CrystallineLogger {
   String generateToStringForFailure(Failure failure) {
     final buffer = StringBuffer();
 
-    buffer.write(redText('Failure: '));
+    buffer.write(redText('Failure:'));
+
+    if (failure.type != null) {
+      buffer.write(orangeText(' type: ${failure.type?.name},'));
+    }
 
     if (failure.id != null) {
-      buffer.write(redText('id: ${failure.id},'));
+      buffer.write(redText(' id: ${failure.id},'));
     }
 
     buffer.writeln(whiteTextRedBg(' message: ${failure.message}'));
@@ -115,6 +119,7 @@ class DefaultCrystallineLogger extends CrystallineLogger {
     if (failure.stacktrace != null) {
       buffer.writeln(redText(failure.stacktrace));
     }
+
 
     return buffer.toString();
   }

@@ -8,7 +8,7 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
     super.operation,
     List<dynamic>? super.sideEffects,
     this.validator,
-    this.processor,
+    required this.onSubmit,
     super.name,
     String? hint,
   })  : _input = input,
@@ -16,8 +16,8 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
 
   INPUT? _input;
   String? _hint;
-  final InputValidation Function(INPUT input)? validator;
-  final Future<OUTPUT> Function(INPUT input)? processor;
+  final InputValidationResult Function(INPUT input)? validator;
+  final Future<void> Function(InputData<INPUT, OUTPUT> input) onSubmit;
 
   set hint(String? hint) {
     _hint = hint;
@@ -35,7 +35,11 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
       disallowNotify();
       final validation = validator!.call(input);
       if (validation.hasFailure) {
-        failure = validation.failure;
+        var failureObject = validation.failure;
+        if (failureObject!.type == null) {
+          failureObject = failureObject.copyWith(type: FailureType.hint);
+        }
+        failure = failureObject;
       } else if (validation.isValid || validation.isNeutral) {
         failure = null;
       }
@@ -53,6 +57,28 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
   }
 
   INPUT? get inputOrNull => _input;
+
+  Future<void> submit({
+    final Future<void> Function(InputData<INPUT, OUTPUT> input)? overrideOnSubmit,
+  }) async {
+    if (validator != null && hasInput) {
+      final validation = validator!.call(input);
+      if (validation.hasFailure) {
+        var failureObject = validation.failure;
+        if (failureObject!.type == null) {
+          failureObject = failureObject.copyWith(type: FailureType.error);
+        }
+        failure = failureObject;
+      }
+    }
+
+    final callback = overrideOnSubmit ?? onSubmit;
+
+    await callback(this);
+    if (hasNoValue && !hasFailure) {
+      failure = Failure('! No value or failure resolved on submit', type: FailureType.error);
+    }
+  }
 
   @override
   void modify(void Function(InputData<INPUT, OUTPUT> data) fn) {
@@ -97,7 +123,7 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
         hint: _hint,
         name: name,
         validator: validator,
-        processor: processor,
+        onSubmit: onSubmit,
         sideEffects: sideEffects.all.toList(),
       );
 

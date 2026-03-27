@@ -58,7 +58,7 @@ void main() {
   group('validation', () {
     test('validator sets failure when input is invalid', () {
       final validated = InputData<String, int>(
-        validator: (_) => InputValidation.error('invalid'),
+        validator: (_) => InputValidationResult.error('invalid'),
       );
       final observer = DataTestObserver(validated);
 
@@ -70,7 +70,7 @@ void main() {
 
     test('validator clears failure when input becomes valid after invalid', () {
       final validated = InputData<String, int>(
-        validator: (s) => s == 'bad' ? InputValidation.error('no') : InputValidation.valid(),
+        validator: (s) => s == 'bad' ? InputValidationResult.error('no') : InputValidationResult.valid(),
       );
 
       validated.input = 'bad';
