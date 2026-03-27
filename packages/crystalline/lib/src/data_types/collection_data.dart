@@ -30,17 +30,19 @@ class ItemsUpdatedEvent<T> extends Event {
   final Iterable<Data<T>> items;
 }
 
-abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<T>> {
-  List<Data<T>> get items;
+abstract class BaseCollectionData<T, K extends Data<T>> extends Data<List<K>> with Iterable<K> {}
+
+abstract class CollectionData<T, K extends Data<T>> extends BaseCollectionData<T, K> {
+  List<K> get items;
 
   @override
-  List<Data<T>> get value => items;
+  List<K> get value => items;
 
   @override
   bool get hasValue => value.isNotEmpty;
 
   @override
-  set value(List<Data<T>>? value) {
+  set value(List<K>? value) {
     throw Exception(
       'You cannot change value of a $runtimeType directly. please use '
       'modify() or modifyAsync() instead.',
@@ -53,14 +55,14 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   CollectionDataObservers get observers => _collectionObservers;
 
   @override
-  Iterator<Data<T>> get iterator => items.iterator;
+  Iterator<K> get iterator => items.iterator;
 
   @override
   int get length => items.length;
 
-  Data<T> operator [](int index) => items[index];
+  K operator [](int index) => items[index];
 
-  void operator []=(int index, Data<T> value) {
+  void operator []=(int index, K value) {
     items[index] = value;
     _addObserversToItem(value);
     events.dispatch(AddItemEvent(value, items));
@@ -68,7 +70,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     notifyObserversAndStreamListeners();
   }
 
-  Data<T> removeAt(int index) {
+  K removeAt(int index) {
     final removedItem = items.removeAt(index);
     _removeObserversFromItem(removedItem);
     events.dispatch(RemoveItemEvent(removedItem, items));
@@ -86,7 +88,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     notifyObserversAndStreamListeners();
   }
 
-  void add(Data<T> data) {
+  void add(K data) {
     items.add(data);
     _addObserversToItem(data);
     events.dispatch(AddItemEvent(data, items));
@@ -94,7 +96,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     notifyObserversAndStreamListeners();
   }
 
-  void insert(int index, Data<T> data) {
+  void insert(int index, K data) {
     items.insert(index, data);
     _addObserversToItem(data);
     events.dispatch(AddItemEvent(data, items));
@@ -102,7 +104,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     notifyObserversAndStreamListeners();
   }
 
-  void addAll(Iterable<Data<T>> list) {
+  void addAll(Iterable<K> list) {
     items.addAll(list);
     for (var item in list) {
       _addObserversToItem(item);
@@ -111,7 +113,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     notifyObserversAndStreamListeners();
   }
 
-  void removeWhere(bool Function(Data<T> element) test) {
+  void removeWhere(bool Function(K element) test) {
     for (var item in items.where(test)) {
       _removeObserversFromItem(item);
     }
@@ -120,7 +122,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     notifyObserversAndStreamListeners();
   }
 
-  void modifyItems(Iterable<Data<T>> Function(List<Data<T>> items) modifier) {
+  void modifyItems(Iterable<K> Function(List<K> items) modifier) {
     disallowNotify();
     final oldItems = items.toList();
     final newItems = modifier(items).toList();
@@ -139,7 +141,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     notifyObserversAndStreamListeners();
   }
 
-  Future<void> modifyItemsAsync(Future<Iterable<Data<T>>> Function(List<Data<T>> items) modifier) async {
+  Future<void> modifyItemsAsync(Future<Iterable<K>> Function(List<K> items) modifier) async {
     disallowNotify();
     final oldItems = items.toList();
     final newItems = await modifier(items).then((e) => e.toList());
@@ -159,7 +161,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   }
 
   @override
-  void modify(void Function(CollectionData<T> data) fn) {
+  void modify(void Function(CollectionData<T, K> data) fn) {
     disallowNotify();
     final old = copy();
     fn(this);
@@ -181,7 +183,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
 
   @override
   Future<void> modifyAsync(
-    Future<void> Function(CollectionData<T> data) fn,
+    Future<void> Function(CollectionData<T, K> data) fn,
   ) async {
     disallowNotify();
     final old = copy();
@@ -203,7 +205,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   }
 
   @override
-  void updateFrom(Data<List<Data<T>>> data) {
+  void updateFrom(Data<List<K>> data) {
     disallowNotify();
     final old = copy();
     for (var e in items) {
@@ -244,32 +246,27 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
     });
   }
 
-  void _addObserversToItem(Data<T> item) {
+  void _addObserversToItem(K item) {
     for (var observer in observers.all) {
       item.observers.add(observer);
     }
   }
 
-  void _removeObserversFromItem(Data<T> item) {
+  void _removeObserversFromItem(K item) {
     for (var observer in observers.all) {
       item.observers.remove(observer);
     }
   }
 
   @override
-  CollectionData<T> copy() => ListData(
-        items.toList().map((data) => data.copy()).toList(),
-        operation: operationOrNull,
-        failure: failureOrNull,
-        sideEffects: sideEffects.all.toList(),
-      );
+  CollectionData<T, K> copy();
 
   @override
   bool operator ==(Object other) {
-    if (other is! CollectionData<T>) return false;
+    if (other is! CollectionData<T, K>) return false;
 
     return runtimeType == other.runtimeType &&
-        ListEquality<Data<T>>().equals(items, other.items) &&
+        ListEquality<K>().equals(items, other.items) &&
         operationOrNull == other.operationOrNull &&
         sideEffects == other.sideEffects &&
         failureOrNull == other.failureOrNull;
@@ -288,7 +285,7 @@ abstract class CollectionData<T> extends Data<List<Data<T>>> with Iterable<Data<
   String toString() => CrystallineGlobalConfig.logger.generateToStringForData(this);
 }
 
-class ListData<T> extends CollectionData<T> {
+class ListData<T> extends CollectionData<T, Data<T>> {
   ListData(
     this.items, {
     Operation? operation,

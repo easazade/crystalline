@@ -53,4 +53,4 @@ typedef ListDataTestObserver<T> = DataTestObserver<List<Data<T>>, ListData<T>>;
 @visibleForTesting
 typedef ListDataTestEventListener<T> = DataTestListener<List<Data<T>>, ListData<T>>;
 @visibleForTesting
-typedef CollectionDataTestObserver<T> = DataTestObserver<List<Data<T>>, CollectionData<T>>;
+typedef CollectionDataTestObserver<T> = DataTestObserver<List<Data<T>>, CollectionData<T, Data<T>>>;
