@@ -77,7 +77,7 @@ void main() {
   group('validation', () {
     test('validator sets failure when input is invalid', () {
       final validated = InputData<String, int>(
-        validator: (_) => InputValidationResult.error('invalid'),
+        validator: (_) => InputValidationResult.error(Failure('invalid')),
         onSubmit: _noopOnSubmitStringInt,
       );
       final observer = DataTestObserver(validated);
@@ -88,9 +88,43 @@ void main() {
       expect(observer.timesUpdated, 1);
     });
 
+    test(
+      'when failure set on validation does not have a FailureType '
+      'set failure set on data should have FailureType.hint',
+      () {
+        final validated = InputData<String, int>(
+          validator: (_) => InputValidationResult.error(Failure('invalid')),
+          onSubmit: _noopOnSubmitStringInt,
+        );
+        final observer = DataTestObserver(validated);
+
+        validated.input = 'x';
+        expect(validated.hasFailure, isTrue);
+        expect(validated.failure.type, FailureType.hint);
+        expect(observer.timesUpdated, 1);
+      },
+    );
+
+    test(
+      'when failure set on validation has a FailureType '
+      'set failure set on data should not change to FailureType.hint',
+      () {
+        final validated = InputData<String, int>(
+          validator: (_) => InputValidationResult.error(Failure('invalid', type: FailureType.error)),
+          onSubmit: _noopOnSubmitStringInt,
+        );
+        final observer = DataTestObserver(validated);
+
+        validated.input = 'x';
+        expect(validated.hasFailure, isTrue);
+        expect(validated.failure.type, FailureType.error);
+        expect(observer.timesUpdated, 1);
+      },
+    );
+
     test('validator clears failure when input becomes valid after invalid', () {
       final validated = InputData<String, int>(
-        validator: (s) => s == 'bad' ? InputValidationResult.error('no') : InputValidationResult.valid(),
+        validator: (s) => s == 'bad' ? InputValidationResult.error(Failure('no')) : InputValidationResult.valid(),
         onSubmit: _noopOnSubmitStringInt,
       );
 
@@ -113,15 +147,15 @@ void main() {
   });
 
   group('submit', () {
-    late InputData<String, int> submitting;
+    late InputData<String, int> data;
 
     setUp(() {
-      submitting = InputData<String, int>(
+      data = InputData<String, int>(
         validator: (input) {
           if (int.tryParse(input) != null) {
             return InputValidationResult.valid();
           } else {
-            return InputValidationResult.error('Entered number is not valid');
+            return InputValidationResult.error(Failure('Entered number is not valid'));
           }
         },
         onSubmit: _parseStringToIntOnSubmit,
@@ -129,28 +163,60 @@ void main() {
     });
 
     test('parses input into value when valid', () async {
-      submitting.input = '42';
-      await submitting.submit();
-      expect(submitting.valueOrNull, 42);
-      expect(submitting.hasFailure, isFalse);
+      data.input = '42';
+      await data.submit();
+      expect(data.valueOrNull, 42);
+      expect(data.hasFailure, isFalse);
     });
 
+    test(
+      'If there is a failure set during submit that has no '
+      'FailureType then FailureType.error should be set',
+      () async {
+        data.input = 'nan';
+        await data.submit();
+        expect(data.hasFailure, isTrue);
+        expect(data.failure.type, FailureType.error);
+      },
+    );
+
+    test(
+      'If there is a failure set during submit that has a '
+      'FailureType then its type should not change',
+      () async {
+        data.input = 'nan';
+        await data.submit(
+          overrideOnSubmit: (input) async {
+            final parsedInt = int.tryParse(data.input);
+            if (parsedInt != null) {
+              data.value = parsedInt;
+            } else {
+              data.failure = Failure('Entered data is not valid', type: FailureType.hint);
+            }
+          },
+        );
+        expect(data.hasFailure, isTrue);
+        expect(data.failure.type, isNot(FailureType.error));
+      },
+    );
+
     test('sets failure when input does not parse after validation runs on submit', () async {
-      submitting.input = 'not-a-number';
-      await submitting.submit();
-      expect(submitting.hasFailure, isTrue);
-      expect(submitting.hasNoValue, isTrue);
+      data.input = 'not-a-number';
+      await data.submit();
+      expect(data.hasFailure, isTrue);
+      expect(data.hasNoValue, isTrue);
       // Validator runs in submit(); [onSubmit] then sets failure from parse attempt.
-      expect(submitting.failure.message, 'Entered data is not valid');
+      expect(data.failure.message, 'Entered data is not valid');
     });
 
     test('sets failure when submit ends with no value and no failure', () async {
-      submitting.input = '42';
-      await submitting.submit(
+      data.input = '42';
+      await data.submit(
         overrideOnSubmit: (_) async {},
       );
-      expect(submitting.hasFailure, isTrue);
-      expect(submitting.failure.message, '! No value or failure resolved on submit');
+      expect(data.hasFailure, isTrue);
+      expect(data.failure.message, '! No value or failure resolved on submit');
+      expect(data.failure.type, FailureType.error);
     });
   });
 

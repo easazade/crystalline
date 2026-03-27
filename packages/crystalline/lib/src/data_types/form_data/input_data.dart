@@ -75,7 +75,10 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
     final callback = overrideOnSubmit ?? onSubmit;
 
     await callback(this);
-    if (hasNoValue && !hasFailure) {
+
+    if (hasFailure && failure.type == null) {
+      failure = failure.copyWith(type: FailureType.error);
+    } else if (hasNoValue && !hasFailure) {
       failure = Failure('! No value or failure resolved on submit', type: FailureType.error);
     }
   }

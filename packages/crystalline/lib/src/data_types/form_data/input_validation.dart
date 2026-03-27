@@ -10,8 +10,8 @@ class InputValidationResult {
 
   factory InputValidationResult.valid() => InputValidationResult._(InputValidationState.validated, null);
 
-  factory InputValidationResult.error(String message) =>
-      InputValidationResult._(InputValidationState.invalid, Failure(message));
+  factory InputValidationResult.error(Failure failure) =>
+      InputValidationResult._(InputValidationState.invalid, failure);
 
   factory InputValidationResult.neutral() => InputValidationResult._(InputValidationState.ignore, null);
 
