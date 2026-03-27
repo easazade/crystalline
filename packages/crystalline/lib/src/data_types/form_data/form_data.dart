@@ -10,20 +10,13 @@ import 'package:meta/meta.dart';
 part 'input_data.dart';
 part 'input_validation.dart';
 
-// void wad() {
-//   final fd = FormData([
-//     InputData<int, String>(),
-//     InputData<double, String>(),
-//   ]);
-// }
-
 class FormData extends CollectionData<dynamic, InputData> {
   FormData(
-    this.items, {
+    List<InputData> items, {
     Operation? operation,
     Failure? failure,
     List<dynamic>? sideEffects,
-  }) {
+  }) : _pages = [items] {
     this.operation = operation;
     this.failure = failure;
     if (sideEffects != null) {
@@ -31,8 +24,29 @@ class FormData extends CollectionData<dynamic, InputData> {
     }
   }
 
+  FormData.pages(
+    List<List<InputData>> pages, {
+    Operation? operation,
+    Failure? failure,
+    List<dynamic>? sideEffects,
+  }) : _pages = pages {
+    this.operation = operation;
+    this.failure = failure;
+    if (sideEffects != null) {
+      this.sideEffects.addAll(sideEffects);
+    }
+  }
+
+  final List<List<InputData>> _pages;
+
   @override
-  final List<InputData> items;
+  List<InputData> get items => _pages.flattened.toList();
+
+  @override
+  Iterator<InputData> get iterator => items.iterator;
+
+  @override
+  InputData operator [](int index) => items[index];
 
   // Required by Data.updateFrom @mustBeOverridden; delegates to CollectionData.
   @override
