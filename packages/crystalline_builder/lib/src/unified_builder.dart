@@ -80,7 +80,7 @@ class UnifiedCrystallineBuilder implements Builder {
         }
 
         // detect files with annotated @store classes
-        final hasStoreAnnotatedClass = library.classes.any((cls) => storeTypeChecker.hasAnnotationOfExact(cls));
+        final hasStoreAnnotatedClass = library.classes.any((cls) => storeClassTypeChecker.hasAnnotationOfExact(cls));
         if (hasStoreAnnotatedClass) {
           storeLibraries.add(library);
         }

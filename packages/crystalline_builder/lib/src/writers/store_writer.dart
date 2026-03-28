@@ -6,10 +6,10 @@ import 'package:source_gen/source_gen.dart';
 
 void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
   for (var cls in library.classes) {
-    if (!storeTypeChecker.hasAnnotationOfExact(cls)) continue;
+    if (!storeClassTypeChecker.hasAnnotationOfExact(cls)) continue;
     validateSourceSyntaxForStoreAnnotatedClass(cls);
 
-    final storeAnnotation = storeTypeChecker.firstAnnotationOfExact(cls);
+    final storeAnnotation = storeClassTypeChecker.firstAnnotationOfExact(cls);
     // nothing to read from annotation for now
     // ignore: unused_local_variable
     final reader = ConstantReader(storeAnnotation);

@@ -19,8 +19,9 @@ void writeSharedStateClass(
     buffer.writeln();
   }
 
-  final storeClasses =
-      libraries.map((lib) => lib.classes.where((cls) => storeTypeChecker.hasAnnotationOfExact(cls))).flattenedToList;
+  final storeClasses = libraries
+      .map((lib) => lib.classes.where((cls) => storeClassTypeChecker.hasAnnotationOfExact(cls)))
+      .flattenedToList;
 
   final sharedDataGetters = storeClasses
       .map((cls) => cls.getters.where((getter) => sharedDataTypeChecker.hasAnnotationOfExact(getter)))

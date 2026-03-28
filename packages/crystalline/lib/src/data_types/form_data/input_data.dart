@@ -7,16 +7,17 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
     super.failure,
     super.operation,
     List<dynamic>? super.sideEffects,
-    this.validator,
+    required this.validator,
     required this.onSubmit,
-    super.name,
+    required String name,
     String? hint,
   })  : _input = input,
-        _hint = hint;
+        _hint = hint,
+        super(name: name);
 
   INPUT? _input;
   String? _hint;
-  final InputValidationResult Function(INPUT input)? validator;
+  final InputValidationResult Function(INPUT? input) validator;
   final Future<void> Function(InputData<INPUT, OUTPUT> data) onSubmit;
 
   set hint(String? hint) {
@@ -31,9 +32,9 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
   set input(INPUT? input) {
     _input = input;
 
-    if (input != null && validator != null) {
+    if (input != null) {
       disallowNotify();
-      final validation = validator!.call(input);
+      final validation = validator.call(input);
       if (validation.hasFailure) {
         var failureObject = validation.failure;
         if (failureObject!.type == null) {
@@ -61,15 +62,13 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
   Future<void> submit({
     final Future<void> Function(InputData<INPUT, OUTPUT> input)? overrideOnSubmit,
   }) async {
-    if (validator != null && hasInput) {
-      final validation = validator!.call(input);
-      if (validation.hasFailure) {
-        var failureObject = validation.failure;
-        if (failureObject!.type == null) {
-          failureObject = failureObject.copyWith(type: FailureType.error);
-        }
-        failure = failureObject;
+    final validation = validator.call(inputOrNull);
+    if (validation.hasFailure) {
+      var failureObject = validation.failure;
+      if (failureObject!.type == null) {
+        failureObject = failureObject.copyWith(type: FailureType.error);
       }
+      failure = failureObject;
     }
 
     final callback = overrideOnSubmit ?? onSubmit;
@@ -124,7 +123,7 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
         operation: operationOrNull,
         input: inputOrNull,
         hint: _hint,
-        name: name,
+        name: name ?? '', // name is never null in InputData
         validator: validator,
         onSubmit: onSubmit,
         sideEffects: sideEffects.all.toList(),
