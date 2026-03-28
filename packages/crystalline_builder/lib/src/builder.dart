@@ -2,6 +2,7 @@ import 'package:build/build.dart';
 import 'package:crystalline_builder/src/utils/extensions.dart';
 import 'package:crystalline_builder/src/utils/file_header.dart';
 import 'package:crystalline_builder/src/writers/custom_side_effect_writer.dart';
+import 'package:crystalline_builder/src/writers/form_writer.dart';
 import 'package:crystalline_builder/src/writers/store_writer.dart';
 import 'package:dart_style/dart_style.dart';
 
@@ -25,6 +26,8 @@ class CrystallineBuilder implements Builder {
     final library = await resolver.libraryFor(buildStep.inputId);
 
     writeCustomSideEffectExtensions(buffer, library);
+
+    writeFormClass(buffer, library);
 
     writeStoreClass(buffer, library);
 

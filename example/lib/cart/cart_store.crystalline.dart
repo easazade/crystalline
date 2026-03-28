@@ -48,12 +48,12 @@ class CartStore extends _CartStore {
 
   @override
   int get hashCode => Object.hashAll([
-        failureOrNull,
-        sideEffects,
-        states,
-        operationOrNull,
-        runtimeType,
-      ]);
+    failureOrNull,
+    sideEffects.all,
+    states,
+    operationOrNull,
+    runtimeType,
+  ]);
 
   @override
   Stream<CartStore> get stream => streamController.stream.map((e) => this);

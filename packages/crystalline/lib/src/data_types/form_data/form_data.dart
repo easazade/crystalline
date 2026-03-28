@@ -7,17 +7,18 @@ import 'package:crystalline/src/exceptions.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 import 'package:meta/meta.dart';
 
+part 'form_page.dart';
 part 'input_data.dart';
 part 'input_validation.dart';
-part 'form_page.dart';
 
 class FormData extends CollectionData<dynamic, InputData> {
   FormData({
-    required List<FormPage> pages,
+    required this.pages,
+    required this.name,
     Operation? operation,
     Failure? failure,
     List<dynamic>? sideEffects,
-  }) : _pages = pages {
+  }) {
     this.operation = operation;
     this.failure = failure;
     if (sideEffects != null) {
@@ -25,15 +26,17 @@ class FormData extends CollectionData<dynamic, InputData> {
     }
   }
 
-  final List<FormPage> _pages;
-
-  Iterable<FormPage> get pages => _pages;
+  final List<FormPage> pages;
 
   @override
-  List<InputData> get items => _pages.map((page) => page.items).flattened.toList();
+  List<InputData> get items => pages.map((page) => page.items).flattened.toList();
 
   @override
   Iterator<InputData> get iterator => items.iterator;
+
+  @override
+  // ignore: overridden_fields
+  final String name;
 
   @override
   InputData operator [](int index) => items[index];
@@ -62,10 +65,11 @@ class FormData extends CollectionData<dynamic, InputData> {
 
   @override
   FormData copy() => FormData(
-        pages: _pages,
+        pages: pages,
         operation: operationOrNull,
         failure: failureOrNull,
         sideEffects: sideEffects.all.toList(),
+        name: name,
       );
 
   @override
@@ -73,7 +77,7 @@ class FormData extends CollectionData<dynamic, InputData> {
     if (other is! FormData) return false;
 
     return runtimeType == other.runtimeType &&
-        _pages == other._pages &&
+        pages == other.pages &&
         ListEquality<InputData>().equals(items, other.items) &&
         operationOrNull == other.operationOrNull &&
         sideEffects == other.sideEffects &&
@@ -82,7 +86,7 @@ class FormData extends CollectionData<dynamic, InputData> {
 
   @override
   int get hashCode => Object.hashAll([
-        _pages,
+        pages,
         runtimeType,
         items,
         operationOrNull,

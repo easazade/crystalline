@@ -48,12 +48,12 @@ class HomeStore extends _HomeStore {
 
   @override
   int get hashCode => Object.hashAll([
-        failureOrNull,
-        sideEffects,
-        states,
-        operationOrNull,
-        runtimeType,
-      ]);
+    failureOrNull,
+    sideEffects.all,
+    states,
+    operationOrNull,
+    runtimeType,
+  ]);
 
   @override
   Stream<HomeStore> get stream => streamController.stream.map((e) => this);

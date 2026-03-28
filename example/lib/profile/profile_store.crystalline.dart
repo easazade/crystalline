@@ -48,12 +48,12 @@ class ProfileStore extends _ProfileStore {
 
   @override
   int get hashCode => Object.hashAll([
-        failureOrNull,
-        sideEffects,
-        states,
-        operationOrNull,
-        runtimeType,
-      ]);
+    failureOrNull,
+    sideEffects.all,
+    states,
+    operationOrNull,
+    runtimeType,
+  ]);
 
   @override
   Stream<ProfileStore> get stream => streamController.stream.map((e) => this);
