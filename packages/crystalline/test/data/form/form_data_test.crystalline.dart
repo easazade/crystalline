@@ -24,16 +24,74 @@ part of 'form_data_test.dart';
 
 // Generating custom form class "LoginForm"
 class LoginForm extends FormData {
-  LoginForm(
-    CredentialsPage credentialsPage,
-    VerificationPage verificationPage,
-  ) : super(pages: [], name: 'name');
+  LoginForm({required this.credentialsPage, required this.verificationPage});
+
+  // page properties
+  final CredentialsPage credentialsPage;
+  final VerificationPage verificationPage;
+
+  final LoginFormContext formContext = LoginFormContext();
 
   @override
-  String get name => 'super.name';
+  String get name => 'login-form';
 
   @override
-  List<FormPage> get pages => [];
+  late final List<FormPage> pages = [
+    FormPage(
+      name: 'credentials',
+      items: [
+        InputData<String, String>(
+          name: "email",
+          validator: (String? input) => credentialsPage.emailInputData.validateEmail(formContext, input),
+          onSubmit: (InputData<String, String> data) => credentialsPage.emailInputData.onSubmitEmail(formContext, data),
+        ),
+        InputData<String, String>(
+          name: "password",
+          validator: (String? input) => credentialsPage.passwordInputData.validatePassword(formContext, input),
+          onSubmit: (InputData<String, String> data) =>
+              credentialsPage.passwordInputData.onSubmitPassword(formContext, data),
+        ),
+      ],
+    ),
+    FormPage(
+      name: 'verification',
+      items: [
+        InputData<String, int>(
+          name: "code",
+          validator: (String? input) => verificationPage.codeInputData.validateCode(formContext, input),
+          onSubmit: (InputData<String, int> data) => verificationPage.codeInputData.onSubmitCode(formContext, data),
+        ),
+      ],
+    ),
+  ];
+
+  @override
+  Stream<LoginForm> get stream => streamController.stream.map((e) => this);
+
+  @override
+  LoginForm copy() => throw Exception('cannot copy a generated FormData class');
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! LoginForm) return false;
+
+    return runtimeType == other.runtimeType &&
+        pages == other.pages &&
+        ListEquality<InputData>().equals(items, other.items) &&
+        operationOrNull == other.operationOrNull &&
+        sideEffects == other.sideEffects &&
+        failureOrNull == other.failureOrNull;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+        pages,
+        runtimeType,
+        items,
+        operationOrNull,
+        failureOrNull,
+        sideEffects.all,
+      ]);
 }
 
 // custom class code for CredentialsPage
@@ -46,14 +104,25 @@ class CredentialsPage {
 
   final EmailInputData emailInputData;
   final PasswordInputData passwordInputData;
-  final Future<void> Function(String email, String password) onSubmit;
+  final Future<void> Function(
+    LoginFormContext formContext,
+    String email,
+    String password,
+  ) onSubmit;
 }
 
 class EmailInputData {
   EmailInputData({required this.validateEmail, required this.onSubmitEmail});
 
-  final InputValidationResult Function(String? input) validateEmail;
-  final Future<void> Function(InputData<String, String> data) onSubmitEmail;
+  final InputValidationResult Function(
+    LoginFormContext formContext,
+    String? input,
+  ) validateEmail;
+
+  final Future<void> Function(
+    LoginFormContext formContext,
+    InputData<String, String> data,
+  ) onSubmitEmail;
 }
 
 class PasswordInputData {
@@ -62,8 +131,15 @@ class PasswordInputData {
     required this.onSubmitPassword,
   });
 
-  final InputValidationResult Function(String? input) validatePassword;
-  final Future<void> Function(InputData<String, String> data) onSubmitPassword;
+  final InputValidationResult Function(
+    LoginFormContext formContext,
+    String? input,
+  ) validatePassword;
+
+  final Future<void> Function(
+    LoginFormContext formContext,
+    InputData<String, String> data,
+  ) onSubmitPassword;
 }
 
 // custom class code for VerificationPage
@@ -71,14 +147,20 @@ class VerificationPage {
   VerificationPage({required this.codeInputData, required this.onSubmit});
 
   final CodeInputData codeInputData;
-  final Future<void> Function(int code) onSubmit;
+  final Future<void> Function(LoginFormContext formContext, int code) onSubmit;
 }
 
 class CodeInputData {
   CodeInputData({required this.validateCode, required this.onSubmitCode});
 
-  final InputValidationResult Function(String? input) validateCode;
-  final Future<void> Function(InputData<String, int> data) onSubmitCode;
+  final InputValidationResult Function(
+    LoginFormContext formContext,
+    String? input,
+  ) validateCode;
+  final Future<void> Function(
+    LoginFormContext formContext,
+    InputData<String, int> data,
+  ) onSubmitCode;
 }
 
 class LoginFormContext {}

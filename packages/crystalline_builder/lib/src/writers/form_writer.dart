@@ -17,7 +17,7 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
     final formClassName = '${formName.pascalCase.replaceAll('Form', '').replaceAll('from', '')}Form';
     final formContextClassName = '${formClassName}Context';
 
-    List<_FormPageInfo> pageInfos = _extractFormPagesInfo(formAnnotationObject);
+    List<_FormPageInfo> pageInfos = _extractFormPagesInfo(formAnnotationObject, formContextClassName);
 
     buffer.writeln('// Generating custom form class "$formClassName"');
 
@@ -37,21 +37,54 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
     }
 
     // write FormData code
-    //
-    buffer.writeln('''
-      class $formClassName extends FormData {
-        $formClassName(
-      ''');
-
     buffer.writeln(
       '''
-        ) :super(
-          name: '$formName',
-          pages: [${pagesBuffer.toString()}],
-        );
-      }
+      class $formClassName extends FormData {
+        $formClassName({
+          ${pageInfos.map((e) => 'required this.${e.customClassName.camelCase}').join(',')}
+        });
+
+        // page properties
+        ${pageInfos.map((e) => 'final ${e.customClassName} ${e.customClassName.camelCase};').join('\n')}
+
+        final $formContextClassName formContext = $formContextClassName();
+
+        @override
+        String get name => '$formName';
+
+        @override
+        late final List<FormPage> pages = [${pagesBuffer.toString()}];
+
+        @override
+        Stream<$formClassName> get stream => streamController.stream.map((e) => this);
+
+        @override
+        $formClassName copy() => throw Exception('cannot copy a generated FormData class');
+
+        @override
+        bool operator ==(Object other) {
+          if (other is! $formClassName) return false;
+
+          return runtimeType == other.runtimeType &&
+              pages == other.pages &&
+              ListEquality<InputData>().equals(items, other.items) &&
+              operationOrNull == other.operationOrNull &&
+              sideEffects == other.sideEffects &&
+              failureOrNull == other.failureOrNull;
+        }
+
+        @override
+        int get hashCode => Object.hashAll([
+              pages,
+              runtimeType,
+              items,
+              operationOrNull,
+              failureOrNull,
+              sideEffects.all,
+            ]);
+      }  
       ''',
-    );
+    ); // end of custom FormData class
 
     // write custom args for pages and inputs
     for (final pageInfo in pageInfos) {
@@ -69,7 +102,10 @@ void _validate(ClassElement cls) {
   // input-data names should not be blank
 }
 
-List<_FormPageInfo> _extractFormPagesInfo(DartObject? formAnnotationObject) {
+List<_FormPageInfo> _extractFormPagesInfo(
+  DartObject? formAnnotationObject,
+  String formContextClassName,
+) {
   final reader = ConstantReader(formAnnotationObject);
   List<_FormPageInfo> pages = [];
 
@@ -87,22 +123,32 @@ List<_FormPageInfo> _extractFormPagesInfo(DartObject? formAnnotationObject) {
       inputInfos.add(
         _InputDataInfo(
           name: inputName,
+          pageCustomClassName: '${pageName.pascalCase}Page',
+          formContextClassName: formContextClassName,
           inputType: inputType,
           valueType: valueType,
         ),
       );
     }
 
-    pages.add(_FormPageInfo(name: pageName, items: inputInfos));
+    pages.add(_FormPageInfo(name: pageName, items: inputInfos, formContextClassName: formContextClassName));
   }
 
   return pages;
 }
 
 class _InputDataInfo {
-  const _InputDataInfo({required this.name, required this.inputType, required this.valueType});
+  const _InputDataInfo({
+    required this.name,
+    required this.pageCustomClassName,
+    required this.formContextClassName,
+    required this.inputType,
+    required this.valueType,
+  });
 
   final String name;
+  final String pageCustomClassName;
+  final String formContextClassName;
   final DartType inputType;
   final DartType valueType;
 
@@ -112,8 +158,8 @@ class _InputDataInfo {
     return '''
     InputData<$inputTypeString, $valueTypeString>(
       name: "$name",
-      validator: ($inputTypeString? input) {},
-      onSubmit: (InputData<$inputTypeString, $valueTypeString> data) async {},
+      validator: ($inputTypeString? input) => ${pageCustomClassName.camelCase}.${customClassName.camelCase}.validate${name.pascalCase}(formContext, input),
+      onSubmit: (InputData<$inputTypeString, $valueTypeString> data) => ${pageCustomClassName.camelCase}.${customClassName.camelCase}.onSubmit${name.pascalCase}(formContext, data),
     )
     ''';
   }
@@ -129,8 +175,9 @@ class _InputDataInfo {
         required this.onSubmit${name.pascalCase},
       });
 
-      final InputValidationResult Function($inputTypeString? input) validate${name.pascalCase};
-      final Future<void> Function(InputData<$inputTypeString, $valueTypeString> data) onSubmit${name.pascalCase};
+      final InputValidationResult Function($formContextClassName formContext, $inputTypeString? input) validate${name.pascalCase};
+      
+      final Future<void> Function($formContextClassName formContext, InputData<$inputTypeString, $valueTypeString> data) onSubmit${name.pascalCase};
     }
 
     ''';
@@ -140,9 +187,14 @@ class _InputDataInfo {
 }
 
 class _FormPageInfo {
-  const _FormPageInfo({required this.name, required this.items});
+  const _FormPageInfo({
+    required this.name,
+    required this.formContextClassName,
+    required this.items,
+  });
 
   final String name;
+  final String formContextClassName;
   final List<_InputDataInfo> items;
 
   String toCustomClassCode() {
@@ -159,9 +211,8 @@ class _FormPageInfo {
       buffer.writeln('final ${inputInfo.customClassName} ${inputInfo.customClassName.camelCase};');
     }
     // onSubmit property
-    buffer.writeln('final Future<void> Function(${items.map(
-          (e) => "${e.valueType.displayNameWithNullability} ${e.name}",
-        ).join(',')}) onSubmit;');
+    final submittedValueArgs = items.map((e) => "${e.valueType.displayNameWithNullability} ${e.name}").join(',');
+    buffer.writeln('final Future<void> Function($formContextClassName formContext, $submittedValueArgs) onSubmit;');
 
     buffer.writeln('}'); // end of class
 

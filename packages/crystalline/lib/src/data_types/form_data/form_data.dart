@@ -11,10 +11,8 @@ part 'form_page.dart';
 part 'input_data.dart';
 part 'input_validation.dart';
 
-class FormData extends CollectionData<dynamic, InputData> {
+abstract class FormData extends CollectionData<dynamic, InputData> {
   FormData({
-    required this.pages,
-    required this.name,
     Operation? operation,
     Failure? failure,
     List<dynamic>? sideEffects,
@@ -26,7 +24,10 @@ class FormData extends CollectionData<dynamic, InputData> {
     }
   }
 
-  final List<FormPage> pages;
+  List<FormPage> get pages;
+
+  @override
+  String get name;
 
   @override
   List<InputData> get items => pages.map((page) => page.items).flattened.toList();
@@ -35,18 +36,7 @@ class FormData extends CollectionData<dynamic, InputData> {
   Iterator<InputData> get iterator => items.iterator;
 
   @override
-  // ignore: overridden_fields
-  final String name;
-
-  @override
   InputData operator [](int index) => items[index];
-
-  // Required by Data.updateFrom @mustBeOverridden; delegates to CollectionData.
-  @override
-  // ignore: unnecessary_overrides
-  void updateFrom(Data<List<InputData>> data) {
-    super.updateFrom(data);
-  }
 
   /// submits the current state of [InputData] items. If all items will result in a value it will
   // TODO: the FormData should be auto generated. The submit method should be auto generated.
@@ -63,14 +53,14 @@ class FormData extends CollectionData<dynamic, InputData> {
   // Then generate one form and write some tests for it.
   Future<void> submit() async {}
 
-  @override
-  FormData copy() => FormData(
-        pages: pages,
-        operation: operationOrNull,
-        failure: failureOrNull,
-        sideEffects: sideEffects.all.toList(),
-        name: name,
-      );
+  // @override
+  // FormData copy() => FormData(
+  //       pages: pages,
+  //       operation: operationOrNull,
+  //       failure: failureOrNull,
+  //       sideEffects: sideEffects.all.toList(),
+  //       name: name,
+  //     );
 
   @override
   bool operator ==(Object other) {
