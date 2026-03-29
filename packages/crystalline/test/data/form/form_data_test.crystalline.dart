@@ -45,33 +45,25 @@ class LoginForm extends FormData {
       items: [
         InputData<String, String>(
           name: "email",
-          validator: (String? input) => credentialsPageArgs.emailInputData
-              .validateEmail(formContext, input),
-          onSubmit: (InputData<String, String> data) => credentialsPageArgs
-              .emailInputData
-              .onSubmitEmail(formContext, data),
+          validator: (String? input) => credentialsPageArgs.emailInputData.validateEmail(formContext, input),
+          onSubmit: (InputData<String, String> data) =>
+              credentialsPageArgs.emailInputData.onSubmitEmail(formContext, data),
         ),
         InputData<String, String>(
           name: "password",
-          validator: (String? input) => credentialsPageArgs.passwordInputData
-              .validatePassword(formContext, input),
-          onSubmit: (InputData<String, String> data) => credentialsPageArgs
-              .passwordInputData
-              .onSubmitPassword(formContext, data),
+          validator: (String? input) => credentialsPageArgs.passwordInputData.validatePassword(formContext, input),
+          onSubmit: (InputData<String, String> data) =>
+              credentialsPageArgs.passwordInputData.onSubmitPassword(formContext, data),
         ),
       ],
     ),
-
     FormPage(
       name: 'verification',
       items: [
         InputData<String, int>(
           name: "code",
-          validator: (String? input) => verificationPageArgs.codeInputData
-              .validateCode(formContext, input),
-          onSubmit: (InputData<String, int> data) => verificationPageArgs
-              .codeInputData
-              .onSubmitCode(formContext, data),
+          validator: (String? input) => verificationPageArgs.codeInputData.validateCode(formContext, input),
+          onSubmit: (InputData<String, int> data) => verificationPageArgs.codeInputData.onSubmitCode(formContext, data),
         ),
       ],
     ),
@@ -83,9 +75,79 @@ class LoginForm extends FormData {
   @override
   LoginForm copy() => throw Exception('cannot copy a generated FormData class');
 
-  Future<void> submitCredentialsPage() async {}
+  Future<void> submitCredentialsPage() async {
+    final page = pages[credentialsPageArgs.pageIndex];
+    for (var inputItem in page.items) {
+      if (inputItem.isOptional) {
+        continue;
+      }
+      if (inputItem.hasNoValue) {
+        await inputItem.submit();
+        // if still no value return;
+        if (inputItem.hasNoValue) {
+          return;
+        }
+      }
+    }
 
-  Future<void> submitVerificationPage() async {}
+    // when all inputData items of the page have a value then submit page
+    await credentialsPageArgs.onSubmitPage(
+      formContext,
+      credentialsPageArgs.submitResult,
+      page.items[0].value,
+      page.items[1].value,
+    );
+
+    if (credentialsPageArgs.submitResult.hasFailure && credentialsPageArgs.submitResult.failure.type == null) {
+      credentialsPageArgs.submitResult.failure =
+          credentialsPageArgs.submitResult.failure.copyWith(type: FailureType.error);
+    } else if (credentialsPageArgs.submitResult.hasNoValue && !credentialsPageArgs.submitResult.hasFailure) {
+      final message =
+          '! No value or failure was set on submitResult data inside onSubmitPage argument callback for credentials page when it was called.';
+      credentialsPageArgs.submitResult.failure = Failure(
+        message,
+        type: FailureType.error,
+      );
+      CrystallineGlobalConfig.logger.log(
+        CrystallineGlobalConfig.logger.redText(message),
+      );
+    }
+  }
+
+  Future<void> submitVerificationPage() async {
+    final page = pages[verificationPageArgs.pageIndex];
+    for (var inputItem in page.items) {
+      if (inputItem.isOptional) {
+        continue;
+      }
+      if (inputItem.hasNoValue) {
+        await inputItem.submit();
+        // if still no value return;
+        if (inputItem.hasNoValue) {
+          return;
+        }
+      }
+    }
+
+    // when all inputData items of the page have a value then submit page
+    await verificationPageArgs.onSubmitPage(
+      formContext,
+      verificationPageArgs.submitResult,
+      page.items[0].value,
+    );
+
+    if (verificationPageArgs.submitResult.hasFailure && verificationPageArgs.submitResult.failure.type == null) {
+      verificationPageArgs.submitResult.failure =
+          verificationPageArgs.submitResult.failure.copyWith(type: FailureType.error);
+    } else if (verificationPageArgs.submitResult.hasNoValue && !verificationPageArgs.submitResult.hasFailure) {
+      final message =
+          '! No value or failure was set on submitResult data inside onSubmitPage argument callback for verification page when it was called.';
+      verificationPageArgs.submitResult.failure = Failure(message, type: FailureType.error);
+      CrystallineGlobalConfig.logger.log(
+        CrystallineGlobalConfig.logger.redText(message),
+      );
+    }
+  }
 
   @override
   bool operator ==(Object other) {
@@ -101,13 +163,13 @@ class LoginForm extends FormData {
 
   @override
   int get hashCode => Object.hashAll([
-    pages,
-    runtimeType,
-    items,
-    operationOrNull,
-    failureOrNull,
-    sideEffects.all,
-  ]);
+        pages,
+        runtimeType,
+        items,
+        operationOrNull,
+        failureOrNull,
+        sideEffects.all,
+      ]);
 }
 
 // custom class code for CredentialsPageArgs
@@ -127,8 +189,7 @@ class CredentialsPageArgs {
     Data<bool> submitResult,
     String email,
     String password,
-  )
-  onSubmitPage;
+  ) onSubmitPage;
 }
 
 class EmailInputData {
@@ -137,14 +198,12 @@ class EmailInputData {
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
-  )
-  validateEmail;
+  ) validateEmail;
 
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, String> data,
-  )
-  onSubmitEmail;
+  ) onSubmitEmail;
 }
 
 class PasswordInputData {
@@ -156,14 +215,12 @@ class PasswordInputData {
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
-  )
-  validatePassword;
+  ) validatePassword;
 
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, String> data,
-  )
-  onSubmitPassword;
+  ) onSubmitPassword;
 }
 
 // custom class code for VerificationPageArgs
@@ -180,8 +237,7 @@ class VerificationPageArgs {
     LoginFormContext formContext,
     Data<bool> submitResult,
     int code,
-  )
-  onSubmitPage;
+  ) onSubmitPage;
 }
 
 class CodeInputData {
@@ -190,14 +246,12 @@ class CodeInputData {
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
-  )
-  validateCode;
+  ) validateCode;
 
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, int> data,
-  )
-  onSubmitCode;
+  ) onSubmitCode;
 }
 
 class LoginFormContext {}
