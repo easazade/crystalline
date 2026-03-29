@@ -61,6 +61,25 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
         @override
         $formClassName copy() => throw Exception('cannot copy a generated FormData class');
 
+      ''',
+    );
+
+    // write page submit methods to generated FormData class
+    for (var pageInfo in pageInfos) {
+      final inputDataValueArgs =
+          pageInfo.items.map((e) => '${e.valueType.displayNameWithNullability} ${e.name}').join(',');
+      buffer.writeln(
+        '''
+          Future<void> ${pageInfo.submitMethodName}() async {
+
+          }
+
+        ''',
+      );
+    }
+
+    buffer.writeln(
+      '''
         @override
         bool operator ==(Object other) {
           if (other is! $formClassName) return false;
@@ -97,6 +116,7 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
 }
 
 void _validate(ClassElement cls) {
+  // class name must be private
   // form name should not be blank
   // page names should not be blank
   // input-data names should not be blank
@@ -109,10 +129,14 @@ List<_FormPageInfo> _extractFormPagesInfo(
   final reader = ConstantReader(formAnnotationObject);
   List<_FormPageInfo> pages = [];
 
-  for (var pageInfo in reader.read('pages').listValue) {
+  final pageDartObjects = reader.read('pages').listValue;
+  for (var i = 0; i < pageDartObjects.length; i++) {
+    final pageInfo = pageDartObjects[i];
     final reader = ConstantReader(pageInfo);
     final pageName = reader.read('name').stringValue;
     List<_InputDataInfo> inputInfos = [];
+    final submitResultType = reader.read('submitResultType').typeValue;
+    final pageCustomClassName = '${pageName.pascalCase}PageArgs';
 
     for (var inputInfo in reader.read('items').listValue) {
       final reader = ConstantReader(inputInfo);
@@ -123,7 +147,7 @@ List<_FormPageInfo> _extractFormPagesInfo(
       inputInfos.add(
         _InputDataInfo(
           name: inputName,
-          pageCustomClassName: '${pageName.pascalCase}Page',
+          pageCustomClassName: pageCustomClassName,
           formContextClassName: formContextClassName,
           inputType: inputType,
           valueType: valueType,
@@ -131,7 +155,14 @@ List<_FormPageInfo> _extractFormPagesInfo(
       );
     }
 
-    pages.add(_FormPageInfo(name: pageName, items: inputInfos, formContextClassName: formContextClassName));
+    pages.add(_FormPageInfo(
+      name: pageName,
+      items: inputInfos,
+      submitResultType: submitResultType.displayNameWithNullability!,
+      formContextClassName: formContextClassName,
+      customClassName: pageCustomClassName,
+      pageIndex: i,
+    ));
   }
 
   return pages;
@@ -191,11 +222,28 @@ class _FormPageInfo {
     required this.name,
     required this.formContextClassName,
     required this.items,
+    required this.submitResultType,
+    required this.pageIndex,
+    required this.customClassName,
   });
 
   final String name;
   final String formContextClassName;
+  final String customClassName;
+  final String submitResultType;
   final List<_InputDataInfo> items;
+  final int pageIndex;
+
+  String get submitMethodName => 'submit${nameWithPageExtension.pascalCase}';
+  String get onSubmitMethodName => 'onSubmitPage';
+
+  String get nameWithPageExtension {
+    var fixedName = name;
+    if (fixedName.endsWith('page') || fixedName.endsWith('Page')) {
+      fixedName = fixedName.substring(fixedName.length - 4);
+    }
+    return '${fixedName}Page';
+  }
 
   String toCustomClassCode() {
     final buffer = StringBuffer();
@@ -204,15 +252,22 @@ class _FormPageInfo {
     buffer.writeln('class $customClassName {'); // start of class
     // constructor
     final inputArgs = items.map((e) => "required this.${e.customClassName.camelCase}").join(',');
-    buffer.writeln('$customClassName({ $inputArgs, required this.onSubmit });\n');
+    buffer.writeln('$customClassName({ $inputArgs, required this.$onSubmitMethodName });\n');
 
     // input properties
     for (var inputInfo in items) {
       buffer.writeln('final ${inputInfo.customClassName} ${inputInfo.customClassName.camelCase};');
     }
+
+    // other properties
+    buffer.writeln('final submitResult = Data<$submitResultType>();');
+    buffer.writeln('final pageIndex = $pageIndex;');
+
     // onSubmit property
     final submittedValueArgs = items.map((e) => "${e.valueType.displayNameWithNullability} ${e.name}").join(',');
-    buffer.writeln('final Future<void> Function($formContextClassName formContext, $submittedValueArgs) onSubmit;');
+    buffer.writeln(
+      'final Future<void> Function($formContextClassName formContext, Data<$submitResultType> submitResult, $submittedValueArgs) $onSubmitMethodName;',
+    );
 
     buffer.writeln('}'); // end of class
 
@@ -221,6 +276,4 @@ class _FormPageInfo {
     }
     return buffer.toString();
   }
-
-  String get customClassName => '${name.pascalCase}Page';
 }

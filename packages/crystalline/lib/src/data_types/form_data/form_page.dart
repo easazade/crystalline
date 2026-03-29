@@ -1,4 +1,3 @@
-
 part of 'form_data.dart';
 
 class FormPage {
@@ -13,13 +12,9 @@ class FormPage {
   @override
   bool operator ==(Object other) {
     if (other is! FormPage) return false;
-    return name == other.name &&
-        ListEquality<InputData>().equals(items, other.items);
+    return name == other.name && ListEquality<InputData>().equals(items, other.items);
   }
 
   @override
-  int get hashCode => Object.hash(
-        name,
-        ListEquality<InputData>().hash(items),
-      );
+  int get hashCode => Object.hash(name, ListEquality<InputData>().hash(items));
 }

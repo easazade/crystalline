@@ -12,38 +12,17 @@ part 'form_data_test.crystalline.dart';
       InputDataInfo(name: 'email', inputType: String, valueType: String),
       InputDataInfo(name: 'password', inputType: String, valueType: String),
     ],
+    submitResultType: bool,
   ),
   FormPageInfo(
     name: 'verification',
     items: [
       InputDataInfo(name: 'code', inputType: String, valueType: int),
     ],
+    submitResultType: bool,
   ),
 ])
 class _LoginForm {}
-
-
-// constructor(
-//     emailPage=  EmailPage(
-//       emailInput: EmailInput(
-//         validate: (){}
-//         submit: (){}
-//       ),
-//       passwordInput: EmailInput(
-//         validate: (){}
-//         submit: (){}
-//       ),
-//       onSubmitPage: (){},
-//     ),
-//     verifyPage = VerifyPage(
-//       verificationCodeInput: VerificationCodeInput(
-//         validate: (){}
-//         submit: (){}
-//       ),
-//       onSubmitPage: (){},
-//     ),
-//     onSubmitForm : (){},
-// )
 
 void main() {
   setUpAll(() {

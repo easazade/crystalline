@@ -11,14 +11,24 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
     required this.onSubmit,
     required String name,
     String? hint,
+    bool isOptional = false,
   })  : _input = input,
         _hint = hint,
+        _isOptional = isOptional,
         super(name: name);
 
   INPUT? _input;
   String? _hint;
+  bool _isOptional;
   final InputValidationResult Function(INPUT? input) validator;
   final Future<void> Function(InputData<INPUT, OUTPUT> data) onSubmit;
+
+  set isOptional(bool flag) {
+    _isOptional = flag;
+    notifyObserversAndStreamListeners();
+  }
+
+  bool get isOptional => _isOptional;
 
   set hint(String? hint) {
     _hint = hint;
@@ -102,6 +112,7 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
     operation = data.operationOrNull;
     failure = data.failureOrNull;
     input = data.input;
+    isOptional = data.isOptional;
     hint = data.hint;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);

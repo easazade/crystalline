@@ -8,14 +8,14 @@ class InputDataInfo {
   final String name;
   final Type inputType;
   final Type valueType;
-
 }
 
 class FormPageInfo {
-  const FormPageInfo({required this.name, required this.items});
+  const FormPageInfo({required this.name, required this.items, required this.submitResultType});
 
   final String name;
   final List<InputDataInfo> items;
+  final Type submitResultType;
 }
 
 class FormClass {
