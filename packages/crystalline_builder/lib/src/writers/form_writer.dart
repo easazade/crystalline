@@ -182,7 +182,7 @@ List<_FormPageInfo> _extractFormPagesInfo(
     final submitResultType = reader.read('submitResultType').typeValue;
 
     final pageArgsClassName = '${pageName.pascalCase.removeSuffix('page')}Page';
-    final argsClassPrivateVarName = '_${pageArgsClassName.camelCase}';
+    final argsClassPrivateVarName = '_${pageArgsClassName.camelCase}Args';
 
     for (var inputInfo in reader.read('items').listValue) {
       final reader = ConstantReader(inputInfo);
@@ -239,6 +239,12 @@ class _InputDataInfo {
     return '''
     InputData<$inputTypeString, $valueTypeString>(
       name: "$name",
+      hint: $argsClassPrivateVarName.${argsClassName.camelCase}.hint,
+      value: $argsClassPrivateVarName.${argsClassName.camelCase}.initialValue,
+      isOptional: $argsClassPrivateVarName.${argsClassName.camelCase}.isOptional,
+      operation: $argsClassPrivateVarName.${argsClassName.camelCase}.operation,
+      failure: $argsClassPrivateVarName.${argsClassName.camelCase}.failure,
+      sideEffects: $argsClassPrivateVarName.${argsClassName.camelCase}.sideEffects,
       validator: ($inputTypeString? input) => $argsClassPrivateVarName.${argsClassName.camelCase}.validate${name.pascalCase}(formContext, input),
       onSubmit: (InputData<$inputTypeString, $valueTypeString> data) => $argsClassPrivateVarName.${argsClassName.camelCase}.onSubmit${name.pascalCase}(formContext, data),
     )
@@ -254,10 +260,21 @@ class _InputDataInfo {
       $argsClassName({
         required this.validate${name.pascalCase},
         required this.onSubmit${name.pascalCase},
+        this.isOptional = false,
+        this.hint,
+        this.initialValue,
+        this.operation,
+        this.failure,
+        this.sideEffects,
       });
 
+      final Operation? operation;
+      final Failure? failure;
+      final List<dynamic>? sideEffects;
+      final bool isOptional;
+      final String? hint;
+      final $valueTypeString? initialValue;
       final InputValidationResult Function($formContextClassName formContext, $inputTypeString? input) validate${name.pascalCase};
-      
       final Future<void> Function($formContextClassName formContext, InputData<$inputTypeString, $valueTypeString> data) onSubmit${name.pascalCase};
     }
 

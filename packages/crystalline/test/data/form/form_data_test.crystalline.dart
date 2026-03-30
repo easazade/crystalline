@@ -27,12 +27,12 @@ class LoginForm extends FormData {
   LoginForm({
     required CredentialsPage credentialsPage,
     required VerificationPage verificationPage,
-  }) : _credentialsPage = credentialsPage,
-       _verificationPage = verificationPage;
+  }) : _credentialsPageArgs = credentialsPage,
+       _verificationPageArgs = verificationPage;
 
   // page properties
-  final CredentialsPage _credentialsPage;
-  final VerificationPage _verificationPage;
+  final CredentialsPage _credentialsPageArgs;
+  final VerificationPage _verificationPageArgs;
 
   late final LoginFormContext formContext = LoginFormContext(pages);
 
@@ -46,16 +46,29 @@ class LoginForm extends FormData {
       items: [
         InputData<String, String>(
           name: "email",
-          validator: (String? input) =>
-              _credentialsPage.emailInputData.validateEmail(formContext, input),
-          onSubmit: (InputData<String, String> data) =>
-              _credentialsPage.emailInputData.onSubmitEmail(formContext, data),
+          hint: _credentialsPageArgs.emailInputData.hint,
+          value: _credentialsPageArgs.emailInputData.initialValue,
+          isOptional: _credentialsPageArgs.emailInputData.isOptional,
+          operation: _credentialsPageArgs.emailInputData.operation,
+          failure: _credentialsPageArgs.emailInputData.failure,
+          sideEffects: _credentialsPageArgs.emailInputData.sideEffects,
+          validator: (String? input) => _credentialsPageArgs.emailInputData
+              .validateEmail(formContext, input),
+          onSubmit: (InputData<String, String> data) => _credentialsPageArgs
+              .emailInputData
+              .onSubmitEmail(formContext, data),
         ),
         InputData<String, String>(
           name: "password",
-          validator: (String? input) => _credentialsPage.passwordInputData
+          hint: _credentialsPageArgs.passwordInputData.hint,
+          value: _credentialsPageArgs.passwordInputData.initialValue,
+          isOptional: _credentialsPageArgs.passwordInputData.isOptional,
+          operation: _credentialsPageArgs.passwordInputData.operation,
+          failure: _credentialsPageArgs.passwordInputData.failure,
+          sideEffects: _credentialsPageArgs.passwordInputData.sideEffects,
+          validator: (String? input) => _credentialsPageArgs.passwordInputData
               .validatePassword(formContext, input),
-          onSubmit: (InputData<String, String> data) => _credentialsPage
+          onSubmit: (InputData<String, String> data) => _credentialsPageArgs
               .passwordInputData
               .onSubmitPassword(formContext, data),
         ),
@@ -67,10 +80,17 @@ class LoginForm extends FormData {
       items: [
         InputData<String, int>(
           name: "code",
-          validator: (String? input) =>
-              _verificationPage.codeInputData.validateCode(formContext, input),
-          onSubmit: (InputData<String, int> data) =>
-              _verificationPage.codeInputData.onSubmitCode(formContext, data),
+          hint: _verificationPageArgs.codeInputData.hint,
+          value: _verificationPageArgs.codeInputData.initialValue,
+          isOptional: _verificationPageArgs.codeInputData.isOptional,
+          operation: _verificationPageArgs.codeInputData.operation,
+          failure: _verificationPageArgs.codeInputData.failure,
+          sideEffects: _verificationPageArgs.codeInputData.sideEffects,
+          validator: (String? input) => _verificationPageArgs.codeInputData
+              .validateCode(formContext, input),
+          onSubmit: (InputData<String, int> data) => _verificationPageArgs
+              .codeInputData
+              .onSubmitCode(formContext, data),
         ),
       ],
     ),
@@ -86,7 +106,7 @@ class LoginForm extends FormData {
   LoginForm copy() => throw Exception('cannot copy a generated FormData class');
 
   Future<void> submitCredentialsPage() async {
-    final page = pages[_credentialsPage.pageIndex];
+    final page = pages[_credentialsPageArgs.pageIndex];
     for (var inputItem in page.items) {
       if (inputItem.isOptional) {
         continue;
@@ -101,7 +121,7 @@ class LoginForm extends FormData {
     }
 
     // when all inputData items of the page have a value then submit page
-    await _credentialsPage.onSubmitPage(
+    await _credentialsPageArgs.onSubmitPage(
       formContext,
       formContext.credentialsPage.submitResult,
       page.items[0].value,
@@ -130,7 +150,7 @@ class LoginForm extends FormData {
   }
 
   Future<void> submitVerificationPage() async {
-    final page = pages[_verificationPage.pageIndex];
+    final page = pages[_verificationPageArgs.pageIndex];
     for (var inputItem in page.items) {
       if (inputItem.isOptional) {
         continue;
@@ -145,7 +165,7 @@ class LoginForm extends FormData {
     }
 
     // when all inputData items of the page have a value then submit page
-    await _verificationPage.onSubmitPage(
+    await _verificationPageArgs.onSubmitPage(
       formContext,
       formContext.verificationPage.submitResult,
       page.items[0].value,
@@ -216,14 +236,28 @@ class CredentialsPage {
 }
 
 class EmailInputData {
-  EmailInputData({required this.validateEmail, required this.onSubmitEmail});
+  EmailInputData({
+    required this.validateEmail,
+    required this.onSubmitEmail,
+    this.isOptional = false,
+    this.hint,
+    this.initialValue,
+    this.operation,
+    this.failure,
+    this.sideEffects,
+  });
 
+  final Operation? operation;
+  final Failure? failure;
+  final List<dynamic>? sideEffects;
+  final bool isOptional;
+  final String? hint;
+  final String? initialValue;
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
   )
   validateEmail;
-
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, String> data,
@@ -235,14 +269,25 @@ class PasswordInputData {
   PasswordInputData({
     required this.validatePassword,
     required this.onSubmitPassword,
+    this.isOptional = false,
+    this.hint,
+    this.initialValue,
+    this.operation,
+    this.failure,
+    this.sideEffects,
   });
 
+  final Operation? operation;
+  final Failure? failure;
+  final List<dynamic>? sideEffects;
+  final bool isOptional;
+  final String? hint;
+  final String? initialValue;
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
   )
   validatePassword;
-
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, String> data,
@@ -265,14 +310,28 @@ class VerificationPage {
 }
 
 class CodeInputData {
-  CodeInputData({required this.validateCode, required this.onSubmitCode});
+  CodeInputData({
+    required this.validateCode,
+    required this.onSubmitCode,
+    this.isOptional = false,
+    this.hint,
+    this.initialValue,
+    this.operation,
+    this.failure,
+    this.sideEffects,
+  });
 
+  final Operation? operation;
+  final Failure? failure;
+  final List<dynamic>? sideEffects;
+  final bool isOptional;
+  final String? hint;
+  final int? initialValue;
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
   )
   validateCode;
-
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, int> data,
