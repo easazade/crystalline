@@ -26,6 +26,18 @@ abstract class FormData extends CollectionData<dynamic, InputData> {
 
   List<FormPage> get pages;
 
+  void clearAllFailures() {
+    for (var inputData in items) {
+      inputData.failure = null;
+    }
+  }
+
+  void clearAllOperations() {
+    for (var inputData in items) {
+      inputData.operation = null;
+    }
+  }
+
   @override
   String get name;
 

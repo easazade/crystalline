@@ -331,4 +331,58 @@ void main() {
       },
     );
   });
+
+  group('clearAllFailures / clearAllOperations -', () {
+    test('clearAllFailures removes failure from every InputData item', () {
+      loginForm.credentialsPage.email.input = 'not-gmail';
+      loginForm.credentialsPage.password.input = 'short';
+      loginForm.verificationPage.code.input = 'ab';
+
+      expect(loginForm.credentialsPage.email.hasFailure, isTrue);
+      expect(loginForm.credentialsPage.password.hasFailure, isTrue);
+      expect(loginForm.verificationPage.code.hasFailure, isTrue);
+
+      loginForm.clearAllFailures();
+
+      expect(loginForm.credentialsPage.email.hasFailure, isFalse);
+      expect(loginForm.credentialsPage.password.hasFailure, isFalse);
+      expect(loginForm.verificationPage.code.hasFailure, isFalse);
+    });
+
+    test('clearAllOperations removes operation from every InputData item', () {
+      loginForm.credentialsPage.email.operation = Operation.read;
+      loginForm.credentialsPage.password.operation = Operation.update;
+      loginForm.verificationPage.code.operation = Operation('pending');
+
+      expect(loginForm.credentialsPage.email.hasAnyOperation, isTrue);
+      expect(loginForm.credentialsPage.password.hasAnyOperation, isTrue);
+      expect(loginForm.verificationPage.code.hasAnyOperation, isTrue);
+
+      loginForm.clearAllOperations();
+
+      expect(loginForm.credentialsPage.email.hasNoOperation, isTrue);
+      expect(loginForm.credentialsPage.password.hasNoOperation, isTrue);
+      expect(loginForm.verificationPage.code.hasNoOperation, isTrue);
+    });
+
+    test('clearAllFailures does not clear operations on input items', () {
+      loginForm.credentialsPage.email.input = 'bad';
+      loginForm.credentialsPage.email.operation = Operation.read;
+
+      loginForm.clearAllFailures();
+
+      expect(loginForm.credentialsPage.email.hasFailure, isFalse);
+      expect(loginForm.credentialsPage.email.operationOrNull, Operation.read);
+    });
+
+    test('clearAllOperations does not clear failures on input items', () {
+      loginForm.credentialsPage.password.input = 'short';
+      loginForm.credentialsPage.password.operation = Operation.update;
+
+      loginForm.clearAllOperations();
+
+      expect(loginForm.credentialsPage.password.hasFailure, isTrue);
+      expect(loginForm.credentialsPage.password.hasNoOperation, isTrue);
+    });
+  });
 }
