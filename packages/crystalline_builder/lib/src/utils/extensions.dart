@@ -66,9 +66,14 @@ extension StringX on String {
     return result;
   }
 
-  String addSuffixIfNotEmpty(String suffix) {
+  String addSuffix(String suffix) {
+    final patched = removeSuffix(suffix);
+    return patched + suffix;
+  }
+
+  String addCommaIfNotEmpty() {
     if (trim().isNotEmpty) {
-      return '$this$suffix';
+      return '$this,';
     } else {
       return this;
     }

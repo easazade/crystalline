@@ -33,7 +33,7 @@ void main() {
   setUp(() {
     loginForm = LoginForm(
       credentialsPageArgs: CredentialsPageArgs(
-        emailInputData: EmailInputData(
+        emailInputDataArgs: EmailInputDataArgs(
           validateEmail: (formContext, input) {
             if (input != null && input.endsWith('@gmail.com')) {
               return InputValidationResult.valid();
@@ -48,7 +48,7 @@ void main() {
             email.operation = null;
           },
         ),
-        passwordInputData: PasswordInputData(
+        passwordInputDataArgs: PasswordInputDataArgs(
           validatePassword: (formContext, input) {
             if (input == null || input.trim().isEmpty) {
               return InputValidationResult.error(Failure('please enter a password'));
@@ -66,7 +66,7 @@ void main() {
         },
       ),
       verificationPageArgs: VerificationPageArgs(
-        codeInputData: CodeInputData(
+        codeInputDataArgs: CodeInputDataArgs(
           validateCode: (formContext, input) {
             if (input != null && input.length == 4 && int.tryParse(input) != null) {
               return InputValidationResult.valid();
@@ -94,7 +94,7 @@ void main() {
         var formNotifications = 0;
         loginForm.observers.add(Observer(() => formNotifications++));
 
-        final email = loginForm[0] as InputData<String, String>;
+        final email = loginForm.credentialsPage.email;
         email.input = 'user@gmail.com';
 
         expect(formNotifications, 1);
@@ -109,8 +109,8 @@ void main() {
         var formNotifications = 0;
         loginForm.observers.add(Observer(() => formNotifications++));
 
-        final email = loginForm[0] as InputData<String, String>;
-        final password = loginForm[1] as InputData<String, String>;
+        final email = loginForm.credentialsPage.email;
+        final password = loginForm.credentialsPage.password;
 
         email.input = 'user@gmail.com';
         password.input = 'longpassword';
@@ -129,7 +129,7 @@ void main() {
         var formNotifications = 0;
         loginForm.observers.add(Observer(() => formNotifications++));
 
-        final email = loginForm[0] as InputData<String, String>;
+        final email = loginForm.credentialsPage.email;
         email.input = 'not-valid-email';
         expect(email.hasFailure, isTrue);
         expect(formNotifications, 1);
@@ -143,7 +143,7 @@ void main() {
     test(
       'during input-data submit, form-data should get notified as many times the input data object gets updated',
       () async {
-        final email = loginForm[0] as InputData<String, String>;
+        final email = loginForm.credentialsPage.email;
         email.input = 'commit@gmail.com';
 
         var formNotifications = 0;

@@ -43,19 +43,20 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
       class $formClassName extends FormData {
         $formClassName({
           ${pageInfos.map((e) => 'required ${e.argsClassName} ${e.argsClassName.camelCase}').join(',')}
-        }): ${pageInfos.map((e) => '${e.argsClassPrivateVarName} = ${e.argsClassName.camelCase}').join(',').addSuffixIfNotEmpty(',')}
-            formContext = $formContextClassName(${pageInfos.map((e) => '${e.argsClassName.camelCase}:${e.argsClassName.camelCase}').join(',')});
+        }): ${pageInfos.map((e) => '${e.argsClassPrivateVarName} = ${e.argsClassName.camelCase}').join(',')};
 
         // page properties
         ${pageInfos.map((e) => 'final ${e.argsClassName} ${e.argsClassPrivateVarName};').join('\n')}
 
-        final $formContextClassName formContext;
+        late final $formContextClassName formContext = $formContextClassName(pages);
 
-        @override
-        String get name => '$formName';
+        ${pageInfos.map((e) => '${e.contextClassName} get ${e.contextClassInstanceVarName} => formContext.${e.contextClassInstanceVarName};').join('\n')}
 
         @override
         late final List<FormPage> pages = [${pagesBuffer.toString()}];
+
+        @override
+        String get name => '$formName';
 
         @override
         Stream<$formClassName> get stream => streamController.stream.map((e) => this);
@@ -88,16 +89,17 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
             // when all inputData items of the page have a value then submit page
             await ${pageInfo.argsClassPrivateVarName}.onSubmitPage(
                 formContext,
-                ${pageInfo.argsClassPrivateVarName}.submitResult,
+                formContext.${pageInfo.contextClassInstanceVarName}.submitResult,
                 ${pageInfo.items.mapIndexed((index, _) => "page.items[$index].value").join(',\n')}
               );
 
-            if (${pageInfo.argsClassPrivateVarName}.submitResult.hasFailure && ${pageInfo.argsClassPrivateVarName}.submitResult.failure.type == null) {
-              ${pageInfo.argsClassPrivateVarName}.submitResult.failure =
-                  ${pageInfo.argsClassPrivateVarName}.submitResult.failure.copyWith(type: FailureType.error);
-            } else if (${pageInfo.argsClassPrivateVarName}.submitResult.hasNoValue && !${pageInfo.argsClassPrivateVarName}.submitResult.hasFailure) {
+            if (formContext.${pageInfo.contextClassInstanceVarName}.submitResult.hasFailure && formContext.${pageInfo.contextClassInstanceVarName}.submitResult.failure.type == null) {
+              formContext.${pageInfo.contextClassInstanceVarName}.submitResult.failure =
+                  formContext.${pageInfo.contextClassInstanceVarName}.submitResult.failure.copyWith(type: FailureType.error);
+
+            } else if (formContext.${pageInfo.contextClassInstanceVarName}.submitResult.hasNoValue && !formContext.${pageInfo.contextClassInstanceVarName}.submitResult.hasFailure) {
               final message = '! No value or failure was set on submitResult data inside ${pageInfo.onSubmitMethodName} argument callback for ${pageInfo.name} page when it was called.';
-              ${pageInfo.argsClassPrivateVarName}.submitResult.failure = Failure(message, type: FailureType.error);
+              formContext.${pageInfo.contextClassInstanceVarName}.submitResult.failure = Failure(message, type: FailureType.error);
               CrystallineGlobalConfig.logger.log(CrystallineGlobalConfig.logger.redText(message));
             }  
           }
@@ -135,17 +137,22 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
 
     // write custom args for pages and inputs
     for (final pageInfo in pageInfos) {
-      buffer.writeln(pageInfo.toCustomClassCode());
+      buffer.writeln(pageInfo.toArgsClassCode());
+    }
+
+    // write custom args for pages
+    for (final pageInfo in pageInfos) {
+      buffer.writeln(pageInfo.toContextClassCode());
     }
 
     // generate form context class
     buffer.writeln(
       '''
       class $formContextClassName {
-        $formContextClassName({
-          ${pageInfos.map((e) => 'required this.${e.argsClassName.camelCase}').join(',')}
-        });
-        ${pageInfos.map((e) => 'final ${e.argsClassName} ${e.argsClassName.camelCase};').join('\n')}
+        $formContextClassName(this._pages);
+        List<FormPage> _pages;
+
+        ${pageInfos.map((e) => 'late final ${e.contextClassInstanceVarName} = ${e.contextClassName}(_pages, ${e.pageIndex});').join('\n')}
       }
       ''',
     );
@@ -238,7 +245,7 @@ class _InputDataInfo {
     ''';
   }
 
-  String toCustomClassCode() {
+  String toArgsClassCode() {
     final inputTypeString = inputType.displayNameWithNullability;
     final valueTypeString = valueType.displayNameWithNullability;
 
@@ -257,7 +264,7 @@ class _InputDataInfo {
     ''';
   }
 
-  String get customClassName => '${name.pascalCase}InputData';
+  String get customClassName => '${name.pascalCase}InputDataArgs';
 }
 
 class _FormPageInfo {
@@ -282,15 +289,12 @@ class _FormPageInfo {
   String get submitMethodName => 'submit${nameWithPageExtension.pascalCase}';
   String get onSubmitMethodName => 'onSubmitPage';
 
-  String get nameWithPageExtension {
-    var fixedName = name;
-    if (fixedName.endsWith('page') || fixedName.endsWith('Page')) {
-      fixedName = fixedName.substring(fixedName.length - 4);
-    }
-    return '${fixedName}Page';
-  }
+  String get nameWithPageExtension => name.addSuffix('Page');
 
-  String toCustomClassCode() {
+  String get contextClassName => '${name.pascalCase}Context';
+  String get contextClassInstanceVarName => nameWithPageExtension;
+
+  String toArgsClassCode() {
     final buffer = StringBuffer();
     buffer.writeln('// custom class code for $argsClassName');
 
@@ -306,7 +310,6 @@ class _FormPageInfo {
     }
 
     // other properties
-    buffer.writeln('final submitResult = Data<$submitResultType>();');
     buffer.writeln('final pageIndex = $pageIndex;');
 
     // onSubmit property
@@ -318,8 +321,27 @@ class _FormPageInfo {
     buffer.writeln('}'); // end of class
 
     for (var inputInfo in items) {
-      buffer.writeln(inputInfo.toCustomClassCode());
+      buffer.writeln(inputInfo.toArgsClassCode());
     }
     return buffer.toString();
+  }
+
+  String toContextClassCode() {
+    return '''
+      class $contextClassName {
+        $contextClassName(this._pages, this.index);
+        final List<FormPage> _pages;
+        final int index;
+
+        final submitResult = Data<$submitResultType>();
+
+        ${items.mapIndexed((inputItemIndex, e) {
+      final inputDataType =
+          'InputData<${e.inputType.displayNameWithNullability}, ${e.valueType.displayNameWithNullability}>';
+
+      return '$inputDataType get ${e.name} => _pages[index].items[$inputItemIndex] as $inputDataType;';
+    }).join('\n')}
+      }
+    ''';
   }
 }
