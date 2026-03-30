@@ -24,14 +24,12 @@ part of 'form_data_test.dart';
 
 // Generating custom form class "LoginForm"
 class LoginForm extends FormData {
-  LoginForm({
-    required this.credentialsPageArgs,
-    required this.verificationPageArgs,
-  });
+  LoginForm({required this.credentialsPageArgs, required this.verificationPageArgs, required this.lastPagePageArgs});
 
   // page properties
   final CredentialsPageArgs credentialsPageArgs;
   final VerificationPageArgs verificationPageArgs;
+  final LastPagePageArgs lastPagePageArgs;
 
   final LoginFormContext formContext = LoginFormContext();
 
@@ -54,7 +52,7 @@ class LoginForm extends FormData {
           validator: (String? input) => credentialsPageArgs.passwordInputData.validatePassword(formContext, input),
           onSubmit: (InputData<String, String> data) =>
               credentialsPageArgs.passwordInputData.onSubmitPassword(formContext, data),
-        ),
+        )
       ],
     ),
     FormPage(
@@ -64,8 +62,12 @@ class LoginForm extends FormData {
           name: "code",
           validator: (String? input) => verificationPageArgs.codeInputData.validateCode(formContext, input),
           onSubmit: (InputData<String, int> data) => verificationPageArgs.codeInputData.onSubmitCode(formContext, data),
-        ),
+        )
       ],
+    ),
+    FormPage(
+      name: 'last-page',
+      items: [],
     ),
   ];
 
@@ -92,11 +94,7 @@ class LoginForm extends FormData {
 
     // when all inputData items of the page have a value then submit page
     await credentialsPageArgs.onSubmitPage(
-      formContext,
-      credentialsPageArgs.submitResult,
-      page.items[0].value,
-      page.items[1].value,
-    );
+        formContext, credentialsPageArgs.submitResult, page.items[0].value, page.items[1].value);
 
     if (credentialsPageArgs.submitResult.hasFailure && credentialsPageArgs.submitResult.failure.type == null) {
       credentialsPageArgs.submitResult.failure =
@@ -104,13 +102,8 @@ class LoginForm extends FormData {
     } else if (credentialsPageArgs.submitResult.hasNoValue && !credentialsPageArgs.submitResult.hasFailure) {
       final message =
           '! No value or failure was set on submitResult data inside onSubmitPage argument callback for credentials page when it was called.';
-      credentialsPageArgs.submitResult.failure = Failure(
-        message,
-        type: FailureType.error,
-      );
-      CrystallineGlobalConfig.logger.log(
-        CrystallineGlobalConfig.logger.redText(message),
-      );
+      credentialsPageArgs.submitResult.failure = Failure(message, type: FailureType.error);
+      CrystallineGlobalConfig.logger.log(CrystallineGlobalConfig.logger.redText(message));
     }
   }
 
@@ -130,11 +123,7 @@ class LoginForm extends FormData {
     }
 
     // when all inputData items of the page have a value then submit page
-    await verificationPageArgs.onSubmitPage(
-      formContext,
-      verificationPageArgs.submitResult,
-      page.items[0].value,
-    );
+    await verificationPageArgs.onSubmitPage(formContext, verificationPageArgs.submitResult, page.items[0].value);
 
     if (verificationPageArgs.submitResult.hasFailure && verificationPageArgs.submitResult.failure.type == null) {
       verificationPageArgs.submitResult.failure =
@@ -143,9 +132,38 @@ class LoginForm extends FormData {
       final message =
           '! No value or failure was set on submitResult data inside onSubmitPage argument callback for verification page when it was called.';
       verificationPageArgs.submitResult.failure = Failure(message, type: FailureType.error);
-      CrystallineGlobalConfig.logger.log(
-        CrystallineGlobalConfig.logger.redText(message),
-      );
+      CrystallineGlobalConfig.logger.log(CrystallineGlobalConfig.logger.redText(message));
+    }
+  }
+
+  Future<void> submitPagePage() async {
+    final page = pages[lastPagePageArgs.pageIndex];
+    for (var inputItem in page.items) {
+      if (inputItem.isOptional) {
+        continue;
+      }
+      if (inputItem.hasNoValue) {
+        await inputItem.submit();
+        // if still no value return;
+        if (inputItem.hasNoValue) {
+          return;
+        }
+      }
+    }
+
+    // when all inputData items of the page have a value then submit page
+    await lastPagePageArgs.onSubmitPage(
+      formContext,
+      lastPagePageArgs.submitResult,
+    );
+
+    if (lastPagePageArgs.submitResult.hasFailure && lastPagePageArgs.submitResult.failure.type == null) {
+      lastPagePageArgs.submitResult.failure = lastPagePageArgs.submitResult.failure.copyWith(type: FailureType.error);
+    } else if (lastPagePageArgs.submitResult.hasNoValue && !lastPagePageArgs.submitResult.hasFailure) {
+      final message =
+          '! No value or failure was set on submitResult data inside onSubmitPage argument callback for last-page page when it was called.';
+      lastPagePageArgs.submitResult.failure = Failure(message, type: FailureType.error);
+      CrystallineGlobalConfig.logger.log(CrystallineGlobalConfig.logger.redText(message));
     }
   }
 
@@ -174,36 +192,25 @@ class LoginForm extends FormData {
 
 // custom class code for CredentialsPageArgs
 class CredentialsPageArgs {
-  CredentialsPageArgs({
-    required this.emailInputData,
-    required this.passwordInputData,
-    required this.onSubmitPage,
-  });
+  CredentialsPageArgs({required this.emailInputData, required this.passwordInputData, required this.onSubmitPage});
 
   final EmailInputData emailInputData;
   final PasswordInputData passwordInputData;
   final submitResult = Data<bool>();
   final pageIndex = 0;
-  final Future<void> Function(
-    LoginFormContext formContext,
-    Data<bool> submitResult,
-    String email,
-    String password,
-  ) onSubmitPage;
+  final Future<void> Function(LoginFormContext formContext, Data<bool> submitResult, String email, String password)
+      onSubmitPage;
 }
 
 class EmailInputData {
-  EmailInputData({required this.validateEmail, required this.onSubmitEmail});
+  EmailInputData({
+    required this.validateEmail,
+    required this.onSubmitEmail,
+  });
 
-  final InputValidationResult Function(
-    LoginFormContext formContext,
-    String? input,
-  ) validateEmail;
+  final InputValidationResult Function(LoginFormContext formContext, String? input) validateEmail;
 
-  final Future<void> Function(
-    LoginFormContext formContext,
-    InputData<String, String> data,
-  ) onSubmitEmail;
+  final Future<void> Function(LoginFormContext formContext, InputData<String, String> data) onSubmitEmail;
 }
 
 class PasswordInputData {
@@ -212,46 +219,42 @@ class PasswordInputData {
     required this.onSubmitPassword,
   });
 
-  final InputValidationResult Function(
-    LoginFormContext formContext,
-    String? input,
-  ) validatePassword;
+  final InputValidationResult Function(LoginFormContext formContext, String? input) validatePassword;
 
-  final Future<void> Function(
-    LoginFormContext formContext,
-    InputData<String, String> data,
-  ) onSubmitPassword;
+  final Future<void> Function(LoginFormContext formContext, InputData<String, String> data) onSubmitPassword;
 }
 
 // custom class code for VerificationPageArgs
 class VerificationPageArgs {
-  VerificationPageArgs({
-    required this.codeInputData,
-    required this.onSubmitPage,
-  });
+  VerificationPageArgs({required this.codeInputData, required this.onSubmitPage});
 
   final CodeInputData codeInputData;
   final submitResult = Data<bool>();
   final pageIndex = 1;
-  final Future<void> Function(
-    LoginFormContext formContext,
-    Data<bool> submitResult,
-    int code,
-  ) onSubmitPage;
+  final Future<void> Function(LoginFormContext formContext, Data<bool> submitResult, int code) onSubmitPage;
 }
 
 class CodeInputData {
-  CodeInputData({required this.validateCode, required this.onSubmitCode});
+  CodeInputData({
+    required this.validateCode,
+    required this.onSubmitCode,
+  });
 
-  final InputValidationResult Function(
-    LoginFormContext formContext,
-    String? input,
-  ) validateCode;
+  final InputValidationResult Function(LoginFormContext formContext, String? input) validateCode;
 
+  final Future<void> Function(LoginFormContext formContext, InputData<String, int> data) onSubmitCode;
+}
+
+// custom class code for LastPagePageArgs
+class LastPagePageArgs {
+  LastPagePageArgs({required this.onSubmitPage});
+
+  final submitResult = Data<bool>();
+  final pageIndex = 2;
   final Future<void> Function(
     LoginFormContext formContext,
-    InputData<String, int> data,
-  ) onSubmitCode;
+    Data<bool> submitResult,
+  ) onSubmitPage;
 }
 
 class LoginFormContext {}
