@@ -15,7 +15,7 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
     final formAnnotationObject = formClassTypeChecker.firstAnnotationOfExact(cls);
     final reader = ConstantReader(formAnnotationObject);
     final formName = reader.read('name').stringValue;
-    final formClassName = '${formName.pascalCase.replaceAll('Form', '').replaceAll('from', '')}Form';
+    final formClassName = '${formName.pascalCase.removeSuffix('form')}Form';
     final formContextClassName = '${formClassName}Context';
 
     List<_FormPageInfo> pageInfos = _extractFormPagesInfo(formAnnotationObject, formContextClassName);
@@ -163,7 +163,8 @@ List<_FormPageInfo> _extractFormPagesInfo(
     final pageName = reader.read('name').stringValue;
     List<_InputDataInfo> inputInfos = [];
     final submitResultType = reader.read('submitResultType').typeValue;
-    final pageArgsClassName = '${pageName.pascalCase}PageArgs';
+
+    final pageArgsClassName = '${pageName.pascalCase.removeSuffix('page')}PageArgs';
 
     for (var inputInfo in reader.read('items').listValue) {
       final reader = ConstantReader(inputInfo);
@@ -278,8 +279,9 @@ class _FormPageInfo {
 
     buffer.writeln('class $argsClassName {'); // start of class
     // constructor
-    final inputArgs = items.map((e) => "required this.${e.customClassName.camelCase}").join(',');
-    buffer.writeln('$argsClassName({ $inputArgs, required this.$onSubmitMethodName });\n');
+    final inputArgs = items.map((e) => "required this.${e.customClassName.camelCase}").join(',').trim();
+    buffer.writeln(
+        '$argsClassName({ ${inputArgs.isNotEmpty ? "$inputArgs," : ""} required this.$onSubmitMethodName });\n');
 
     // input properties
     for (var inputInfo in items) {

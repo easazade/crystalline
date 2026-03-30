@@ -81,7 +81,7 @@ void main() {
           submitResult.value = true;
         },
       ),
-      lastPagePageArgs: LastPagePageArgs(onSubmitPage: (formContext, submitResult) async {
+      lastPageArgs: LastPageArgs(onSubmitPage: (formContext, submitResult) async {
         // do something, send request to api and set result on submitData
         submitResult.value = true;
       }),
