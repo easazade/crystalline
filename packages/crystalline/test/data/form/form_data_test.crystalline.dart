@@ -27,20 +27,16 @@ class LoginForm extends FormData {
   LoginForm({
     required CredentialsPageArgs credentialsPageArgs,
     required VerificationPageArgs verificationPageArgs,
-    required LastPageArgs lastPageArgs,
   }) : _credentialsPageArgs = credentialsPageArgs,
        _verificationPageArgs = verificationPageArgs,
-       _lastPageArgs = lastPageArgs,
        formContext = LoginFormContext(
          credentialsPageArgs: credentialsPageArgs,
          verificationPageArgs: verificationPageArgs,
-         lastPageArgs: lastPageArgs,
        );
 
   // page properties
   final CredentialsPageArgs _credentialsPageArgs;
   final VerificationPageArgs _verificationPageArgs;
-  final LastPageArgs _lastPageArgs;
 
   final LoginFormContext formContext;
 
@@ -84,8 +80,6 @@ class LoginForm extends FormData {
         ),
       ],
     ),
-
-    FormPage(name: 'last-page', items: []),
   ];
 
   @override
@@ -170,42 +164,6 @@ class LoginForm extends FormData {
       final message =
           '! No value or failure was set on submitResult data inside onSubmitPage argument callback for verification page when it was called.';
       _verificationPageArgs.submitResult.failure = Failure(
-        message,
-        type: FailureType.error,
-      );
-      CrystallineGlobalConfig.logger.log(
-        CrystallineGlobalConfig.logger.redText(message),
-      );
-    }
-  }
-
-  Future<void> submitPagePage() async {
-    final page = pages[_lastPageArgs.pageIndex];
-    for (var inputItem in page.items) {
-      if (inputItem.isOptional) {
-        continue;
-      }
-      if (inputItem.hasNoValue) {
-        await inputItem.submit();
-        // if still no value return;
-        if (inputItem.hasNoValue) {
-          return;
-        }
-      }
-    }
-
-    // when all inputData items of the page have a value then submit page
-    await _lastPageArgs.onSubmitPage(formContext, _lastPageArgs.submitResult);
-
-    if (_lastPageArgs.submitResult.hasFailure &&
-        _lastPageArgs.submitResult.failure.type == null) {
-      _lastPageArgs.submitResult.failure = _lastPageArgs.submitResult.failure
-          .copyWith(type: FailureType.error);
-    } else if (_lastPageArgs.submitResult.hasNoValue &&
-        !_lastPageArgs.submitResult.hasFailure) {
-      final message =
-          '! No value or failure was set on submitResult data inside onSubmitPage argument callback for last-page page when it was called.';
-      _lastPageArgs.submitResult.failure = Failure(
         message,
         type: FailureType.error,
       );
@@ -328,26 +286,11 @@ class CodeInputData {
   onSubmitCode;
 }
 
-// custom class code for LastPageArgs
-class LastPageArgs {
-  LastPageArgs({required this.onSubmitPage});
-
-  final submitResult = Data<bool>();
-  final pageIndex = 2;
-  final Future<void> Function(
-    LoginFormContext formContext,
-    Data<bool> submitResult,
-  )
-  onSubmitPage;
-}
-
 class LoginFormContext {
   LoginFormContext({
     required this.credentialsPageArgs,
     required this.verificationPageArgs,
-    required this.lastPageArgs,
   });
   final CredentialsPageArgs credentialsPageArgs;
   final VerificationPageArgs verificationPageArgs;
-  final LastPageArgs lastPageArgs;
 }
