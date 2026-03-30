@@ -181,7 +181,7 @@ List<_FormPageInfo> _extractFormPagesInfo(
     List<_InputDataInfo> inputInfos = [];
     final submitResultType = reader.read('submitResultType').typeValue;
 
-    final pageArgsClassName = '${pageName.pascalCase.removeSuffix('page')}PageArgs';
+    final pageArgsClassName = '${pageName.pascalCase.removeSuffix('page')}Page';
     final argsClassPrivateVarName = '_${pageArgsClassName.camelCase}';
 
     for (var inputInfo in reader.read('items').listValue) {
@@ -239,8 +239,8 @@ class _InputDataInfo {
     return '''
     InputData<$inputTypeString, $valueTypeString>(
       name: "$name",
-      validator: ($inputTypeString? input) => $argsClassPrivateVarName.${customClassName.camelCase}.validate${name.pascalCase}(formContext, input),
-      onSubmit: (InputData<$inputTypeString, $valueTypeString> data) => $argsClassPrivateVarName.${customClassName.camelCase}.onSubmit${name.pascalCase}(formContext, data),
+      validator: ($inputTypeString? input) => $argsClassPrivateVarName.${argsClassName.camelCase}.validate${name.pascalCase}(formContext, input),
+      onSubmit: (InputData<$inputTypeString, $valueTypeString> data) => $argsClassPrivateVarName.${argsClassName.camelCase}.onSubmit${name.pascalCase}(formContext, data),
     )
     ''';
   }
@@ -250,8 +250,8 @@ class _InputDataInfo {
     final valueTypeString = valueType.displayNameWithNullability;
 
     return '''
-    class $customClassName {
-      $customClassName({
+    class $argsClassName {
+      $argsClassName({
         required this.validate${name.pascalCase},
         required this.onSubmit${name.pascalCase},
       });
@@ -264,7 +264,7 @@ class _InputDataInfo {
     ''';
   }
 
-  String get customClassName => '${name.pascalCase}InputDataArgs';
+  String get argsClassName => '${name.pascalCase}InputData';
 }
 
 class _FormPageInfo {
@@ -300,13 +300,13 @@ class _FormPageInfo {
 
     buffer.writeln('class $argsClassName {'); // start of class
     // constructor
-    final inputArgs = items.map((e) => "required this.${e.customClassName.camelCase}").join(',').trim();
+    final inputArgs = items.map((e) => "required this.${e.argsClassName.camelCase}").join(',').trim();
     buffer.writeln(
         '$argsClassName({ ${inputArgs.isNotEmpty ? "$inputArgs," : ""} required this.$onSubmitMethodName });\n');
 
     // input properties
     for (var inputInfo in items) {
-      buffer.writeln('final ${inputInfo.customClassName} ${inputInfo.customClassName.camelCase};');
+      buffer.writeln('final ${inputInfo.argsClassName} ${inputInfo.argsClassName.camelCase};');
     }
 
     // other properties

@@ -5,23 +5,26 @@ import '../../test_utils/test_logger.dart';
 
 part 'form_data_test.crystalline.dart';
 
-@FormClass(name: 'login-form', pages: [
-  FormPageInfo(
-    name: 'credentials',
-    items: [
-      InputDataInfo(name: 'email', inputType: String, valueType: String),
-      InputDataInfo(name: 'password', inputType: String, valueType: String),
-    ],
-    submitResultType: bool,
-  ),
-  FormPageInfo(
-    name: 'verification',
-    items: [
-      InputDataInfo(name: 'code', inputType: String, valueType: int),
-    ],
-    submitResultType: bool,
-  )
-])
+@FormClass(
+  name: 'login-form',
+  pages: [
+    FormPageInfo(
+      name: 'credentials',
+      items: [
+        InputDataInfo(name: 'email', inputType: String, valueType: String),
+        InputDataInfo(name: 'password', inputType: String, valueType: String),
+      ],
+      submitResultType: bool,
+    ),
+    FormPageInfo(
+      name: 'verification',
+      items: [
+        InputDataInfo(name: 'code', inputType: String, valueType: int),
+      ],
+      submitResultType: bool,
+    )
+  ],
+)
 class _LoginForm {}
 
 LoginForm createLoginForm({
@@ -38,8 +41,8 @@ LoginForm createLoginForm({
   )? onSubmitVerificationPage,
 }) {
   return LoginForm(
-    credentialsPageArgs: CredentialsPageArgs(
-      emailInputDataArgs: EmailInputDataArgs(
+    credentialsPage: CredentialsPage(
+      emailInputData: EmailInputData(
         validateEmail: (formContext, input) {
           if (input != null && input.endsWith('@gmail.com')) {
             return InputValidationResult.valid();
@@ -54,7 +57,7 @@ LoginForm createLoginForm({
           email.operation = null;
         },
       ),
-      passwordInputDataArgs: PasswordInputDataArgs(
+      passwordInputData: PasswordInputData(
         validatePassword: (formContext, input) {
           if (input == null || input.trim().isEmpty) {
             return InputValidationResult.error(Failure('please enter a password'));
@@ -71,8 +74,8 @@ LoginForm createLoginForm({
             submitResult.value = true;
           },
     ),
-    verificationPageArgs: VerificationPageArgs(
-      codeInputDataArgs: CodeInputDataArgs(
+    verificationPage: VerificationPage(
+      codeInputData: CodeInputData(
         validateCode: (formContext, input) {
           if (input != null && input.length == 4 && int.tryParse(input) != null) {
             return InputValidationResult.valid();

@@ -25,14 +25,14 @@ part of 'form_data_test.dart';
 // Generating custom form class "LoginForm"
 class LoginForm extends FormData {
   LoginForm({
-    required CredentialsPageArgs credentialsPageArgs,
-    required VerificationPageArgs verificationPageArgs,
-  }) : _credentialsPageArgs = credentialsPageArgs,
-       _verificationPageArgs = verificationPageArgs;
+    required CredentialsPage credentialsPage,
+    required VerificationPage verificationPage,
+  }) : _credentialsPage = credentialsPage,
+       _verificationPage = verificationPage;
 
   // page properties
-  final CredentialsPageArgs _credentialsPageArgs;
-  final VerificationPageArgs _verificationPageArgs;
+  final CredentialsPage _credentialsPage;
+  final VerificationPage _verificationPage;
 
   late final LoginFormContext formContext = LoginFormContext(pages);
 
@@ -46,19 +46,17 @@ class LoginForm extends FormData {
       items: [
         InputData<String, String>(
           name: "email",
-          validator: (String? input) => _credentialsPageArgs.emailInputDataArgs
-              .validateEmail(formContext, input),
-          onSubmit: (InputData<String, String> data) => _credentialsPageArgs
-              .emailInputDataArgs
-              .onSubmitEmail(formContext, data),
+          validator: (String? input) =>
+              _credentialsPage.emailInputData.validateEmail(formContext, input),
+          onSubmit: (InputData<String, String> data) =>
+              _credentialsPage.emailInputData.onSubmitEmail(formContext, data),
         ),
         InputData<String, String>(
           name: "password",
-          validator: (String? input) => _credentialsPageArgs
-              .passwordInputDataArgs
+          validator: (String? input) => _credentialsPage.passwordInputData
               .validatePassword(formContext, input),
-          onSubmit: (InputData<String, String> data) => _credentialsPageArgs
-              .passwordInputDataArgs
+          onSubmit: (InputData<String, String> data) => _credentialsPage
+              .passwordInputData
               .onSubmitPassword(formContext, data),
         ),
       ],
@@ -69,11 +67,10 @@ class LoginForm extends FormData {
       items: [
         InputData<String, int>(
           name: "code",
-          validator: (String? input) => _verificationPageArgs.codeInputDataArgs
-              .validateCode(formContext, input),
-          onSubmit: (InputData<String, int> data) => _verificationPageArgs
-              .codeInputDataArgs
-              .onSubmitCode(formContext, data),
+          validator: (String? input) =>
+              _verificationPage.codeInputData.validateCode(formContext, input),
+          onSubmit: (InputData<String, int> data) =>
+              _verificationPage.codeInputData.onSubmitCode(formContext, data),
         ),
       ],
     ),
@@ -89,7 +86,7 @@ class LoginForm extends FormData {
   LoginForm copy() => throw Exception('cannot copy a generated FormData class');
 
   Future<void> submitCredentialsPage() async {
-    final page = pages[_credentialsPageArgs.pageIndex];
+    final page = pages[_credentialsPage.pageIndex];
     for (var inputItem in page.items) {
       if (inputItem.isOptional) {
         continue;
@@ -104,7 +101,7 @@ class LoginForm extends FormData {
     }
 
     // when all inputData items of the page have a value then submit page
-    await _credentialsPageArgs.onSubmitPage(
+    await _credentialsPage.onSubmitPage(
       formContext,
       formContext.credentialsPage.submitResult,
       page.items[0].value,
@@ -133,7 +130,7 @@ class LoginForm extends FormData {
   }
 
   Future<void> submitVerificationPage() async {
-    final page = pages[_verificationPageArgs.pageIndex];
+    final page = pages[_verificationPage.pageIndex];
     for (var inputItem in page.items) {
       if (inputItem.isOptional) {
         continue;
@@ -148,7 +145,7 @@ class LoginForm extends FormData {
     }
 
     // when all inputData items of the page have a value then submit page
-    await _verificationPageArgs.onSubmitPage(
+    await _verificationPage.onSubmitPage(
       formContext,
       formContext.verificationPage.submitResult,
       page.items[0].value,
@@ -198,16 +195,16 @@ class LoginForm extends FormData {
   ]);
 }
 
-// custom class code for CredentialsPageArgs
-class CredentialsPageArgs {
-  CredentialsPageArgs({
-    required this.emailInputDataArgs,
-    required this.passwordInputDataArgs,
+// custom class code for CredentialsPage
+class CredentialsPage {
+  CredentialsPage({
+    required this.emailInputData,
+    required this.passwordInputData,
     required this.onSubmitPage,
   });
 
-  final EmailInputDataArgs emailInputDataArgs;
-  final PasswordInputDataArgs passwordInputDataArgs;
+  final EmailInputData emailInputData;
+  final PasswordInputData passwordInputData;
   final pageIndex = 0;
   final Future<void> Function(
     LoginFormContext formContext,
@@ -218,11 +215,8 @@ class CredentialsPageArgs {
   onSubmitPage;
 }
 
-class EmailInputDataArgs {
-  EmailInputDataArgs({
-    required this.validateEmail,
-    required this.onSubmitEmail,
-  });
+class EmailInputData {
+  EmailInputData({required this.validateEmail, required this.onSubmitEmail});
 
   final InputValidationResult Function(
     LoginFormContext formContext,
@@ -237,8 +231,8 @@ class EmailInputDataArgs {
   onSubmitEmail;
 }
 
-class PasswordInputDataArgs {
-  PasswordInputDataArgs({
+class PasswordInputData {
+  PasswordInputData({
     required this.validatePassword,
     required this.onSubmitPassword,
   });
@@ -256,14 +250,11 @@ class PasswordInputDataArgs {
   onSubmitPassword;
 }
 
-// custom class code for VerificationPageArgs
-class VerificationPageArgs {
-  VerificationPageArgs({
-    required this.codeInputDataArgs,
-    required this.onSubmitPage,
-  });
+// custom class code for VerificationPage
+class VerificationPage {
+  VerificationPage({required this.codeInputData, required this.onSubmitPage});
 
-  final CodeInputDataArgs codeInputDataArgs;
+  final CodeInputData codeInputData;
   final pageIndex = 1;
   final Future<void> Function(
     LoginFormContext formContext,
@@ -273,8 +264,8 @@ class VerificationPageArgs {
   onSubmitPage;
 }
 
-class CodeInputDataArgs {
-  CodeInputDataArgs({required this.validateCode, required this.onSubmitCode});
+class CodeInputData {
+  CodeInputData({required this.validateCode, required this.onSubmitCode});
 
   final InputValidationResult Function(
     LoginFormContext formContext,
