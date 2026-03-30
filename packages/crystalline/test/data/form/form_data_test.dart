@@ -39,10 +39,22 @@ LoginForm createLoginForm({
     Data<bool> submitResult,
     int code,
   )? onSubmitVerificationPage,
+  String? emailHint,
+  String? emailInitialValue,
+  Operation? emailOperation,
+  Failure? emailFailure,
+  List<dynamic>? emailSideEffects,
+  bool emailIsOptional = false,
 }) {
   return LoginForm(
     credentialsPage: CredentialsPage(
       emailInputData: EmailInputData(
+        isOptional: emailIsOptional,
+        hint: emailHint,
+        initialValue: emailInitialValue,
+        operation: emailOperation,
+        failure: emailFailure,
+        sideEffects: emailSideEffects,
         validateEmail: (formContext, input) {
           if (input != null && input.endsWith('@gmail.com')) {
             return InputValidationResult.valid();
@@ -386,6 +398,118 @@ void main() {
 
       expect(loginForm.credentialsPage.password.hasFailure, isTrue);
       expect(loginForm.credentialsPage.password.hasNoOperation, isTrue);
+    });
+  });
+
+  group('EmailInputData constructor args -> InputData -', () {
+    test('hint from EmailInputData is applied and updates notify form and item', () {
+      final form = createLoginForm(emailHint: 'Your email address');
+      final email = form.credentialsPage.email;
+
+      expect(email.hint, 'Your email address');
+
+      var formNotifications = 0;
+      var itemNotifications = 0;
+      form.observers.add(Observer(() => formNotifications++));
+      email.observers.add(Observer(() => itemNotifications++));
+
+      email.hint = 'Updated hint';
+
+      expect(formNotifications, 1);
+      expect(itemNotifications, 1);
+      expect(email.hint, 'Updated hint');
+    });
+
+    test('initialValue from EmailInputData sets value and value changes notify form and item', () {
+      final form = createLoginForm(emailInitialValue: 'prefilled@gmail.com');
+      final email = form.credentialsPage.email;
+
+      expect(email.hasValue, isTrue);
+      expect(email.value, 'prefilled@gmail.com');
+
+      var formNotifications = 0;
+      var itemNotifications = 0;
+      form.observers.add(Observer(() => formNotifications++));
+      email.observers.add(Observer(() => itemNotifications++));
+
+      email.value = 'other@gmail.com';
+
+      expect(formNotifications, 1);
+      expect(itemNotifications, 1);
+      expect(email.value, 'other@gmail.com');
+    });
+
+    test('operation from EmailInputData is applied and clearing it notifies form and item', () {
+      final form = createLoginForm(emailOperation: Operation.read);
+      final email = form.credentialsPage.email;
+
+      expect(email.isReading, isTrue);
+
+      var formNotifications = 0;
+      var itemNotifications = 0;
+      form.observers.add(Observer(() => formNotifications++));
+      email.observers.add(Observer(() => itemNotifications++));
+
+      email.operation = null;
+
+      expect(formNotifications, 1);
+      expect(itemNotifications, 1);
+      expect(email.hasNoOperation, isTrue);
+    });
+
+    test('failure from EmailInputData is applied and clearing it notifies form and item', () {
+      final form = createLoginForm(emailFailure: Failure('initial failure'));
+      final email = form.credentialsPage.email;
+
+      expect(email.hasFailure, isTrue);
+      expect(email.failure.message, 'initial failure');
+
+      var formNotifications = 0;
+      var itemNotifications = 0;
+      form.observers.add(Observer(() => formNotifications++));
+      email.observers.add(Observer(() => itemNotifications++));
+
+      email.failure = null;
+
+      expect(formNotifications, 1);
+      expect(itemNotifications, 1);
+      expect(email.hasFailure, isFalse);
+    });
+
+    test('sideEffects from EmailInputData are applied and adding more notifies form and item', () {
+      final form = createLoginForm(emailSideEffects: ['seed']);
+      final email = form.credentialsPage.email;
+
+      expect(email.sideEffects.all, contains('seed'));
+
+      var formNotifications = 0;
+      var itemNotifications = 0;
+      form.observers.add(Observer(() => formNotifications++));
+      email.observers.add(Observer(() => itemNotifications++));
+
+      email.sideEffects.add('extra');
+
+      expect(formNotifications, 1);
+      expect(itemNotifications, 1);
+      expect(email.sideEffects.all, containsAll(['seed', 'extra']));
+    });
+
+    test('isOptional from EmailInputData is applied and toggling notifies form and item', () {
+      final form = createLoginForm(emailIsOptional: true);
+      final email = form.credentialsPage.email;
+
+      expect(email.isOptional, isTrue);
+
+      var formNotifications = 0;
+      var itemNotifications = 0;
+      form.observers.add(Observer(() => formNotifications++));
+      email.observers.add(Observer(() => itemNotifications++));
+
+      email.isOptional = false;
+
+      expect(formNotifications, 1);
+      expect(itemNotifications, 1);
+      expect(email.isOptional, isFalse);
     });
   });
 }

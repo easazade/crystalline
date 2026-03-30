@@ -27,8 +27,8 @@ class LoginForm extends FormData {
   LoginForm({
     required CredentialsPage credentialsPage,
     required VerificationPage verificationPage,
-  }) : _credentialsPageArgs = credentialsPage,
-       _verificationPageArgs = verificationPage;
+  })  : _credentialsPageArgs = credentialsPage,
+        _verificationPageArgs = verificationPage;
 
   // page properties
   final CredentialsPage _credentialsPageArgs;
@@ -52,11 +52,9 @@ class LoginForm extends FormData {
           operation: _credentialsPageArgs.emailInputData.operation,
           failure: _credentialsPageArgs.emailInputData.failure,
           sideEffects: _credentialsPageArgs.emailInputData.sideEffects,
-          validator: (String? input) => _credentialsPageArgs.emailInputData
-              .validateEmail(formContext, input),
-          onSubmit: (InputData<String, String> data) => _credentialsPageArgs
-              .emailInputData
-              .onSubmitEmail(formContext, data),
+          validator: (String? input) => _credentialsPageArgs.emailInputData.validateEmail(formContext, input),
+          onSubmit: (InputData<String, String> data) =>
+              _credentialsPageArgs.emailInputData.onSubmitEmail(formContext, data),
         ),
         InputData<String, String>(
           name: "password",
@@ -66,15 +64,12 @@ class LoginForm extends FormData {
           operation: _credentialsPageArgs.passwordInputData.operation,
           failure: _credentialsPageArgs.passwordInputData.failure,
           sideEffects: _credentialsPageArgs.passwordInputData.sideEffects,
-          validator: (String? input) => _credentialsPageArgs.passwordInputData
-              .validatePassword(formContext, input),
-          onSubmit: (InputData<String, String> data) => _credentialsPageArgs
-              .passwordInputData
-              .onSubmitPassword(formContext, data),
+          validator: (String? input) => _credentialsPageArgs.passwordInputData.validatePassword(formContext, input),
+          onSubmit: (InputData<String, String> data) =>
+              _credentialsPageArgs.passwordInputData.onSubmitPassword(formContext, data),
         ),
       ],
     ),
-
     FormPage(
       name: 'verification',
       items: [
@@ -86,11 +81,9 @@ class LoginForm extends FormData {
           operation: _verificationPageArgs.codeInputData.operation,
           failure: _verificationPageArgs.codeInputData.failure,
           sideEffects: _verificationPageArgs.codeInputData.sideEffects,
-          validator: (String? input) => _verificationPageArgs.codeInputData
-              .validateCode(formContext, input),
-          onSubmit: (InputData<String, int> data) => _verificationPageArgs
-              .codeInputData
-              .onSubmitCode(formContext, data),
+          validator: (String? input) => _verificationPageArgs.codeInputData.validateCode(formContext, input),
+          onSubmit: (InputData<String, int> data) =>
+              _verificationPageArgs.codeInputData.onSubmitCode(formContext, data),
         ),
       ],
     ),
@@ -130,11 +123,8 @@ class LoginForm extends FormData {
 
     if (formContext.credentialsPage.submitResult.hasFailure &&
         formContext.credentialsPage.submitResult.failure.type == null) {
-      formContext.credentialsPage.submitResult.failure = formContext
-          .credentialsPage
-          .submitResult
-          .failure
-          .copyWith(type: FailureType.error);
+      formContext.credentialsPage.submitResult.failure =
+          formContext.credentialsPage.submitResult.failure.copyWith(type: FailureType.error);
     } else if (formContext.credentialsPage.submitResult.hasNoValue &&
         !formContext.credentialsPage.submitResult.hasFailure) {
       final message =
@@ -173,11 +163,8 @@ class LoginForm extends FormData {
 
     if (formContext.verificationPage.submitResult.hasFailure &&
         formContext.verificationPage.submitResult.failure.type == null) {
-      formContext.verificationPage.submitResult.failure = formContext
-          .verificationPage
-          .submitResult
-          .failure
-          .copyWith(type: FailureType.error);
+      formContext.verificationPage.submitResult.failure =
+          formContext.verificationPage.submitResult.failure.copyWith(type: FailureType.error);
     } else if (formContext.verificationPage.submitResult.hasNoValue &&
         !formContext.verificationPage.submitResult.hasFailure) {
       final message =
@@ -206,13 +193,13 @@ class LoginForm extends FormData {
 
   @override
   int get hashCode => Object.hashAll([
-    pages,
-    runtimeType,
-    items,
-    operationOrNull,
-    failureOrNull,
-    sideEffects.all,
-  ]);
+        pages,
+        runtimeType,
+        items,
+        operationOrNull,
+        failureOrNull,
+        sideEffects.all,
+      ]);
 }
 
 // custom class code for CredentialsPage
@@ -231,8 +218,7 @@ class CredentialsPage {
     Data<bool> submitResult,
     String email,
     String password,
-  )
-  onSubmitPage;
+  ) onSubmitPage;
 }
 
 class EmailInputData {
@@ -256,13 +242,11 @@ class EmailInputData {
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
-  )
-  validateEmail;
+  ) validateEmail;
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, String> data,
-  )
-  onSubmitEmail;
+  ) onSubmitEmail;
 }
 
 class PasswordInputData {
@@ -286,13 +270,11 @@ class PasswordInputData {
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
-  )
-  validatePassword;
+  ) validatePassword;
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, String> data,
-  )
-  onSubmitPassword;
+  ) onSubmitPassword;
 }
 
 // custom class code for VerificationPage
@@ -305,8 +287,7 @@ class VerificationPage {
     LoginFormContext formContext,
     Data<bool> submitResult,
     int code,
-  )
-  onSubmitPage;
+  ) onSubmitPage;
 }
 
 class CodeInputData {
@@ -330,13 +311,11 @@ class CodeInputData {
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
-  )
-  validateCode;
+  ) validateCode;
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, int> data,
-  )
-  onSubmitCode;
+  ) onSubmitCode;
 }
 
 class CredentialsContext {
@@ -346,10 +325,8 @@ class CredentialsContext {
 
   final submitResult = Data<bool>();
 
-  InputData<String, String> get email =>
-      _pages[index].items[0] as InputData<String, String>;
-  InputData<String, String> get password =>
-      _pages[index].items[1] as InputData<String, String>;
+  InputData<String, String> get email => _pages[index].items[0] as InputData<String, String>;
+  InputData<String, String> get password => _pages[index].items[1] as InputData<String, String>;
 }
 
 class VerificationContext {
@@ -359,13 +336,12 @@ class VerificationContext {
 
   final submitResult = Data<bool>();
 
-  InputData<String, int> get code =>
-      _pages[index].items[0] as InputData<String, int>;
+  InputData<String, int> get code => _pages[index].items[0] as InputData<String, int>;
 }
 
 class LoginFormContext {
   LoginFormContext(this._pages);
-  List<FormPage> _pages;
+  final List<FormPage> _pages;
 
   late final credentialsPage = CredentialsContext(_pages, 0);
   late final verificationPage = VerificationContext(_pages, 1);
