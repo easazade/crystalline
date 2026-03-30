@@ -43,12 +43,13 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
       class $formClassName extends FormData {
         $formClassName({
           ${pageInfos.map((e) => 'required ${e.argsClassName} ${e.argsClassName.camelCase}').join(',')}
-        }): ${pageInfos.map((e) => '${e.argsClassPrivateVarName} = ${e.argsClassName.camelCase}').join(',')};
+        }): ${pageInfos.map((e) => '${e.argsClassPrivateVarName} = ${e.argsClassName.camelCase}').join(',').addSuffixIfNotEmpty(',')}
+            formContext = $formContextClassName(${pageInfos.map((e) => '${e.argsClassName.camelCase}:${e.argsClassName.camelCase}').join(',')});
 
         // page properties
         ${pageInfos.map((e) => 'final ${e.argsClassName} ${e.argsClassPrivateVarName};').join('\n')}
 
-        final $formContextClassName formContext = $formContextClassName();
+        final $formContextClassName formContext;
 
         @override
         String get name => '$formName';
@@ -141,6 +142,10 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
     buffer.writeln(
       '''
       class $formContextClassName {
+        $formContextClassName({
+          ${pageInfos.map((e) => 'required this.${e.argsClassName.camelCase}').join(',')}
+        });
+        ${pageInfos.map((e) => 'final ${e.argsClassName} ${e.argsClassName.camelCase};').join('\n')}
       }
       ''',
     );

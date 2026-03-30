@@ -65,6 +65,14 @@ extension StringX on String {
     }
     return result;
   }
+
+  String addSuffixIfNotEmpty(String suffix) {
+    if (trim().isNotEmpty) {
+      return '$this$suffix';
+    } else {
+      return this;
+    }
+  }
 }
 
 bool _endsWithIgnoreCase(String value, String suffix) {
