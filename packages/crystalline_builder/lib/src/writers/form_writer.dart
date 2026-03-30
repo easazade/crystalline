@@ -42,11 +42,11 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
       '''
       class $formClassName extends FormData {
         $formClassName({
-          ${pageInfos.map((e) => 'required this.${e.argsClassName.camelCase}').join(',')}
-        });
+          ${pageInfos.map((e) => 'required ${e.argsClassName} ${e.argsClassName.camelCase}').join(',')}
+        }): ${pageInfos.map((e) => '${e.argsClassPrivateVarName} = ${e.argsClassName.camelCase}').join(',')};
 
         // page properties
-        ${pageInfos.map((e) => 'final ${e.argsClassName} ${e.argsClassName.camelCase};').join('\n')}
+        ${pageInfos.map((e) => 'final ${e.argsClassName} ${e.argsClassPrivateVarName};').join('\n')}
 
         final $formContextClassName formContext = $formContextClassName();
 
@@ -70,7 +70,7 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
       buffer.writeln(
         '''
           Future<void> ${pageInfo.submitMethodName}() async {
-            final page = pages[${pageInfo.argsClassName.camelCase}.pageIndex];
+            final page = pages[${pageInfo.argsClassPrivateVarName}.pageIndex];
             for (var inputItem in page.items) {
               if (inputItem.isOptional) {
                 continue;
@@ -85,18 +85,18 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
             }
 
             // when all inputData items of the page have a value then submit page
-            await ${pageInfo.argsClassName.camelCase}.onSubmitPage(
+            await ${pageInfo.argsClassPrivateVarName}.onSubmitPage(
                 formContext,
-                ${pageInfo.argsClassName.camelCase}.submitResult,
+                ${pageInfo.argsClassPrivateVarName}.submitResult,
                 ${pageInfo.items.mapIndexed((index, _) => "page.items[$index].value").join(',\n')}
               );
 
-            if (${pageInfo.argsClassName.camelCase}.submitResult.hasFailure && ${pageInfo.argsClassName.camelCase}.submitResult.failure.type == null) {
-              ${pageInfo.argsClassName.camelCase}.submitResult.failure =
-                  ${pageInfo.argsClassName.camelCase}.submitResult.failure.copyWith(type: FailureType.error);
-            } else if (${pageInfo.argsClassName.camelCase}.submitResult.hasNoValue && !${pageInfo.argsClassName.camelCase}.submitResult.hasFailure) {
+            if (${pageInfo.argsClassPrivateVarName}.submitResult.hasFailure && ${pageInfo.argsClassPrivateVarName}.submitResult.failure.type == null) {
+              ${pageInfo.argsClassPrivateVarName}.submitResult.failure =
+                  ${pageInfo.argsClassPrivateVarName}.submitResult.failure.copyWith(type: FailureType.error);
+            } else if (${pageInfo.argsClassPrivateVarName}.submitResult.hasNoValue && !${pageInfo.argsClassPrivateVarName}.submitResult.hasFailure) {
               final message = '! No value or failure was set on submitResult data inside ${pageInfo.onSubmitMethodName} argument callback for ${pageInfo.name} page when it was called.';
-              ${pageInfo.argsClassName.camelCase}.submitResult.failure = Failure(message, type: FailureType.error);
+              ${pageInfo.argsClassPrivateVarName}.submitResult.failure = Failure(message, type: FailureType.error);
               CrystallineGlobalConfig.logger.log(CrystallineGlobalConfig.logger.redText(message));
             }  
           }
@@ -138,7 +138,12 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
     }
 
     // generate form context class
-    buffer.writeln('class $formContextClassName {}');
+    buffer.writeln(
+      '''
+      class $formContextClassName {
+      }
+      ''',
+    );
   }
 }
 
@@ -165,6 +170,7 @@ List<_FormPageInfo> _extractFormPagesInfo(
     final submitResultType = reader.read('submitResultType').typeValue;
 
     final pageArgsClassName = '${pageName.pascalCase.removeSuffix('page')}PageArgs';
+    final argsClassPrivateVarName = '_${pageArgsClassName.camelCase}';
 
     for (var inputInfo in reader.read('items').listValue) {
       final reader = ConstantReader(inputInfo);
@@ -176,6 +182,7 @@ List<_FormPageInfo> _extractFormPagesInfo(
         _InputDataInfo(
           name: inputName,
           pageArgsClassName: pageArgsClassName,
+          argsClassPrivateVarName: argsClassPrivateVarName,
           formContextClassName: formContextClassName,
           inputType: inputType,
           valueType: valueType,
@@ -189,6 +196,7 @@ List<_FormPageInfo> _extractFormPagesInfo(
       submitResultType: submitResultType.displayNameWithNullability!,
       formContextClassName: formContextClassName,
       argsClassName: pageArgsClassName,
+      argsClassPrivateVarName: argsClassPrivateVarName,
       pageIndex: i,
     ));
   }
@@ -200,6 +208,7 @@ class _InputDataInfo {
   const _InputDataInfo({
     required this.name,
     required this.pageArgsClassName,
+    required this.argsClassPrivateVarName,
     required this.formContextClassName,
     required this.inputType,
     required this.valueType,
@@ -208,6 +217,7 @@ class _InputDataInfo {
   final String name;
   final String pageArgsClassName;
   final String formContextClassName;
+  final String argsClassPrivateVarName;
   final DartType inputType;
   final DartType valueType;
 
@@ -217,8 +227,8 @@ class _InputDataInfo {
     return '''
     InputData<$inputTypeString, $valueTypeString>(
       name: "$name",
-      validator: ($inputTypeString? input) => ${pageArgsClassName.camelCase}.${customClassName.camelCase}.validate${name.pascalCase}(formContext, input),
-      onSubmit: (InputData<$inputTypeString, $valueTypeString> data) => ${pageArgsClassName.camelCase}.${customClassName.camelCase}.onSubmit${name.pascalCase}(formContext, data),
+      validator: ($inputTypeString? input) => $argsClassPrivateVarName.${customClassName.camelCase}.validate${name.pascalCase}(formContext, input),
+      onSubmit: (InputData<$inputTypeString, $valueTypeString> data) => $argsClassPrivateVarName.${customClassName.camelCase}.onSubmit${name.pascalCase}(formContext, data),
     )
     ''';
   }
@@ -253,11 +263,13 @@ class _FormPageInfo {
     required this.submitResultType,
     required this.pageIndex,
     required this.argsClassName,
+    required this.argsClassPrivateVarName,
   });
 
   final String name;
   final String formContextClassName;
   final String argsClassName;
+  final String argsClassPrivateVarName;
   final String submitResultType;
   final List<_InputDataInfo> items;
   final int pageIndex;

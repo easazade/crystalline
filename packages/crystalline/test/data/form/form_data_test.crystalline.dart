@@ -25,15 +25,17 @@ part of 'form_data_test.dart';
 // Generating custom form class "LoginForm"
 class LoginForm extends FormData {
   LoginForm({
-    required this.credentialsPageArgs,
-    required this.verificationPageArgs,
-    required this.lastPageArgs,
-  });
+    required CredentialsPageArgs credentialsPageArgs,
+    required VerificationPageArgs verificationPageArgs,
+    required LastPageArgs lastPageArgs,
+  })  : _credentialsPageArgs = credentialsPageArgs,
+        _verificationPageArgs = verificationPageArgs,
+        _lastPageArgs = lastPageArgs;
 
   // page properties
-  final CredentialsPageArgs credentialsPageArgs;
-  final VerificationPageArgs verificationPageArgs;
-  final LastPageArgs lastPageArgs;
+  final CredentialsPageArgs _credentialsPageArgs;
+  final VerificationPageArgs _verificationPageArgs;
+  final LastPageArgs _lastPageArgs;
 
   final LoginFormContext formContext = LoginFormContext();
 
@@ -47,15 +49,15 @@ class LoginForm extends FormData {
       items: [
         InputData<String, String>(
           name: "email",
-          validator: (String? input) => credentialsPageArgs.emailInputData.validateEmail(formContext, input),
+          validator: (String? input) => _credentialsPageArgs.emailInputData.validateEmail(formContext, input),
           onSubmit: (InputData<String, String> data) =>
-              credentialsPageArgs.emailInputData.onSubmitEmail(formContext, data),
+              _credentialsPageArgs.emailInputData.onSubmitEmail(formContext, data),
         ),
         InputData<String, String>(
           name: "password",
-          validator: (String? input) => credentialsPageArgs.passwordInputData.validatePassword(formContext, input),
+          validator: (String? input) => _credentialsPageArgs.passwordInputData.validatePassword(formContext, input),
           onSubmit: (InputData<String, String> data) =>
-              credentialsPageArgs.passwordInputData.onSubmitPassword(formContext, data),
+              _credentialsPageArgs.passwordInputData.onSubmitPassword(formContext, data),
         ),
       ],
     ),
@@ -64,8 +66,9 @@ class LoginForm extends FormData {
       items: [
         InputData<String, int>(
           name: "code",
-          validator: (String? input) => verificationPageArgs.codeInputData.validateCode(formContext, input),
-          onSubmit: (InputData<String, int> data) => verificationPageArgs.codeInputData.onSubmitCode(formContext, data),
+          validator: (String? input) => _verificationPageArgs.codeInputData.validateCode(formContext, input),
+          onSubmit: (InputData<String, int> data) =>
+              _verificationPageArgs.codeInputData.onSubmitCode(formContext, data),
         ),
       ],
     ),
@@ -79,7 +82,7 @@ class LoginForm extends FormData {
   LoginForm copy() => throw Exception('cannot copy a generated FormData class');
 
   Future<void> submitCredentialsPage() async {
-    final page = pages[credentialsPageArgs.pageIndex];
+    final page = pages[_credentialsPageArgs.pageIndex];
     for (var inputItem in page.items) {
       if (inputItem.isOptional) {
         continue;
@@ -94,20 +97,20 @@ class LoginForm extends FormData {
     }
 
     // when all inputData items of the page have a value then submit page
-    await credentialsPageArgs.onSubmitPage(
+    await _credentialsPageArgs.onSubmitPage(
       formContext,
-      credentialsPageArgs.submitResult,
+      _credentialsPageArgs.submitResult,
       page.items[0].value,
       page.items[1].value,
     );
 
-    if (credentialsPageArgs.submitResult.hasFailure && credentialsPageArgs.submitResult.failure.type == null) {
-      credentialsPageArgs.submitResult.failure =
-          credentialsPageArgs.submitResult.failure.copyWith(type: FailureType.error);
-    } else if (credentialsPageArgs.submitResult.hasNoValue && !credentialsPageArgs.submitResult.hasFailure) {
+    if (_credentialsPageArgs.submitResult.hasFailure && _credentialsPageArgs.submitResult.failure.type == null) {
+      _credentialsPageArgs.submitResult.failure =
+          _credentialsPageArgs.submitResult.failure.copyWith(type: FailureType.error);
+    } else if (_credentialsPageArgs.submitResult.hasNoValue && !_credentialsPageArgs.submitResult.hasFailure) {
       final message =
           '! No value or failure was set on submitResult data inside onSubmitPage argument callback for credentials page when it was called.';
-      credentialsPageArgs.submitResult.failure = Failure(
+      _credentialsPageArgs.submitResult.failure = Failure(
         message,
         type: FailureType.error,
       );
@@ -118,7 +121,7 @@ class LoginForm extends FormData {
   }
 
   Future<void> submitVerificationPage() async {
-    final page = pages[verificationPageArgs.pageIndex];
+    final page = pages[_verificationPageArgs.pageIndex];
     for (var inputItem in page.items) {
       if (inputItem.isOptional) {
         continue;
@@ -133,19 +136,19 @@ class LoginForm extends FormData {
     }
 
     // when all inputData items of the page have a value then submit page
-    await verificationPageArgs.onSubmitPage(
+    await _verificationPageArgs.onSubmitPage(
       formContext,
-      verificationPageArgs.submitResult,
+      _verificationPageArgs.submitResult,
       page.items[0].value,
     );
 
-    if (verificationPageArgs.submitResult.hasFailure && verificationPageArgs.submitResult.failure.type == null) {
-      verificationPageArgs.submitResult.failure =
-          verificationPageArgs.submitResult.failure.copyWith(type: FailureType.error);
-    } else if (verificationPageArgs.submitResult.hasNoValue && !verificationPageArgs.submitResult.hasFailure) {
+    if (_verificationPageArgs.submitResult.hasFailure && _verificationPageArgs.submitResult.failure.type == null) {
+      _verificationPageArgs.submitResult.failure =
+          _verificationPageArgs.submitResult.failure.copyWith(type: FailureType.error);
+    } else if (_verificationPageArgs.submitResult.hasNoValue && !_verificationPageArgs.submitResult.hasFailure) {
       final message =
           '! No value or failure was set on submitResult data inside onSubmitPage argument callback for verification page when it was called.';
-      verificationPageArgs.submitResult.failure = Failure(
+      _verificationPageArgs.submitResult.failure = Failure(
         message,
         type: FailureType.error,
       );
@@ -156,7 +159,7 @@ class LoginForm extends FormData {
   }
 
   Future<void> submitPagePage() async {
-    final page = pages[lastPageArgs.pageIndex];
+    final page = pages[_lastPageArgs.pageIndex];
     for (var inputItem in page.items) {
       if (inputItem.isOptional) {
         continue;
@@ -171,14 +174,14 @@ class LoginForm extends FormData {
     }
 
     // when all inputData items of the page have a value then submit page
-    await lastPageArgs.onSubmitPage(formContext, lastPageArgs.submitResult);
+    await _lastPageArgs.onSubmitPage(formContext, _lastPageArgs.submitResult);
 
-    if (lastPageArgs.submitResult.hasFailure && lastPageArgs.submitResult.failure.type == null) {
-      lastPageArgs.submitResult.failure = lastPageArgs.submitResult.failure.copyWith(type: FailureType.error);
-    } else if (lastPageArgs.submitResult.hasNoValue && !lastPageArgs.submitResult.hasFailure) {
+    if (_lastPageArgs.submitResult.hasFailure && _lastPageArgs.submitResult.failure.type == null) {
+      _lastPageArgs.submitResult.failure = _lastPageArgs.submitResult.failure.copyWith(type: FailureType.error);
+    } else if (_lastPageArgs.submitResult.hasNoValue && !_lastPageArgs.submitResult.hasFailure) {
       final message =
           '! No value or failure was set on submitResult data inside onSubmitPage argument callback for last-page page when it was called.';
-      lastPageArgs.submitResult.failure = Failure(
+      _lastPageArgs.submitResult.failure = Failure(
         message,
         type: FailureType.error,
       );
