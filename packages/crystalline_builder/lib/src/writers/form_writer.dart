@@ -90,7 +90,7 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
             await ${pageInfo.argsClassPrivateVarName}.onSubmitPage(
                 formContext,
                 formContext.${pageInfo.contextClassInstanceVarName}.submitResult,
-                ${pageInfo.items.mapIndexed((index, _) => "page.items[$index].value").join(',\n')}
+                ${pageInfo.submitValuesCallbackArgsClassName}(${pageInfo.items.mapIndexed((index, _) => "page.items[$index].value").join(',\n')}),
               );
 
             if (formContext.${pageInfo.contextClassInstanceVarName}.submitResult.hasFailure && formContext.${pageInfo.contextClassInstanceVarName}.submitResult.failure.type == null) {
@@ -137,12 +137,17 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
 
     // write custom args for pages and inputs
     for (final pageInfo in pageInfos) {
-      buffer.writeln(pageInfo.toArgsClassCode());
+      buffer.writeln(pageInfo.toFormArgumentsClassCode());
     }
 
     // write custom args for pages
     for (final pageInfo in pageInfos) {
       buffer.writeln(pageInfo.toContextClassCode());
+    }
+
+    // write submit values argument class
+    for (final pageInfo in pageInfos) {
+      buffer.writeln(pageInfo.toOnSubmitCallbackArgumentsClass());
     }
 
     // generate form context class
@@ -329,13 +334,14 @@ class _FormPageInfo {
 
   String get submitMethodName => 'submit${nameWithPageExtension.pascalCase}';
   String get onSubmitMethodName => 'onSubmitPage';
+  String get submitValuesCallbackArgsClassName => '${nameWithPageExtension.pascalCase}SubmitValueArgs';
 
   String get nameWithPageExtension => name.addSuffix('Page');
 
   String get contextClassName => '${name.pascalCase}Context';
   String get contextClassInstanceVarName => nameWithPageExtension;
 
-  String toArgsClassCode() {
+  String toFormArgumentsClassCode() {
     final buffer = StringBuffer();
     buffer.writeln('// custom class code for $argsClassName');
 
@@ -354,9 +360,8 @@ class _FormPageInfo {
     buffer.writeln('final pageIndex = $pageIndex;');
 
     // onSubmit property
-    final submittedValueArgs = items.map((e) => "${e.valueType.displayNameWithNullability} ${e.name}").join(',');
     buffer.writeln(
-      'final Future<void> Function($formContextClassName formContext, Data<$submitResultType> submitResult, $submittedValueArgs) $onSubmitMethodName;',
+      'final Future<void> Function($formContextClassName formContext, Data<$submitResultType> submitResult, $submitValuesCallbackArgsClassName args) $onSubmitMethodName;',
     );
 
     buffer.writeln('}'); // end of class
@@ -383,6 +388,16 @@ class _FormPageInfo {
       return '$inputDataType get ${e.name} => _pages[index].items[$inputItemIndex] as $inputDataType;';
     }).join('\n')}
       }
+    ''';
+  }
+
+  String toOnSubmitCallbackArgumentsClass() {
+    return '''
+    class $submitValuesCallbackArgsClassName {
+      $submitValuesCallbackArgsClassName(${items.map((e) => 'this.${e.name}').join(',')});
+
+      ${items.map((e) => 'final ${e.valueType.displayNameWithNullability} ${e.name};').join('\n')}
+    }
     ''';
   }
 }

@@ -31,13 +31,12 @@ LoginForm createLoginForm({
   Future<void> Function(
     LoginFormContext formContext,
     Data<bool> submitResult,
-    String email,
-    String password,
+    CredentialsPageSubmitValueArgs args,
   )? onSubmitCredentialsPage,
   Future<void> Function(
     LoginFormContext formContext,
     Data<bool> submitResult,
-    int code,
+    VerificationPageSubmitValueArgs args,
   )? onSubmitVerificationPage,
   String? emailHint,
   String? emailInitialValue,
@@ -82,7 +81,7 @@ LoginForm createLoginForm({
         onSubmitPassword: (formContext, password) async => password.value = password.input,
       ),
       onSubmitPage: onSubmitCredentialsPage ??
-          (formContext, submitResult, email, password) async {
+          (formContext, submitResult, args) async {
             submitResult.value = true;
           },
     ),
@@ -98,7 +97,7 @@ LoginForm createLoginForm({
         onSubmitCode: (formContext, code) async => code.value = int.tryParse(code.input),
       ),
       onSubmitPage: onSubmitVerificationPage ??
-          (formContext, submitResult, code) async {
+          (formContext, submitResult, args) async {
             submitResult.operation = Operation('submit-form');
             await Future.delayed(const Duration(milliseconds: 200));
             submitResult.value = true;
@@ -313,7 +312,7 @@ void main() {
       'submitCredentialsPage sets failure when onSubmitPage leaves submitResult empty',
       () async {
         final form = createLoginForm(
-          onSubmitCredentialsPage: (ctx, submitResult, email, password) async {},
+          onSubmitCredentialsPage: (ctx, submitResult, args) async {},
         );
         form.credentialsPage.email.input = 'user@gmail.com';
         form.credentialsPage.password.input = 'long_secret';
