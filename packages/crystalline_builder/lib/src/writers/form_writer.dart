@@ -51,7 +51,15 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
         late final $formContextClassName formContext = $formContextClassName(pages);
 
         ${pageInfos.map((e) => '${e.contextClassName} get ${e.contextClassInstanceVarName} => formContext.${e.contextClassInstanceVarName};').join('\n')}
+      ''',
+    );
 
+    if (pageInfos.length == 1) {
+      //TODO:
+    }
+
+    buffer.writeln(
+      '''
         @override
         late final List<FormPage> pages = [${pagesBuffer.toString()}];
 
@@ -178,11 +186,20 @@ void _validate(ClassElement cls) {
     throw Exception('name property of @FormClass cannot be empty.');
   }
 
-  // page names should not be blank
   List<_FormPageInfo> pageInfos = _extractFormPagesInfo(annotation, 'does-not-matter');
+  // pages cannot be empty must have at least one page
+  if (pageInfos.isEmpty) {
+    throw Exception('@FormClass() annotation must have at least one page in its definition.');
+  }
+
+  // page names should not be blank
   for (var page in pageInfos) {
     if (page.name.trim().isEmpty) {
       throw Exception('pages defined in @FormClass cannot have empty names.');
+    }
+
+    if (page.items.isEmpty) {
+      throw Exception('pages defined in @FormClass must have at least 1 InputData item defined.');
     }
   }
 
