@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
+import 'package:crystalline_builder/src/utils/functions.dart';
 import 'package:dart_style/dart_style.dart';
 
 extension DartFormatterX on DartFormatter {
@@ -60,7 +61,7 @@ extension StringX on String {
     final end = trimRight();
     if (!_endsWithIgnoreCase(end, suffix)) return this;
     final result = end.substring(0, end.length - suffix.length).trim();
-    if (result.isEmpty || !_isValidDartIdentifier(result)) {
+    if (result.isEmpty || !isValidDartIdentifier(result)) {
       return this;
     }
     return result;
@@ -84,10 +85,4 @@ bool _endsWithIgnoreCase(String value, String suffix) {
   if (value.length < suffix.length) return false;
   final start = value.length - suffix.length;
   return value.substring(start).toLowerCase() == suffix.toLowerCase();
-}
-
-/// Whether [name] is a valid simple Dart identifier (ASCII letters, digits,
-/// `_`, `$`), suitable for codegen output.
-bool _isValidDartIdentifier(String name) {
-  return RegExp(r'^[a-zA-Z_$][a-zA-Z0-9_$]*$').hasMatch(name);
 }

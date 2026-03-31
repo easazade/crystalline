@@ -161,9 +161,33 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
 
 void _validate(ClassElement cls) {
   // class name must be private
+  if (!cls.isPrivate) {
+    throw Exception('classes Annotated with @FormClass() need to be private.');
+  }
+
   // form name should not be blank
+  final annotation = formClassTypeChecker.firstAnnotationOfExact(cls);
+  final reader = ConstantReader(annotation);
+  final formName = reader.read('name').stringValue.trim();
+  if (formName.isEmpty) {
+    throw Exception('name property of @FormClass cannot be empty.');
+  }
+
   // page names should not be blank
+  List<_FormPageInfo> pageInfos = _extractFormPagesInfo(annotation, 'does-not-matter');
+  for (var page in pageInfos) {
+    if (page.name.trim().isEmpty) {
+      throw Exception('pages defined in @FormClass cannot have empty names.');
+    }
+  }
+
   // input-data names should not be blank
+  final inputDataInfos = pageInfos.map((e) => e.items).flattened;
+  for (var inputData in inputDataInfos) {
+    if (inputData.name.trim().isEmpty) {
+      throw Exception('InputData objects defined in pages in @FormClass cannot have empty names.');
+    }
+  }
 }
 
 List<_FormPageInfo> _extractFormPagesInfo(
