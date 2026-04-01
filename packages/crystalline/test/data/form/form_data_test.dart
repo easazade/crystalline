@@ -413,6 +413,170 @@ void main() {
         );
       },
     );
+
+    test(
+      'submit runs each page in order: credentials completes before verification',
+      () async {
+        final pageOrder = <String>[];
+        final form = createLoginForm(
+          onSubmitCredentialsPage: (ctx, submitResult, args) async {
+            pageOrder.add('credentials');
+            submitResult.value = true;
+          },
+          onSubmitVerificationPage: (ctx, submitResult, args) async {
+            pageOrder.add('verification');
+            submitResult.value = true;
+          },
+        );
+
+        form.credentialsPage.email.input = 'user@gmail.com';
+        form.credentialsPage.password.input = 'long_secret';
+        form.verificationPage.code.input = '1234';
+
+        await form.submit();
+
+        expect(pageOrder, ['credentials', 'verification']);
+        expect(form.credentialsPage.submitResult.value, isTrue);
+        expect(form.verificationPage.submitResult.value, isTrue);
+      },
+    );
+
+    test(
+      'submit returns after credentials failure and does not run verification page',
+      () async {
+        var verificationCalls = 0;
+        final form = createLoginForm(
+          onSubmitCredentialsPage: (ctx, submitResult, args) async {
+            submitResult.failure = Failure('credentials rejected');
+          },
+          onSubmitVerificationPage: (ctx, submitResult, args) async {
+            verificationCalls++;
+            submitResult.value = true;
+          },
+        );
+
+        form.credentialsPage.email.input = 'user@gmail.com';
+        form.credentialsPage.password.input = 'long_secret';
+        form.verificationPage.code.input = '1234';
+
+        await form.submit();
+
+        expect(verificationCalls, 0);
+        expect(form.credentialsPage.submitResult.hasFailure, isTrue);
+        expect(form.verificationPage.submitResult.hasNoValue, isTrue);
+      },
+    );
+
+    test(
+      'submit runs verification after credentials succeed but stops if verification fails',
+      () async {
+        final form = createLoginForm(
+          onSubmitVerificationPage: (ctx, submitResult, args) async {
+            submitResult.failure = Failure('invalid code');
+          },
+        );
+
+        form.credentialsPage.email.input = 'user@gmail.com';
+        form.credentialsPage.password.input = 'long_secret';
+        form.verificationPage.code.input = '1234';
+
+        await form.submit();
+
+        expect(form.credentialsPage.submitResult.value, isTrue);
+        expect(form.verificationPage.submitResult.hasFailure, isTrue);
+        expect(form.verificationPage.submitResult.failure.message, 'invalid code');
+      },
+    );
+
+    test(
+      'submit does not re-invoke page callbacks when both pages already succeeded',
+      () async {
+        var credentialsCalls = 0;
+        var verificationCalls = 0;
+        final form = createLoginForm(
+          onSubmitCredentialsPage: (ctx, submitResult, args) async {
+            credentialsCalls++;
+            submitResult.value = true;
+          },
+          onSubmitVerificationPage: (ctx, submitResult, args) async {
+            verificationCalls++;
+            submitResult.value = true;
+          },
+        );
+
+        form.credentialsPage.email.input = 'user@gmail.com';
+        form.credentialsPage.password.input = 'long_secret';
+        form.verificationPage.code.input = '1234';
+
+        await form.submit();
+        expect(credentialsCalls, 1);
+        expect(verificationCalls, 1);
+
+        await form.submit();
+        expect(credentialsCalls, 1);
+        expect(verificationCalls, 1);
+      },
+    );
+
+    test(
+      'submit(reSubmitCredentialsPage: true) runs credentials page again',
+      () async {
+        var credentialsCalls = 0;
+        final form = createLoginForm(
+          onSubmitCredentialsPage: (ctx, submitResult, args) async {
+            credentialsCalls++;
+            submitResult.value = true;
+          },
+        );
+
+        form.credentialsPage.email.input = 'user@gmail.com';
+        form.credentialsPage.password.input = 'long_secret';
+        form.verificationPage.code.input = '1234';
+
+        await form.submit();
+        expect(credentialsCalls, 1);
+
+        await form.submit(reSubmitCredentialsPage: true);
+        expect(credentialsCalls, 2);
+      },
+    );
+
+    test(
+      'submit(reSubmitVerificationPage: true) runs verification page again after full success',
+      () async {
+        var verificationCalls = 0;
+        final form = createLoginForm(
+          onSubmitVerificationPage: (ctx, submitResult, args) async {
+            verificationCalls++;
+            submitResult.value = true;
+          },
+        );
+
+        form.credentialsPage.email.input = 'user@gmail.com';
+        form.credentialsPage.password.input = 'long_secret';
+        form.verificationPage.code.input = '1234';
+
+        await form.submit();
+        expect(verificationCalls, 1);
+
+        await form.submit(reSubmitVerificationPage: true);
+        expect(verificationCalls, 2);
+      },
+    );
+
+    test(
+      'EditProfileForm submit delegates to the single page and sets submitResult',
+      () async {
+        editProfileForm.displayName.input = 'Ali';
+        editProfileForm.bio.input = 'Bio';
+
+        await editProfileForm.submit();
+
+        expect(editProfileForm.submitResult.value, isTrue);
+        expect(editProfileForm.displayName.value, 'Ali');
+        expect(editProfileForm.bio.value, 'Bio');
+      },
+    );
   });
 
   group('clearAllFailures / clearAllOperations -', () {
