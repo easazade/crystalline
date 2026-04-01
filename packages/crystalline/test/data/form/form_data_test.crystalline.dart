@@ -178,6 +178,26 @@ class LoginForm extends FormData {
   }
 
   @override
+  Future submit({
+    bool reSubmitCredentialsPage = false,
+    bool reSubmitVerificationPage = false,
+  }) async {
+    if (formContext.credentialsPage.submitResult.hasNoValue || reSubmitCredentialsPage) {
+      await submitCredentialsPage();
+      if (formContext.credentialsPage.submitResult.hasFailure) {
+        return;
+      }
+    }
+
+    if (formContext.verificationPage.submitResult.hasNoValue || reSubmitVerificationPage) {
+      await submitVerificationPage();
+      if (formContext.verificationPage.submitResult.hasFailure) {
+        return;
+      }
+    }
+  }
+
+  @override
   bool operator ==(Object other) {
     if (other is! LoginForm) return false;
 
@@ -446,6 +466,11 @@ class EditProfileForm extends FormData {
         CrystallineGlobalConfig.logger.redText(message),
       );
     }
+  }
+
+  @override
+  Future submit() async {
+    await _submitProfilePage();
   }
 
   @override

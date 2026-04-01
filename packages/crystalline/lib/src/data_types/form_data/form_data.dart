@@ -11,7 +11,7 @@ part 'form_page.dart';
 part 'input_data.dart';
 part 'input_validation.dart';
 
-abstract class FormData extends CollectionData<dynamic, InputData> {
+abstract class FormData extends CollectionData<dynamic, InputData<dynamic, dynamic>> {
   FormData({
     Operation? operation,
     Failure? failure,

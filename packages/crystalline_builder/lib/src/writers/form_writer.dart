@@ -89,7 +89,7 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
       ''',
     );
 
-    final submitMethods = <String, String>{};
+    final submitMethods = <SubmitMethodInfo>[];
 
     // write page submit methods to generated FormData class
     for (var pageInfo in pageInfos) {
@@ -99,7 +99,13 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
         //
         submitMethodName = '_$submitMethodName';
       }
-      submitMethods[submitMethodName] = 'formContext.${pageInfo.contextClassInstanceVarName}.submitResult';
+
+      submitMethods.add(SubmitMethodInfo(
+        method: submitMethodName,
+        submitResultGetter: 'formContext.${pageInfo.contextClassInstanceVarName}.submitResult',
+        pageName: pageInfo.nameWithPageExtension,
+        alwaysRetry: pageInfos.length == 1,
+      ));
 
       buffer.writeln(
         '''
@@ -141,26 +147,40 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
     }
 
     // override submit method from FormData for the generated form class
+    var reSubmitArgs = submitMethods.map((e) {
+      if (!e.alwaysRetry) {
+        return 'bool reSubmit${e.pageName.pascalCase} = false,';
+      } else {
+        return '';
+      }
+    }).join();
+
+    if (reSubmitArgs.trim().isNotEmpty) {
+      reSubmitArgs = '{ $reSubmitArgs }';
+    }
     buffer.writeln(
       '''
       @override
-      Future submit() async {
+      Future submit($reSubmitArgs) async {
       ''',
     );
 
-    for (var submitMethod in submitMethods.entries) {
-      final method = submitMethod.key;
-      final submitResult = submitMethod.value;
-      buffer.writeln(
-        '''
-        if($submitResult.hasNoValue) {
-          await $method();
-          if($submitResult.hasFailure){
+    if (submitMethods.length == 1) {
+      final submitMethod = submitMethods[0];
+      buffer.writeln('await ${submitMethod.method}();');
+    } else {
+      for (var submitMethod in submitMethods) {
+        buffer.writeln(
+          '''
+        if(${submitMethod.submitResultGetter}.hasNoValue || reSubmit${submitMethod.pageName.pascalCase}) {
+          await ${submitMethod.method}();
+          if(${submitMethod.submitResultGetter}.hasFailure){
             return;
           }
         }
         ''',
-      );
+        );
+      }
     }
 
     // end of submit override
@@ -464,4 +484,18 @@ class _FormPageInfo {
     }
     ''';
   }
+}
+
+class SubmitMethodInfo {
+  SubmitMethodInfo({
+    required this.submitResultGetter,
+    required this.method,
+    required this.pageName,
+    required this.alwaysRetry,
+  });
+
+  final String submitResultGetter;
+  final String method;
+  final String pageName;
+  final bool alwaysRetry;
 }
