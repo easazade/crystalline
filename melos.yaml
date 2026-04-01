@@ -34,3 +34,9 @@ scripts:
 
   gen:
     run: melos exec  -c 1 -- dart run build_runner build
+
+  test-count:
+    run: >
+      find packages example -type f -path '*/test/*.dart' 2>/dev/null -exec
+      grep -h -cE '^\s*(test|testWidgets)\s*\(' {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}'
+    description: Print the number of test() and testWidgets() declarations across all packages.
