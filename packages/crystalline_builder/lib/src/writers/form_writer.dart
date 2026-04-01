@@ -42,8 +42,12 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
       '''
       class $formClassName extends FormData {
         $formClassName({
-          ${pageInfos.map((e) => 'required ${e.argsClassName} ${e.argsClassName.camelCase}').join(',')}
-        }): ${pageInfos.map((e) => '${e.argsClassPrivateVarName} = ${e.argsClassName.camelCase}').join(',')};
+          ${pageInfos.map((e) => 'required ${e.argsClassName} ${e.argsClassName.camelCase}').join(',')},
+          Operation? operation,
+          Failure? failure,
+          List<dynamic>? sideEffects,
+        }): ${pageInfos.map((e) => '${e.argsClassPrivateVarName} = ${e.argsClassName.camelCase}').join(',')},
+            super(operation: operation, failure: failure, sideEffects: sideEffects);
 
         // page properties
         ${pageInfos.map((e) => 'final ${e.argsClassName} ${e.argsClassPrivateVarName};').join('\n')}
@@ -88,7 +92,12 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
         Stream<$formClassName> get stream => streamController.stream.map((e) => this);
 
         @override
-        $formClassName copy() => throw Exception('cannot copy a generated FormData class');
+        $formClassName copy() => $formClassName(
+          ${pageInfos.map(_pageCopyArgFragment).join('')}
+          operation: operationOrNull,
+          failure: failureOrNull,
+          sideEffects: sideEffects.all.toList(),
+        );
 
         // Satisfies [Data]'s @mustBeOverridden; behavior is [FormData.updateFrom].
         @override
@@ -253,6 +262,28 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
   }
 }
 
+String _pageCopyArgFragment(_FormPageInfo pageInfo) {
+  final itemBlocks = pageInfo.items.mapIndexed((i, item) => '''
+      ${item.argsClassName.camelCase}: ${item.argsClassName}(
+        validate${item.name.pascalCase}: ${pageInfo.argsClassPrivateVarName}.${item.argsClassName.camelCase}.validate${item.name.pascalCase},
+        onSubmit${item.name.pascalCase}: ${pageInfo.argsClassPrivateVarName}.${item.argsClassName.camelCase}.onSubmit${item.name.pascalCase},
+        isOptional: pages[${pageInfo.pageIndex}].items[$i].isOptional,
+        hint: pages[${pageInfo.pageIndex}].items[$i].hint,
+        initialValue: (pages[${pageInfo.pageIndex}].items[$i] as ${item.dataType}).valueOrNull,
+        initialInput: (pages[${pageInfo.pageIndex}].items[$i] as ${item.dataType}).inputOrNull,
+        operation: pages[${pageInfo.pageIndex}].items[$i].operationOrNull,
+        failure: pages[${pageInfo.pageIndex}].items[$i].failureOrNull,
+        sideEffects: pages[${pageInfo.pageIndex}].items[$i].sideEffects.all.toList(),
+      )
+''').join(',');
+  return '''
+          ${pageInfo.argsClassName.camelCase}: ${pageInfo.argsClassName}(
+$itemBlocks,
+            onSubmitPage: ${pageInfo.argsClassPrivateVarName}.onSubmitPage,
+          ),
+''';
+}
+
 void _validate(ClassElement cls) {
   // class name must be private
   if (!cls.isPrivate) {
@@ -368,6 +399,7 @@ class _InputDataInfo {
       name: "$name",
       hint: $argsClassPrivateVarName.${argsClassName.camelCase}.hint,
       value: $argsClassPrivateVarName.${argsClassName.camelCase}.initialValue,
+      input: $argsClassPrivateVarName.${argsClassName.camelCase}.initialInput,
       isOptional: $argsClassPrivateVarName.${argsClassName.camelCase}.isOptional,
       operation: $argsClassPrivateVarName.${argsClassName.camelCase}.operation,
       failure: $argsClassPrivateVarName.${argsClassName.camelCase}.failure,
@@ -390,6 +422,7 @@ class _InputDataInfo {
         this.isOptional = false,
         this.hint,
         this.initialValue,
+        this.initialInput,
         this.operation,
         this.failure,
         this.sideEffects,
@@ -401,6 +434,7 @@ class _InputDataInfo {
       final bool isOptional;
       final String? hint;
       final $valueTypeString? initialValue;
+      final $inputTypeString? initialInput;
       final InputValidationResult Function($formContextClassName formContext, $inputTypeString? input) validate${name.pascalCase};
       final Future<void> Function($formContextClassName formContext, $dataType data) onSubmit${name.pascalCase};
     }

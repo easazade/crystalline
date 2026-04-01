@@ -27,6 +27,9 @@ class LoginForm extends FormData {
   LoginForm({
     required CredentialsPage credentialsPage,
     required VerificationPage verificationPage,
+    super.operation,
+    super.failure,
+    super.sideEffects,
   })  : _credentialsPageArgs = credentialsPage,
         _verificationPageArgs = verificationPage;
 
@@ -47,6 +50,7 @@ class LoginForm extends FormData {
           name: "email",
           hint: _credentialsPageArgs.emailInputData.hint,
           value: _credentialsPageArgs.emailInputData.initialValue,
+          input: _credentialsPageArgs.emailInputData.initialInput,
           isOptional: _credentialsPageArgs.emailInputData.isOptional,
           operation: _credentialsPageArgs.emailInputData.operation,
           failure: _credentialsPageArgs.emailInputData.failure,
@@ -59,6 +63,7 @@ class LoginForm extends FormData {
           name: "password",
           hint: _credentialsPageArgs.passwordInputData.hint,
           value: _credentialsPageArgs.passwordInputData.initialValue,
+          input: _credentialsPageArgs.passwordInputData.initialInput,
           isOptional: _credentialsPageArgs.passwordInputData.isOptional,
           operation: _credentialsPageArgs.passwordInputData.operation,
           failure: _credentialsPageArgs.passwordInputData.failure,
@@ -76,6 +81,7 @@ class LoginForm extends FormData {
           name: "code",
           hint: _verificationPageArgs.codeInputData.hint,
           value: _verificationPageArgs.codeInputData.initialValue,
+          input: _verificationPageArgs.codeInputData.initialInput,
           isOptional: _verificationPageArgs.codeInputData.isOptional,
           operation: _verificationPageArgs.codeInputData.operation,
           failure: _verificationPageArgs.codeInputData.failure,
@@ -95,7 +101,50 @@ class LoginForm extends FormData {
   Stream<LoginForm> get stream => streamController.stream.map((e) => this);
 
   @override
-  LoginForm copy() => throw Exception('cannot copy a generated FormData class');
+  LoginForm copy() => LoginForm(
+        credentialsPage: CredentialsPage(
+          emailInputData: EmailInputData(
+            validateEmail: _credentialsPageArgs.emailInputData.validateEmail,
+            onSubmitEmail: _credentialsPageArgs.emailInputData.onSubmitEmail,
+            isOptional: pages[0].items[0].isOptional,
+            hint: pages[0].items[0].hint,
+            initialValue: (pages[0].items[0] as InputData<String, String>).valueOrNull,
+            initialInput: (pages[0].items[0] as InputData<String, String>).inputOrNull,
+            operation: pages[0].items[0].operationOrNull,
+            failure: pages[0].items[0].failureOrNull,
+            sideEffects: pages[0].items[0].sideEffects.all.toList(),
+          ),
+          passwordInputData: PasswordInputData(
+            validatePassword: _credentialsPageArgs.passwordInputData.validatePassword,
+            onSubmitPassword: _credentialsPageArgs.passwordInputData.onSubmitPassword,
+            isOptional: pages[0].items[1].isOptional,
+            hint: pages[0].items[1].hint,
+            initialValue: (pages[0].items[1] as InputData<String, String>).valueOrNull,
+            initialInput: (pages[0].items[1] as InputData<String, String>).inputOrNull,
+            operation: pages[0].items[1].operationOrNull,
+            failure: pages[0].items[1].failureOrNull,
+            sideEffects: pages[0].items[1].sideEffects.all.toList(),
+          ),
+          onSubmitPage: _credentialsPageArgs.onSubmitPage,
+        ),
+        verificationPage: VerificationPage(
+          codeInputData: CodeInputData(
+            validateCode: _verificationPageArgs.codeInputData.validateCode,
+            onSubmitCode: _verificationPageArgs.codeInputData.onSubmitCode,
+            isOptional: pages[1].items[0].isOptional,
+            hint: pages[1].items[0].hint,
+            initialValue: (pages[1].items[0] as InputData<String, int>).valueOrNull,
+            initialInput: (pages[1].items[0] as InputData<String, int>).inputOrNull,
+            operation: pages[1].items[0].operationOrNull,
+            failure: pages[1].items[0].failureOrNull,
+            sideEffects: pages[1].items[0].sideEffects.all.toList(),
+          ),
+          onSubmitPage: _verificationPageArgs.onSubmitPage,
+        ),
+        operation: operationOrNull,
+        failure: failureOrNull,
+        sideEffects: sideEffects.all.toList(),
+      );
 
   // Satisfies [Data]'s @mustBeOverridden; behavior is [FormData.updateFrom].
   @override
@@ -252,6 +301,7 @@ class EmailInputData {
     this.isOptional = false,
     this.hint,
     this.initialValue,
+    this.initialInput,
     this.operation,
     this.failure,
     this.sideEffects,
@@ -263,6 +313,7 @@ class EmailInputData {
   final bool isOptional;
   final String? hint;
   final String? initialValue;
+  final String? initialInput;
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
@@ -280,6 +331,7 @@ class PasswordInputData {
     this.isOptional = false,
     this.hint,
     this.initialValue,
+    this.initialInput,
     this.operation,
     this.failure,
     this.sideEffects,
@@ -291,6 +343,7 @@ class PasswordInputData {
   final bool isOptional;
   final String? hint;
   final String? initialValue;
+  final String? initialInput;
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
@@ -321,6 +374,7 @@ class CodeInputData {
     this.isOptional = false,
     this.hint,
     this.initialValue,
+    this.initialInput,
     this.operation,
     this.failure,
     this.sideEffects,
@@ -332,6 +386,7 @@ class CodeInputData {
   final bool isOptional;
   final String? hint;
   final int? initialValue;
+  final String? initialInput;
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
@@ -386,7 +441,12 @@ class LoginFormContext {
 
 // Generating custom form class "EditProfileForm"
 class EditProfileForm extends FormData {
-  EditProfileForm({required ProfilePage profilePage}) : _profilePageArgs = profilePage;
+  EditProfileForm({
+    required ProfilePage profilePage,
+    super.operation,
+    super.failure,
+    super.sideEffects,
+  }) : _profilePageArgs = profilePage;
 
   // page properties
   final ProfilePage _profilePageArgs;
@@ -406,6 +466,7 @@ class EditProfileForm extends FormData {
           name: "displayName",
           hint: _profilePageArgs.displayNameInputData.hint,
           value: _profilePageArgs.displayNameInputData.initialValue,
+          input: _profilePageArgs.displayNameInputData.initialInput,
           isOptional: _profilePageArgs.displayNameInputData.isOptional,
           operation: _profilePageArgs.displayNameInputData.operation,
           failure: _profilePageArgs.displayNameInputData.failure,
@@ -418,6 +479,7 @@ class EditProfileForm extends FormData {
           name: "bio",
           hint: _profilePageArgs.bioInputData.hint,
           value: _profilePageArgs.bioInputData.initialValue,
+          input: _profilePageArgs.bioInputData.initialInput,
           isOptional: _profilePageArgs.bioInputData.isOptional,
           operation: _profilePageArgs.bioInputData.operation,
           failure: _profilePageArgs.bioInputData.failure,
@@ -436,7 +498,36 @@ class EditProfileForm extends FormData {
   Stream<EditProfileForm> get stream => streamController.stream.map((e) => this);
 
   @override
-  EditProfileForm copy() => throw Exception('cannot copy a generated FormData class');
+  EditProfileForm copy() => EditProfileForm(
+        profilePage: ProfilePage(
+          displayNameInputData: DisplayNameInputData(
+            validateDisplayName: _profilePageArgs.displayNameInputData.validateDisplayName,
+            onSubmitDisplayName: _profilePageArgs.displayNameInputData.onSubmitDisplayName,
+            isOptional: pages[0].items[0].isOptional,
+            hint: pages[0].items[0].hint,
+            initialValue: (pages[0].items[0] as InputData<String, String>).valueOrNull,
+            initialInput: (pages[0].items[0] as InputData<String, String>).inputOrNull,
+            operation: pages[0].items[0].operationOrNull,
+            failure: pages[0].items[0].failureOrNull,
+            sideEffects: pages[0].items[0].sideEffects.all.toList(),
+          ),
+          bioInputData: BioInputData(
+            validateBio: _profilePageArgs.bioInputData.validateBio,
+            onSubmitBio: _profilePageArgs.bioInputData.onSubmitBio,
+            isOptional: pages[0].items[1].isOptional,
+            hint: pages[0].items[1].hint,
+            initialValue: (pages[0].items[1] as InputData<String, String>).valueOrNull,
+            initialInput: (pages[0].items[1] as InputData<String, String>).inputOrNull,
+            operation: pages[0].items[1].operationOrNull,
+            failure: pages[0].items[1].failureOrNull,
+            sideEffects: pages[0].items[1].sideEffects.all.toList(),
+          ),
+          onSubmitPage: _profilePageArgs.onSubmitPage,
+        ),
+        operation: operationOrNull,
+        failure: failureOrNull,
+        sideEffects: sideEffects.all.toList(),
+      );
 
   // Satisfies [Data]'s @mustBeOverridden; behavior is [FormData.updateFrom].
   @override
@@ -536,6 +627,7 @@ class DisplayNameInputData {
     this.isOptional = false,
     this.hint,
     this.initialValue,
+    this.initialInput,
     this.operation,
     this.failure,
     this.sideEffects,
@@ -547,6 +639,7 @@ class DisplayNameInputData {
   final bool isOptional;
   final String? hint;
   final String? initialValue;
+  final String? initialInput;
   final InputValidationResult Function(
     EditProfileFormContext formContext,
     String? input,
@@ -564,6 +657,7 @@ class BioInputData {
     this.isOptional = false,
     this.hint,
     this.initialValue,
+    this.initialInput,
     this.operation,
     this.failure,
     this.sideEffects,
@@ -575,6 +669,7 @@ class BioInputData {
   final bool isOptional;
   final String? hint;
   final String? initialValue;
+  final String? initialInput;
   final InputValidationResult Function(
     EditProfileFormContext formContext,
     String? input,

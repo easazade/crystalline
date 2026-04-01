@@ -317,6 +317,21 @@ void main() {
       expect(loginForm.verificationPage.submitResult.hasNoValue, isTrue);
     });
 
+    test('copy returns an equal snapshot with independent InputData instances', () {
+      loginForm.credentialsPage.email.input = 'a@gmail.com';
+      loginForm.credentialsPage.password.input = 'long_secret_1';
+      loginForm.verificationPage.code.input = '4242';
+      loginForm.operation = Operation.read;
+
+      final copied = loginForm.copy();
+      expect(copied, loginForm);
+      expect(identical(copied, loginForm), isFalse);
+      expect(identical(copied.credentialsPage.email, loginForm.credentialsPage.email), isFalse);
+
+      copied.credentialsPage.email.input = 'b@gmail.com';
+      expect(loginForm.credentialsPage.email.input, 'a@gmail.com');
+    });
+
     test(
       'single page forms must create short hand getters for each input-data '
       'item directly inside the body of generated form class',
