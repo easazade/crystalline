@@ -19,7 +19,6 @@ List<InterfaceType> superclassChainOfFieldType(DartType fieldType) {
 
 String sharedPropertyName(String getterName) => '\$\$${getterName}SharedProperty';
 
-
 /// Whether [name] is a valid simple Dart identifier (ASCII letters, digits,
 /// `_`, `$`), suitable for codegen output.
 bool isValidDartIdentifier(String name) {

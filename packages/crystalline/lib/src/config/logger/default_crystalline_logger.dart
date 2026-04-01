@@ -120,7 +120,6 @@ class DefaultCrystallineLogger extends CrystallineLogger {
       buffer.writeln(redText(failure.stacktrace));
     }
 
-
     return buffer.toString();
   }
 

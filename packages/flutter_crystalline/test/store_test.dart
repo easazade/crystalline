@@ -493,9 +493,7 @@ void main() {
         );
 
         final emitted = <TestStore>[];
-        testStore
-            .streamWith(skipUntilInitialized: true, skipOperations: true)
-            .listen(emitted.add);
+        testStore.streamWith(skipUntilInitialized: true, skipOperations: true).listen(emitted.add);
 
         await testStore.initialize();
         await Future<void>.value();
