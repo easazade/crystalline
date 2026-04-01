@@ -127,6 +127,13 @@ class RefreshData<T> extends Data<T> {
         refresh: _refreshCallback,
       );
 
+  // Satisfies [Data]'s @mustBeOverridden; behavior is [Data.updateFrom].
+  @override
+  // ignore: unnecessary_overrides
+  void updateFrom(Data<T> data) {
+    super.updateFrom(data);
+  }
+
   @override
   @mustBeOverridden
   bool operator ==(Object other) {

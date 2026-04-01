@@ -4,6 +4,7 @@ import 'package:crystalline/src/data_types/collection_data.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
+import 'package:crystalline/src/semantics/events.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 import 'package:meta/meta.dart';
 
@@ -64,6 +65,60 @@ abstract class FormData extends CollectionData<dynamic, InputData<dynamic, dynam
   //
   // Then generate one form and write some tests for it.
   Future<void> submit();
+
+  @override
+  void updateFrom(Data<List<InputData<dynamic, dynamic>>> data) {
+    disallowNotify();
+    final oldItems = items.toList();
+    final oldOperationOrNull = operationOrNull;
+    final oldFailureOrNull = failureOrNull;
+    final oldSideEffectsList = sideEffects.all.toList();
+    final newItems = data.value.toList();
+    final newItemsIterator = newItems.iterator;
+    for (final page in pages) {
+      for (var j = 0; j < page.items.length; j++) {
+        if (!newItemsIterator.moveNext()) {
+          allowNotify();
+          throw StateError(
+            'updateFrom: source list has fewer items than this FormData (flattened page order).',
+          );
+        }
+        final newItem = newItemsIterator.current;
+        final oldItem = page.items[j];
+        for (var observer in observers.all) {
+          oldItem.observers.remove(observer);
+        }
+        page.items[j] = newItem;
+        for (var observer in observers.all) {
+          newItem.observers.add(observer);
+        }
+      }
+    }
+    if (newItemsIterator.moveNext()) {
+      allowNotify();
+      throw StateError(
+        'updateFrom: source list has more items than this FormData (flattened page order).',
+      );
+    }
+    operation = data.operationOrNull;
+    failure = data.failureOrNull;
+    sideEffects.clear();
+    sideEffects.addAll(data.sideEffects.all);
+    allowNotify();
+    if (!ListEquality<InputData>().equals(oldItems, items)) {
+      events.dispatch(ItemsUpdatedEvent(items));
+    }
+    if (oldOperationOrNull != operationOrNull) {
+      events.dispatch(OperationEvent(operationOrNull));
+    }
+    if (oldFailureOrNull != failureOrNull && failureOrNull != null) {
+      events.dispatch(FailureEvent(failure));
+    }
+    if (!ListEquality<dynamic>().equals(oldSideEffectsList, sideEffects.all.toList())) {
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
+    }
+    notifyObserversAndStreamListeners();
+  }
 
   // @override
   // FormData copy() => FormData(

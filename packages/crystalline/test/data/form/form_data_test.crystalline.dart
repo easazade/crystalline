@@ -97,6 +97,13 @@ class LoginForm extends FormData {
   @override
   LoginForm copy() => throw Exception('cannot copy a generated FormData class');
 
+  // Satisfies [Data]'s @mustBeOverridden; behavior is [FormData.updateFrom].
+  @override
+  // ignore: unnecessary_overrides
+  void updateFrom(Data<List<InputData<dynamic, dynamic>>> data) {
+    super.updateFrom(data);
+  }
+
   Future<void> submitCredentialsPage() async {
     final page = pages[_credentialsPageArgs.pageIndex];
     for (var inputItem in page.items) {
@@ -430,6 +437,13 @@ class EditProfileForm extends FormData {
 
   @override
   EditProfileForm copy() => throw Exception('cannot copy a generated FormData class');
+
+  // Satisfies [Data]'s @mustBeOverridden; behavior is [FormData.updateFrom].
+  @override
+  // ignore: unnecessary_overrides
+  void updateFrom(Data<List<InputData<dynamic, dynamic>>> data) {
+    super.updateFrom(data);
+  }
 
   Future<void> _submitProfilePage() async {
     final page = pages[_profilePageArgs.pageIndex];

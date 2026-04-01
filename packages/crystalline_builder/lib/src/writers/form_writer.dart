@@ -90,6 +90,13 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
         @override
         $formClassName copy() => throw Exception('cannot copy a generated FormData class');
 
+        // Satisfies [Data]'s @mustBeOverridden; behavior is [FormData.updateFrom].
+        @override
+        // ignore: unnecessary_overrides
+        void updateFrom(Data<List<InputData<dynamic, dynamic>>> data) {
+          super.updateFrom(data);
+        }
+
       ''',
     );
 

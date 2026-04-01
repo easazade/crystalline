@@ -414,4 +414,11 @@ class ListData<T> extends CollectionData<T, Data<T>> {
 
   @override
   Stream<ListData<T>> get stream => streamController.stream.map((e) => this);
+
+  // Satisfies [Data]'s @mustBeOverridden; behavior is [CollectionData.updateFrom].
+  @override
+  // ignore: unnecessary_overrides
+  void updateFrom(Data<List<Data<T>>> data) {
+    super.updateFrom(data);
+  }
 }
