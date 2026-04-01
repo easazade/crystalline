@@ -6,7 +6,6 @@ import '../../test_utils/test_logger.dart';
 part 'form_data_test.crystalline.dart';
 
 @FormClass(
-  name: 'login-form',
   pages: [
     FormPageInfo(
       name: 'credentials',
@@ -25,10 +24,9 @@ part 'form_data_test.crystalline.dart';
     )
   ],
 )
-class _LoginForm {}
+abstract class _LoginForm extends FormData {}
 
 @FormClass(
-  name: 'edit-profile-form',
   pages: [
     FormPageInfo(
       name: 'profile',
@@ -40,7 +38,7 @@ class _LoginForm {}
     ),
   ],
 )
-class _EditProfileForm {}
+abstract class _EditProfileForm extends FormData {}
 
 EditProfileForm createEditProfileForm({
   Future<void> Function(

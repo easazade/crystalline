@@ -23,15 +23,21 @@
 part of 'form_data_test.dart';
 
 // Generating custom form class "LoginForm"
-class LoginForm extends FormData {
+class LoginForm extends _LoginForm {
   LoginForm({
     required CredentialsPage credentialsPage,
     required VerificationPage verificationPage,
-    super.operation,
-    super.failure,
-    super.sideEffects,
+    Operation? operation,
+    Failure? failure,
+    List<dynamic>? sideEffects,
   })  : _credentialsPageArgs = credentialsPage,
-        _verificationPageArgs = verificationPage;
+        _verificationPageArgs = verificationPage {
+    this.operation = operation;
+    this.failure = failure;
+    if (sideEffects != null) {
+      this.sideEffects.addAll(sideEffects);
+    }
+  }
 
   // page properties
   final CredentialsPage _credentialsPageArgs;
@@ -436,13 +442,19 @@ class LoginFormContext {
 }
 
 // Generating custom form class "EditProfileForm"
-class EditProfileForm extends FormData {
+class EditProfileForm extends _EditProfileForm {
   EditProfileForm({
     required ProfilePage profilePage,
-    super.operation,
-    super.failure,
-    super.sideEffects,
-  }) : _profilePageArgs = profilePage;
+    Operation? operation,
+    Failure? failure,
+    List<dynamic>? sideEffects,
+  }) : _profilePageArgs = profilePage {
+    this.operation = operation;
+    this.failure = failure;
+    if (sideEffects != null) {
+      this.sideEffects.addAll(sideEffects);
+    }
+  }
 
   // page properties
   final ProfilePage _profilePageArgs;

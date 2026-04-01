@@ -19,9 +19,8 @@ class FormPageInfo {
 }
 
 class FormClass {
-  const FormClass({required this.name, required this.pages});
+  const FormClass({required this.pages});
 
-  final String name;
   final List<FormPageInfo> pages;
 }
 

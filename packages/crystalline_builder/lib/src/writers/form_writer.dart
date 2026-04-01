@@ -13,8 +13,7 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
     _validate(cls);
 
     final formAnnotationObject = formClassTypeChecker.firstAnnotationOfExact(cls);
-    final reader = ConstantReader(formAnnotationObject);
-    final formName = reader.read('name').stringValue;
+    final formName = cls.displayName.replaceAll('_', '');
     final formClassName = '${formName.pascalCase.removeSuffix('form')}Form';
     final formContextClassName = '${formClassName}Context';
 
@@ -40,14 +39,19 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
     // write FormData code
     buffer.writeln(
       '''
-      class $formClassName extends FormData {
+      class $formClassName extends ${cls.displayName} {
         $formClassName({
           ${pageInfos.map((e) => 'required ${e.argsClassName} ${e.argsClassName.camelCase}').join(',')},
           Operation? operation,
           Failure? failure,
           List<dynamic>? sideEffects,
-        }): ${pageInfos.map((e) => '${e.argsClassPrivateVarName} = ${e.argsClassName.camelCase}').join(',')},
-            super(operation: operation, failure: failure, sideEffects: sideEffects);
+        }): ${pageInfos.map((e) => '${e.argsClassPrivateVarName} = ${e.argsClassName.camelCase}').join(',')} {
+            this.operation = operation;
+            this.failure = failure;
+            if (sideEffects != null) {
+              this.sideEffects.addAll(sideEffects);
+            }
+        }
 
         // page properties
         ${pageInfos.map((e) => 'final ${e.argsClassName} ${e.argsClassPrivateVarName};').join('\n')}
@@ -86,7 +90,7 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
         late final List<FormPage> pages = [${pagesBuffer.toString()}];
 
         @override
-        String get name => '$formName';
+        String get name => '${formName.paramCase}';
 
         @override
         Stream<$formClassName> get stream => streamController.stream.map((e) => this);
@@ -288,13 +292,18 @@ void _validate(ClassElement cls) {
     throw Exception('classes Annotated with @FormClass() need to be private.');
   }
 
-  // form name should not be blank
-  final annotation = formClassTypeChecker.firstAnnotationOfExact(cls);
-  final reader = ConstantReader(annotation);
-  final formName = reader.read('name').stringValue.trim();
-  if (formName.isEmpty) {
-    throw Exception('name property of @FormClass cannot be empty.');
+  if (!cls.isAbstract) {
+    throw Exception('classes Annotated with @FormClass need to be abstract');
   }
+
+  if (!formDataTypeChecker.isAssignableFrom(cls)) {
+    throw Exception(
+      'classes annotated with @FormClass() must be a subtype of FormData '
+      '(for example: abstract class _MyForm extends FormData { _MyForm() : super(); }).',
+    );
+  }
+
+  final annotation = formClassTypeChecker.firstAnnotationOfExact(cls);
 
   List<_FormPageInfo> pageInfos = _extractFormPagesInfo(annotation, 'does-not-matter');
   // pages cannot be empty must have at least one page
