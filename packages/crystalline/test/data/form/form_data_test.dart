@@ -232,7 +232,7 @@ void main() {
         var itemNotifications = 0;
         loginForm.observers.add(Observer(() => formNotifications++));
         email.observers.add(Observer(() => itemNotifications++));
-        
+
         await email.submit();
         expect(itemNotifications, 4);
         expect(formNotifications, 4);
@@ -329,6 +329,8 @@ void main() {
 
         expect(identical(editProfileForm.pages[0].items[0], editProfileForm.displayName), isTrue);
         expect(identical(editProfileForm.pages[0].items[1], editProfileForm.bio), isTrue);
+
+        expect(identical(editProfileForm.submitResult, editProfileForm.formContext.profilePage.submitResult), isTrue);
       },
     );
   });

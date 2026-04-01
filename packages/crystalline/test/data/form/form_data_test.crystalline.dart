@@ -388,6 +388,7 @@ class EditProfileForm extends FormData {
 
   InputData<String, String> get displayName => formContext.profilePage.displayName;
   InputData<String, String> get bio => formContext.profilePage.bio;
+  Data<bool> get submitResult => formContext.profilePage.submitResult;
 
   @override
   late final List<FormPage> pages = [

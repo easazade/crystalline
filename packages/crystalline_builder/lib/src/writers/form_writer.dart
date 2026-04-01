@@ -62,6 +62,10 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
           'formContext.${pageInfo.contextClassInstanceVarName}.${item.name};',
         );
       }
+      buffer.writeln(
+        'Data<${pageInfo.submitResultType}> get submitResult => '
+        'formContext.${pageInfo.contextClassInstanceVarName}.submitResult;',
+      );
       buffer.writeln('\n');
     } else {
       for (var pageInfo in pageInfos) {
