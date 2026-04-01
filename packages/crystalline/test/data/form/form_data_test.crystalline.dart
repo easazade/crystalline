@@ -156,13 +156,11 @@ class LoginForm extends FormData {
   Future<void> submitCredentialsPage() async {
     final page = pages[_credentialsPageArgs.pageIndex];
     for (var inputItem in page.items) {
-      if (inputItem.isOptional) {
-        continue;
-      }
       if (inputItem.hasNoValue) {
         await inputItem.submit();
-        // if still no value return;
-        if (inputItem.hasNoValue) {
+        if (inputItem.isOptional) {
+          continue;
+        } else if (inputItem.hasNoValue) {
           return;
         }
       }
@@ -196,13 +194,11 @@ class LoginForm extends FormData {
   Future<void> submitVerificationPage() async {
     final page = pages[_verificationPageArgs.pageIndex];
     for (var inputItem in page.items) {
-      if (inputItem.isOptional) {
-        continue;
-      }
       if (inputItem.hasNoValue) {
         await inputItem.submit();
-        // if still no value return;
-        if (inputItem.hasNoValue) {
+        if (inputItem.isOptional) {
+          continue;
+        } else if (inputItem.hasNoValue) {
           return;
         }
       }
@@ -539,13 +535,11 @@ class EditProfileForm extends FormData {
   Future<void> _submitProfilePage() async {
     final page = pages[_profilePageArgs.pageIndex];
     for (var inputItem in page.items) {
-      if (inputItem.isOptional) {
-        continue;
-      }
       if (inputItem.hasNoValue) {
         await inputItem.submit();
-        // if still no value return;
-        if (inputItem.hasNoValue) {
+        if (inputItem.isOptional) {
+          continue;
+        } else if (inputItem.hasNoValue) {
           return;
         }
       }

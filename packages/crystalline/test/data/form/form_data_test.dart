@@ -108,7 +108,7 @@ LoginForm createLoginForm({
           if (input != null && input.endsWith('@gmail.com')) {
             return InputValidationResult.valid();
           } else {
-            return InputValidationResult.error(Failure('Only gmails are accepted]'));
+            return InputValidationResult.error(Failure('Only gmails are accepted'));
           }
         },
         onSubmitEmail: (formContext, email) async {
@@ -580,6 +580,68 @@ void main() {
     );
 
     test(
+      'submitCredentialsPage commits optional email when the user entered a value',
+      () async {
+        String? capturedEmail;
+        final form = createLoginForm(
+          emailIsOptional: true,
+          onSubmitCredentialsPage: (ctx, submitResult, args) async {
+            capturedEmail = args.email;
+            submitResult.value = true;
+          },
+        );
+
+        form.credentialsPage.email.input = 'user@gmail.com';
+        form.credentialsPage.password.input = 'long_secret';
+
+        await form.submitCredentialsPage();
+
+        expect(capturedEmail, 'user@gmail.com');
+        expect(form.credentialsPage.email.value, 'user@gmail.com');
+      },
+    );
+
+    test(
+      'submitVerificationPage returns without calling onSubmitPage when the code '
+      'cannot produce a value since input is not valid',
+      () async {
+        var verificationCalls = 0;
+        final form = createLoginForm(
+          onSubmitVerificationPage: (ctx, submitResult, args) async {
+            verificationCalls++;
+            submitResult.value = true;
+          },
+        );
+
+        form.verificationPage.code.input = 'abcd';
+
+        await form.submitVerificationPage();
+
+        expect(verificationCalls, 0);
+        expect(form.verificationPage.submitResult.hasNoValue, isTrue);
+      },
+    );
+
+    test(
+      'submitCredentialsPage assigns FailureType.error when onSubmitPage sets failure without type',
+      () async {
+        final form = createLoginForm(
+          onSubmitCredentialsPage: (ctx, submitResult, args) async {
+            submitResult.failure = Failure('rejected');
+          },
+        );
+
+        form.credentialsPage.email.input = 'user@gmail.com';
+        form.credentialsPage.password.input = 'long_secret';
+
+        await form.submitCredentialsPage();
+
+        expect(form.credentialsPage.submitResult.hasFailure, isTrue);
+        expect(form.credentialsPage.submitResult.failure.type, FailureType.error);
+      },
+    );
+
+    test(
       'EditProfileForm submit delegates to the single page and sets submitResult',
       () async {
         editProfileForm.displayName.input = 'Ali';
@@ -590,6 +652,26 @@ void main() {
         expect(editProfileForm.submitResult.value, isTrue);
         expect(editProfileForm.displayName.value, 'Ali');
         expect(editProfileForm.bio.value, 'Bio');
+      },
+    );
+
+    test(
+      'EditProfileForm submit sets failure when onSubmitPage leaves submitResult empty',
+      () async {
+        final form = createEditProfileForm(
+          onSubmitProfilePage: (ctx, submitResult, args) async {},
+        );
+
+        form.displayName.input = 'Ali';
+        form.bio.input = 'Bio';
+
+        await form.submit();
+
+        expect(form.submitResult.hasFailure, isTrue);
+        expect(
+          form.submitResult.failure.message,
+          contains('No value or failure was set on submitResult'),
+        );
       },
     );
   });
@@ -758,5 +840,96 @@ void main() {
       expect(itemNotifications, 1);
       expect(email.isOptional, isFalse);
     });
+
+    test('InputData.copy preserves isOptional', () {
+      final form = createLoginForm(emailIsOptional: true);
+      final copy = form.credentialsPage.email.copy();
+      expect(copy.isOptional, isTrue);
+    });
+  });
+
+  group('FormData.updateFrom / indexing -', () {
+    test('operator[], length, and iteration match flattened page order', () {
+      expect(loginForm.length, 3);
+      expect(loginForm[0].name, 'email');
+      expect(loginForm[1].name, 'password');
+      expect(loginForm[2].name, 'code');
+      expect([for (final i in loginForm) i.name], ['email', 'password', 'code']);
+    });
+
+    test('updateFrom replaces items and keeps form observers on the new InputData instances', () {
+      loginForm.credentialsPage.email.input = 'a@gmail.com';
+      loginForm.credentialsPage.password.input = 'long_secret';
+      loginForm.verificationPage.code.input = '1234';
+
+      final replacements = <InputData<dynamic, dynamic>>[
+        loginForm.credentialsPage.email.copy(),
+        loginForm.credentialsPage.password.copy(),
+        loginForm.verificationPage.code.copy(),
+      ];
+      replacements[0].input = 'b@gmail.com';
+
+      var notifications = 0;
+      loginForm.observers.add(Observer(() => notifications++));
+
+      loginForm.updateFrom(Data<List<InputData<dynamic, dynamic>>>(value: replacements));
+
+      expect(identical(loginForm.credentialsPage.email, replacements[0]), isTrue);
+      final before = notifications;
+      replacements[0].input = 'c@gmail.com';
+      expect(notifications, greaterThan(before));
+    });
+
+    test('updateFrom throws when the source list is shorter than flattened items', () {
+      expect(
+        () => loginForm.updateFrom(
+          Data<List<InputData<dynamic, dynamic>>>(
+            value: [loginForm.credentialsPage.email.copy()],
+          ),
+        ),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('fewer items'),
+          ),
+        ),
+      );
+    });
+
+    test('updateFrom throws when the source list is longer than flattened items', () {
+      final copies = <InputData<dynamic, dynamic>>[
+        loginForm.credentialsPage.email.copy(),
+        loginForm.credentialsPage.password.copy(),
+        loginForm.verificationPage.code.copy(),
+        loginForm.verificationPage.code.copy(),
+      ];
+      expect(
+        () => loginForm.updateFrom(Data<List<InputData<dynamic, dynamic>>>(value: copies)),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('more items'),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('stream -', () {
+    test(
+      'InputData stream emits when the field changes (FormData.stream is only for form-level notifications)',
+      () async {
+        final seen = <InputData<String, String>>[];
+        final email = loginForm.credentialsPage.email;
+        final sub = email.stream.listen(seen.add);
+        email.input = 'stream@gmail.com';
+        await Future<void>.delayed(Duration.zero);
+        expect(seen, isNotEmpty);
+        expect(identical(seen.last, email), isTrue);
+        await sub.cancel();
+      },
+    );
   });
 }

@@ -135,6 +135,7 @@ class InputData<INPUT, OUTPUT> extends Data<OUTPUT> {
         input: inputOrNull,
         hint: _hint,
         name: name ?? '', // name is never null in InputData
+        isOptional: _isOptional,
         validator: validator,
         onSubmit: onSubmit,
         sideEffects: sideEffects.all.toList(),
