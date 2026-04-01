@@ -50,12 +50,26 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
 
         late final $formContextClassName formContext = $formContextClassName(pages);
 
-        ${pageInfos.map((e) => '${e.contextClassName} get ${e.contextClassInstanceVarName} => formContext.${e.contextClassInstanceVarName};').join('\n')}
       ''',
     );
 
+    // writing short-hand getters for pages and input-data items
     if (pageInfos.length == 1) {
-      //TODO:
+      final pageInfo = pageInfos[0];
+      for (var item in pageInfo.items) {
+        buffer.writeln(
+          '${item.dataType} get ${item.name} => '
+          'formContext.${pageInfo.contextClassInstanceVarName}.${item.name};',
+        );
+      }
+      buffer.writeln('\n');
+    } else {
+      for (var pageInfo in pageInfos) {
+        buffer.writeln(
+          '${pageInfo.contextClassName} get ${pageInfo.contextClassInstanceVarName} => '
+          'formContext.${pageInfo.contextClassInstanceVarName};',
+        );
+      }
     }
 
     buffer.writeln(
@@ -75,11 +89,21 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
       ''',
     );
 
+    final submitMethods = <String, String>{};
+
     // write page submit methods to generated FormData class
     for (var pageInfo in pageInfos) {
+      var submitMethodName = pageInfo.submitMethodName;
+      if (pageInfos.length == 1) {
+        // if form only has one page there is no need for generating a separate submit method for that name
+        //
+        submitMethodName = '_$submitMethodName';
+      }
+      submitMethods[submitMethodName] = 'formContext.${pageInfo.contextClassInstanceVarName}.submitResult';
+
       buffer.writeln(
         '''
-          Future<void> ${pageInfo.submitMethodName}() async {
+          Future<void> $submitMethodName() async {
             final page = pages[${pageInfo.argsClassPrivateVarName}.pageIndex];
             for (var inputItem in page.items) {
               if (inputItem.isOptional) {
@@ -115,6 +139,32 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
         ''',
       );
     }
+
+    // override submit method from FormData for the generated form class
+    buffer.writeln(
+      '''
+      @override
+      Future submit() async {
+      ''',
+    );
+
+    for (var submitMethod in submitMethods.entries) {
+      final method = submitMethod.key;
+      final submitResult = submitMethod.value;
+      buffer.writeln(
+        '''
+        if($submitResult.hasNoValue) {
+          await $method();
+          if($submitResult.hasFailure){
+            return;
+          }
+        }
+        ''',
+      );
+    }
+
+    // end of submit override
+    buffer.writeln('}');
 
     buffer.writeln(
       '''
@@ -163,7 +213,7 @@ void writeFormClass(final StringBuffer buffer, final LibraryElement library) {
       '''
       class $formContextClassName {
         $formContextClassName(this._pages);
-        List<FormPage> _pages;
+        final List<FormPage> _pages;
 
         ${pageInfos.map((e) => 'late final ${e.contextClassInstanceVarName} = ${e.contextClassName}(_pages, ${e.pageIndex});').join('\n')}
       }
@@ -279,11 +329,11 @@ class _InputDataInfo {
   final DartType inputType;
   final DartType valueType;
 
+  String get dataType => 'InputData<${inputType.displayNameWithNullability}, ${valueType.displayNameWithNullability}>';
+
   String toInstantiateInputDataCode() {
-    final inputTypeString = inputType.displayNameWithNullability;
-    final valueTypeString = valueType.displayNameWithNullability;
     return '''
-    InputData<$inputTypeString, $valueTypeString>(
+    $dataType(
       name: "$name",
       hint: $argsClassPrivateVarName.${argsClassName.camelCase}.hint,
       value: $argsClassPrivateVarName.${argsClassName.camelCase}.initialValue,
@@ -291,8 +341,8 @@ class _InputDataInfo {
       operation: $argsClassPrivateVarName.${argsClassName.camelCase}.operation,
       failure: $argsClassPrivateVarName.${argsClassName.camelCase}.failure,
       sideEffects: $argsClassPrivateVarName.${argsClassName.camelCase}.sideEffects,
-      validator: ($inputTypeString? input) => $argsClassPrivateVarName.${argsClassName.camelCase}.validate${name.pascalCase}(formContext, input),
-      onSubmit: (InputData<$inputTypeString, $valueTypeString> data) => $argsClassPrivateVarName.${argsClassName.camelCase}.onSubmit${name.pascalCase}(formContext, data),
+      validator: (${inputType.displayNameWithNullability}? input) => $argsClassPrivateVarName.${argsClassName.camelCase}.validate${name.pascalCase}(formContext, input),
+      onSubmit: ($dataType data) => $argsClassPrivateVarName.${argsClassName.camelCase}.onSubmit${name.pascalCase}(formContext, data),
     )
     ''';
   }
@@ -321,7 +371,7 @@ class _InputDataInfo {
       final String? hint;
       final $valueTypeString? initialValue;
       final InputValidationResult Function($formContextClassName formContext, $inputTypeString? input) validate${name.pascalCase};
-      final Future<void> Function($formContextClassName formContext, InputData<$inputTypeString, $valueTypeString> data) onSubmit${name.pascalCase};
+      final Future<void> Function($formContextClassName formContext, $dataType data) onSubmit${name.pascalCase};
     }
 
     ''';
@@ -399,10 +449,7 @@ class _FormPageInfo {
         final submitResult = Data<$submitResultType>();
 
         ${items.mapIndexed((inputItemIndex, e) {
-      final inputDataType =
-          'InputData<${e.inputType.displayNameWithNullability}, ${e.valueType.displayNameWithNullability}>';
-
-      return '$inputDataType get ${e.name} => _pages[index].items[$inputItemIndex] as $inputDataType;';
+      return '${e.dataType} get ${e.name} => _pages[index].items[$inputItemIndex] as ${e.dataType};';
     }).join('\n')}
       }
     ''';

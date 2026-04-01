@@ -27,6 +27,56 @@ part 'form_data_test.crystalline.dart';
 )
 class _LoginForm {}
 
+@FormClass(
+  name: 'edit-profile-form',
+  pages: [
+    FormPageInfo(
+      name: 'profile',
+      items: [
+        InputDataInfo(name: 'displayName', inputType: String, valueType: String),
+        InputDataInfo(name: 'bio', inputType: String, valueType: String),
+      ],
+      submitResultType: bool,
+    ),
+  ],
+)
+class _EditProfileForm {}
+
+EditProfileForm createEditProfileForm({
+  Future<void> Function(
+    EditProfileFormContext formContext,
+    Data<bool> submitResult,
+    ProfilePageSubmitValueArgs args,
+  )? onSubmitProfilePage,
+}) {
+  return EditProfileForm(
+    profilePage: ProfilePage(
+      displayNameInputData: DisplayNameInputData(
+        validateDisplayName: (formContext, input) {
+          if (input != null && input.trim().isNotEmpty) {
+            return InputValidationResult.valid();
+          }
+          return InputValidationResult.error(Failure('Display name is required'));
+        },
+        onSubmitDisplayName: (formContext, data) async => data.value = data.input.trim(),
+      ),
+      bioInputData: BioInputData(
+        validateBio: (formContext, input) {
+          if (input == null || input.length <= 500) {
+            return InputValidationResult.valid();
+          }
+          return InputValidationResult.error(Failure('Bio must be at most 500 characters'));
+        },
+        onSubmitBio: (formContext, data) async => data.value = data.input,
+      ),
+      onSubmitPage: onSubmitProfilePage ??
+          (formContext, submitResult, args) async {
+            submitResult.value = true;
+          },
+    ),
+  );
+}
+
 LoginForm createLoginForm({
   Future<void> Function(
     LoginFormContext formContext,
@@ -109,12 +159,14 @@ LoginForm createLoginForm({
 
 void main() {
   late LoginForm loginForm;
+  late EditProfileForm editProfileForm;
   setUpAll(() {
     CrystallineGlobalConfig.logger = CrystallineTestLogger();
   });
 
   setUp(() {
     loginForm = createLoginForm();
+    editProfileForm = createEditProfileForm();
   });
 
   group('items -', () {
@@ -180,7 +232,7 @@ void main() {
         var itemNotifications = 0;
         loginForm.observers.add(Observer(() => formNotifications++));
         email.observers.add(Observer(() => itemNotifications++));
-
+        
         await email.submit();
         expect(itemNotifications, 4);
         expect(formNotifications, 4);
@@ -264,6 +316,21 @@ void main() {
       expect(loginForm.credentialsPage.submitResult.hasNoValue, isTrue);
       expect(loginForm.verificationPage.submitResult.hasNoValue, isTrue);
     });
+
+    test(
+      'single page forms must create short hand getters for each input-data '
+      'item directly inside the body of generated form class',
+      () {
+        editProfileForm.displayName.input = 'Ali';
+        editProfileForm.bio.input = 'I am a software engineer';
+
+        expect(editProfileForm.displayName.input, 'Ali');
+        expect(editProfileForm.bio.input, 'I am a software engineer');
+
+        expect(identical(editProfileForm.pages[0].items[0], editProfileForm.displayName), isTrue);
+        expect(identical(editProfileForm.pages[0].items[1], editProfileForm.bio), isTrue);
+      },
+    );
   });
 
   group('submit -', () {

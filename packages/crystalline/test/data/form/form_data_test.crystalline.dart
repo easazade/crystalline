@@ -38,7 +38,6 @@ class LoginForm extends FormData {
 
   CredentialsContext get credentialsPage => formContext.credentialsPage;
   VerificationContext get verificationPage => formContext.verificationPage;
-
   @override
   late final List<FormPage> pages = [
     FormPage(
@@ -356,4 +355,217 @@ class LoginFormContext {
 
   late final credentialsPage = CredentialsContext(_pages, 0);
   late final verificationPage = VerificationContext(_pages, 1);
+}
+
+// Generating custom form class "EditProfileForm"
+class EditProfileForm extends FormData {
+  EditProfileForm({required ProfilePage profilePage}) : _profilePageArgs = profilePage;
+
+  // page properties
+  final ProfilePage _profilePageArgs;
+
+  late final EditProfileFormContext formContext = EditProfileFormContext(pages);
+
+  InputData<String, String> get displayName => formContext.profilePage.displayName;
+  InputData<String, String> get bio => formContext.profilePage.bio;
+
+  @override
+  late final List<FormPage> pages = [
+    FormPage(
+      name: 'profile',
+      items: [
+        InputData<String, String>(
+          name: "displayName",
+          hint: _profilePageArgs.displayNameInputData.hint,
+          value: _profilePageArgs.displayNameInputData.initialValue,
+          isOptional: _profilePageArgs.displayNameInputData.isOptional,
+          operation: _profilePageArgs.displayNameInputData.operation,
+          failure: _profilePageArgs.displayNameInputData.failure,
+          sideEffects: _profilePageArgs.displayNameInputData.sideEffects,
+          validator: (String? input) => _profilePageArgs.displayNameInputData.validateDisplayName(formContext, input),
+          onSubmit: (InputData<String, String> data) =>
+              _profilePageArgs.displayNameInputData.onSubmitDisplayName(formContext, data),
+        ),
+        InputData<String, String>(
+          name: "bio",
+          hint: _profilePageArgs.bioInputData.hint,
+          value: _profilePageArgs.bioInputData.initialValue,
+          isOptional: _profilePageArgs.bioInputData.isOptional,
+          operation: _profilePageArgs.bioInputData.operation,
+          failure: _profilePageArgs.bioInputData.failure,
+          sideEffects: _profilePageArgs.bioInputData.sideEffects,
+          validator: (String? input) => _profilePageArgs.bioInputData.validateBio(formContext, input),
+          onSubmit: (InputData<String, String> data) => _profilePageArgs.bioInputData.onSubmitBio(formContext, data),
+        ),
+      ],
+    ),
+  ];
+
+  @override
+  String get name => 'edit-profile-form';
+
+  @override
+  Stream<EditProfileForm> get stream => streamController.stream.map((e) => this);
+
+  @override
+  EditProfileForm copy() => throw Exception('cannot copy a generated FormData class');
+
+  Future<void> _submitProfilePage() async {
+    final page = pages[_profilePageArgs.pageIndex];
+    for (var inputItem in page.items) {
+      if (inputItem.isOptional) {
+        continue;
+      }
+      if (inputItem.hasNoValue) {
+        await inputItem.submit();
+        // if still no value return;
+        if (inputItem.hasNoValue) {
+          return;
+        }
+      }
+    }
+
+    // when all inputData items of the page have a value then submit page
+    await _profilePageArgs.onSubmitPage(
+      formContext,
+      formContext.profilePage.submitResult,
+      ProfilePageSubmitValueArgs(page.items[0].value, page.items[1].value),
+    );
+
+    if (formContext.profilePage.submitResult.hasFailure && formContext.profilePage.submitResult.failure.type == null) {
+      formContext.profilePage.submitResult.failure =
+          formContext.profilePage.submitResult.failure.copyWith(type: FailureType.error);
+    } else if (formContext.profilePage.submitResult.hasNoValue && !formContext.profilePage.submitResult.hasFailure) {
+      final message =
+          '! No value or failure was set on submitResult data inside onSubmitPage argument callback for profile page when it was called.';
+      formContext.profilePage.submitResult.failure = Failure(
+        message,
+        type: FailureType.error,
+      );
+      CrystallineGlobalConfig.logger.log(
+        CrystallineGlobalConfig.logger.redText(message),
+      );
+    }
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! EditProfileForm) return false;
+
+    return runtimeType == other.runtimeType &&
+        pages == other.pages &&
+        ListEquality<InputData>().equals(items, other.items) &&
+        operationOrNull == other.operationOrNull &&
+        sideEffects == other.sideEffects &&
+        failureOrNull == other.failureOrNull;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+        pages,
+        runtimeType,
+        items,
+        operationOrNull,
+        failureOrNull,
+        sideEffects.all,
+      ]);
+}
+
+// custom class code for ProfilePage
+class ProfilePage {
+  ProfilePage({
+    required this.displayNameInputData,
+    required this.bioInputData,
+    required this.onSubmitPage,
+  });
+
+  final DisplayNameInputData displayNameInputData;
+  final BioInputData bioInputData;
+  final pageIndex = 0;
+  final Future<void> Function(
+    EditProfileFormContext formContext,
+    Data<bool> submitResult,
+    ProfilePageSubmitValueArgs args,
+  ) onSubmitPage;
+}
+
+class DisplayNameInputData {
+  DisplayNameInputData({
+    required this.validateDisplayName,
+    required this.onSubmitDisplayName,
+    this.isOptional = false,
+    this.hint,
+    this.initialValue,
+    this.operation,
+    this.failure,
+    this.sideEffects,
+  });
+
+  final Operation? operation;
+  final Failure? failure;
+  final List<dynamic>? sideEffects;
+  final bool isOptional;
+  final String? hint;
+  final String? initialValue;
+  final InputValidationResult Function(
+    EditProfileFormContext formContext,
+    String? input,
+  ) validateDisplayName;
+  final Future<void> Function(
+    EditProfileFormContext formContext,
+    InputData<String, String> data,
+  ) onSubmitDisplayName;
+}
+
+class BioInputData {
+  BioInputData({
+    required this.validateBio,
+    required this.onSubmitBio,
+    this.isOptional = false,
+    this.hint,
+    this.initialValue,
+    this.operation,
+    this.failure,
+    this.sideEffects,
+  });
+
+  final Operation? operation;
+  final Failure? failure;
+  final List<dynamic>? sideEffects;
+  final bool isOptional;
+  final String? hint;
+  final String? initialValue;
+  final InputValidationResult Function(
+    EditProfileFormContext formContext,
+    String? input,
+  ) validateBio;
+  final Future<void> Function(
+    EditProfileFormContext formContext,
+    InputData<String, String> data,
+  ) onSubmitBio;
+}
+
+class ProfileContext {
+  ProfileContext(this._pages, this.index);
+  final List<FormPage> _pages;
+  final int index;
+
+  final submitResult = Data<bool>();
+
+  InputData<String, String> get displayName => _pages[index].items[0] as InputData<String, String>;
+  InputData<String, String> get bio => _pages[index].items[1] as InputData<String, String>;
+}
+
+class ProfilePageSubmitValueArgs {
+  ProfilePageSubmitValueArgs(this.displayName, this.bio);
+
+  final String displayName;
+  final String bio;
+}
+
+class EditProfileFormContext {
+  EditProfileFormContext(this._pages);
+  final List<FormPage> _pages;
+
+  late final profilePage = ProfileContext(_pages, 0);
 }
