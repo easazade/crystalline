@@ -63,7 +63,7 @@ abstract class FormData extends CollectionData<dynamic, InputData<dynamic, dynam
   // Forget the list always use pages
   //
   // Then generate one form and write some tests for it.
-  Future<void> submit() async {}
+  Future<void> submit();
 
   // @override
   // FormData copy() => FormData(
