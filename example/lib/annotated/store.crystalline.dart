@@ -22,25 +22,6 @@
 
 part of 'store.dart';
 
-const precisionDoubleKey = 'precisionDoubleKey';
-
-extension dataIntX on Data<int> {
-  set precision(double? value) {
-    sideEffects.add(MapEntry(precisionDoubleKey, value));
-  }
-
-  double? get precision {
-    final match = this.sideEffects.all.firstWhereOrNull(
-      (e) => e is MapEntry && e.key == precisionDoubleKey,
-    );
-    if (match != null) {
-      return (match as MapEntry).value;
-    } else {
-      return null;
-    }
-  }
-}
-
 final $$cartItemSharedProperty = Data<CartItem>();
 
 class GeneralStore extends _GeneralStore {
@@ -129,5 +110,24 @@ class GeneralStore extends _GeneralStore {
     sc.onCancel = () => streamSub?.cancel();
 
     return sc.stream;
+  }
+}
+
+const precisionDoubleKey = 'precisionDoubleKey';
+
+extension dataIntX on Data<int> {
+  set precision(double? value) {
+    sideEffects.add(MapEntry(precisionDoubleKey, value));
+  }
+
+  double? get precision {
+    final match = this.sideEffects.all.firstWhereOrNull(
+      (e) => e is MapEntry && e.key == precisionDoubleKey,
+    );
+    if (match != null) {
+      return (match as MapEntry).value;
+    } else {
+      return null;
+    }
   }
 }

@@ -25,11 +25,11 @@ class CrystallineBuilder implements Builder {
     if (!(await resolver.isLibrary(buildStep.inputId))) return;
     final library = await resolver.libraryFor(buildStep.inputId);
 
-    writeCustomSideEffectExtensions(buffer, library);
+    writeStoreClass(buffer, library);
 
     writeFormClass(buffer, library);
 
-    writeStoreClass(buffer, library);
+    writeCustomSideEffectExtensions(buffer, library);
 
     final outputId = buildStep.inputId.changeExtension('.crystalline.dart');
     final code = buffer.toString();
