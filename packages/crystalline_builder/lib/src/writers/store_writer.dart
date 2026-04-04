@@ -59,6 +59,23 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
           'final ${getter.displayName} =  ${sharedPropertyName(getter.displayName)};';
     }).join('\n');
 
+    final ctorParams = cls.unnamedConstructor!.formalParameters;
+    final copyCtorPositionalArgs = ctorParams.where((p) => p.isPositional).map((p) => p.displayName).join(', ');
+    final copyCtorNamedArgs =
+        ctorParams.where((p) => p.isNamed).map((p) => '${p.displayName}: ${p.displayName}').join(', ');
+    final copyCtorInvocation = () {
+      if (copyCtorPositionalArgs.isEmpty && copyCtorNamedArgs.isEmpty) {
+        return '$storeClassName()';
+      }
+      if (copyCtorPositionalArgs.isNotEmpty && copyCtorNamedArgs.isEmpty) {
+        return '$storeClassName($copyCtorPositionalArgs)';
+      }
+      if (copyCtorPositionalArgs.isEmpty && copyCtorNamedArgs.isNotEmpty) {
+        return '$storeClassName($copyCtorNamedArgs)';
+      }
+      return '$storeClassName($copyCtorPositionalArgs, $copyCtorNamedArgs)';
+    }();
+
     buffer.writeln(
       '''
         $sharedPropertiesPart
@@ -145,6 +162,53 @@ void writeStoreClass(final StringBuffer buffer, final LibraryElement library) {
 
             return sc.stream;
           }
+
+          @override
+          $storeClassName copy() {
+            final result = $copyCtorInvocation;
+            
+            for (var i = 0; i < states.length; i++) {
+              // ignore: avoid_dynamic_calls
+              (result.states[i] as dynamic).updateFrom((states[i] as dynamic).copy());
+            }
+            result.operation = operationOrNull;
+            result.failure = failureOrNull;
+            result.sideEffects.clear();
+            result.sideEffects.addAll(sideEffects.all);
+            return result;
+          }
+
+          @override
+          void updateFrom(Data<void> data) {
+            // no need for calling disallowNotify(); since notifying is by default disallowed for all stores
+            final old = copy();
+            if (data is $storeClassName) {
+              for (var i = 0; i < states.length; i++) {
+                // ignore: avoid_dynamic_calls
+                (states[i] as dynamic).updateFrom((data.states[i] as dynamic));
+              }
+            }
+            value = data.valueOrNull;
+            operation = data.operationOrNull;
+            failure = data.failureOrNull;
+            sideEffects.clear();
+            sideEffects.addAll(data.sideEffects.all);
+
+            if (old.operationOrNull != operationOrNull) {
+              events.dispatch(OperationEvent(operationOrNull));
+            }
+            if (old.failureOrNull != failureOrNull && failureOrNull != null) {
+              events.dispatch(FailureEvent(failure));
+            }
+            if (!const ListEquality<dynamic>().equals(
+                  old.sideEffects.all.toList(),
+                  sideEffects.all.toList(),
+                )) {
+              events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
+            }
+
+            publish();
+          }          
 
         }
       ''',

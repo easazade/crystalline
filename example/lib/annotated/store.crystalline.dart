@@ -111,6 +111,58 @@ class GeneralStore extends _GeneralStore {
 
     return sc.stream;
   }
+
+  @override
+  GeneralStore copy() {
+    final result = GeneralStore(
+      key,
+      token: token,
+      degree: degree,
+      withDefault: withDefault,
+    );
+
+    for (var i = 0; i < states.length; i++) {
+      // ignore: avoid_dynamic_calls
+      (result.states[i] as dynamic).updateFrom((states[i] as dynamic).copy());
+    }
+    result.operation = operationOrNull;
+    result.failure = failureOrNull;
+    result.sideEffects.clear();
+    result.sideEffects.addAll(sideEffects.all);
+    return result;
+  }
+
+  @override
+  void updateFrom(Data<void> data) {
+    // no need for calling disallowNotify(); since notifying is by default disallowed for all stores
+    final old = copy();
+    if (data is GeneralStore) {
+      for (var i = 0; i < states.length; i++) {
+        // ignore: avoid_dynamic_calls
+        (states[i] as dynamic).updateFrom((data.states[i] as dynamic));
+      }
+    }
+    value = data.valueOrNull;
+    operation = data.operationOrNull;
+    failure = data.failureOrNull;
+    sideEffects.clear();
+    sideEffects.addAll(data.sideEffects.all);
+
+    if (old.operationOrNull != operationOrNull) {
+      events.dispatch(OperationEvent(operationOrNull));
+    }
+    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
+      events.dispatch(FailureEvent(failure));
+    }
+    if (!const ListEquality<dynamic>().equals(
+      old.sideEffects.all.toList(),
+      sideEffects.all.toList(),
+    )) {
+      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
+    }
+
+    publish();
+  }
 }
 
 const precisionDoubleKey = 'precisionDoubleKey';

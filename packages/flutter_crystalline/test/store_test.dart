@@ -595,6 +595,76 @@ void main() {
       },
     );
   });
+
+  group('copy and updateFrom', () {
+    test('copy produces a new store with equal states and store-level fields', () {
+      store.age.value = 42;
+      store.userName.value = 'copy-test';
+      store.points.value = 3.14;
+      store.operation = Operation.update;
+      store.failure = Failure('store failure');
+      store.sideEffects.add('fx');
+
+      final copy = store.copy();
+
+      expect(identical(copy, store), isFalse);
+      expect(copy, equals(store));
+      expect(identical(copy.userName, store.userName), isFalse);
+      expect(identical(copy.age, store.age), isFalse);
+      expect(identical(copy.points, store.points), isFalse);
+      expect(identical(copy.sideEffects, store.sideEffects), isFalse);
+      expect(copy.userName.value, 'copy-test');
+      expect(copy.age.value, 42);
+      expect(copy.points.value, 3.14);
+      expect(copy.operationOrNull, Operation.update);
+      expect(copy.failureOrNull?.message, 'store failure');
+      expect(copy.sideEffects.all, ['fx']);
+    });
+
+    test('updateFrom applies another store states and store-level fields', () {
+      final source = TestStore();
+      source.userName.value = 'from-source';
+      source.age.value = 7;
+      source.points.value = 2.5;
+      source.operation = Operation.create;
+      source.failure = Failure('src');
+      source.sideEffects.add('s');
+
+      store.userName.value = 'original';
+      store.age.value = 1;
+      store.points.value = 0.0;
+      store.operation = null;
+      store.failure = null;
+      store.sideEffects.clear();
+
+      store.updateFrom(source);
+
+      expect(store.userName.value, 'from-source');
+      expect(store.age.value, 7);
+      expect(store.points.value, 2.5);
+      expect(store.operationOrNull, Operation.create);
+      expect(store.failureOrNull?.message, 'src');
+      expect(store.sideEffects.all, ['s']);
+    });
+
+    test('updateFrom with plain Data<void> only updates store-level fields', () {
+      store.userName.value = 'keep';
+      store.age.value = 99;
+      final plain = Data<void>(
+        operation: Operation.read,
+        failure: Failure('plain'),
+        sideEffects: ['p'],
+      );
+
+      store.updateFrom(plain);
+
+      expect(store.userName.value, 'keep');
+      expect(store.age.value, 99);
+      expect(store.operationOrNull, Operation.read);
+      expect(store.failureOrNull?.message, 'plain');
+      expect(store.sideEffects.all, ['p']);
+    });
+  });
 }
 
 @StoreClass()

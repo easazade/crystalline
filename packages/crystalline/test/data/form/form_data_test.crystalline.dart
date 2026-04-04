@@ -30,8 +30,8 @@ class LoginForm extends _LoginForm {
     Operation? operation,
     Failure? failure,
     List<dynamic>? sideEffects,
-  })  : _credentialsPageArgs = credentialsPage,
-        _verificationPageArgs = verificationPage {
+  }) : _credentialsPageArgs = credentialsPage,
+       _verificationPageArgs = verificationPage {
     this.operation = operation;
     this.failure = failure;
     if (sideEffects != null) {
@@ -61,9 +61,11 @@ class LoginForm extends _LoginForm {
           operation: _credentialsPageArgs.emailInputData.operation,
           failure: _credentialsPageArgs.emailInputData.failure,
           sideEffects: _credentialsPageArgs.emailInputData.sideEffects,
-          validator: (String? input) => _credentialsPageArgs.emailInputData.validateEmail(formContext, input),
-          onSubmit: (InputData<String, String> data) =>
-              _credentialsPageArgs.emailInputData.onSubmitEmail(formContext, data),
+          validator: (String? input) => _credentialsPageArgs.emailInputData
+              .validateEmail(formContext, input),
+          onSubmit: (InputData<String, String> data) => _credentialsPageArgs
+              .emailInputData
+              .onSubmitEmail(formContext, data),
         ),
         InputData<String, String>(
           name: "password",
@@ -74,12 +76,15 @@ class LoginForm extends _LoginForm {
           operation: _credentialsPageArgs.passwordInputData.operation,
           failure: _credentialsPageArgs.passwordInputData.failure,
           sideEffects: _credentialsPageArgs.passwordInputData.sideEffects,
-          validator: (String? input) => _credentialsPageArgs.passwordInputData.validatePassword(formContext, input),
-          onSubmit: (InputData<String, String> data) =>
-              _credentialsPageArgs.passwordInputData.onSubmitPassword(formContext, data),
+          validator: (String? input) => _credentialsPageArgs.passwordInputData
+              .validatePassword(formContext, input),
+          onSubmit: (InputData<String, String> data) => _credentialsPageArgs
+              .passwordInputData
+              .onSubmitPassword(formContext, data),
         ),
       ],
     ),
+
     FormPage(
       name: 'verification',
       items: [
@@ -92,9 +97,11 @@ class LoginForm extends _LoginForm {
           operation: _verificationPageArgs.codeInputData.operation,
           failure: _verificationPageArgs.codeInputData.failure,
           sideEffects: _verificationPageArgs.codeInputData.sideEffects,
-          validator: (String? input) => _verificationPageArgs.codeInputData.validateCode(formContext, input),
-          onSubmit: (InputData<String, int> data) =>
-              _verificationPageArgs.codeInputData.onSubmitCode(formContext, data),
+          validator: (String? input) => _verificationPageArgs.codeInputData
+              .validateCode(formContext, input),
+          onSubmit: (InputData<String, int> data) => _verificationPageArgs
+              .codeInputData
+              .onSubmitCode(formContext, data),
         ),
       ],
     ),
@@ -108,49 +115,56 @@ class LoginForm extends _LoginForm {
 
   @override
   LoginForm copy() => LoginForm(
-        credentialsPage: CredentialsPage(
-          emailInputData: EmailInputData(
-            validateEmail: _credentialsPageArgs.emailInputData.validateEmail,
-            onSubmitEmail: _credentialsPageArgs.emailInputData.onSubmitEmail,
-            isOptional: pages[0].items[0].isOptional,
-            hint: pages[0].items[0].hint,
-            initialValue: (pages[0].items[0] as InputData<String, String>).valueOrNull,
-            initialInput: (pages[0].items[0] as InputData<String, String>).inputOrNull,
-            operation: pages[0].items[0].operationOrNull,
-            failure: pages[0].items[0].failureOrNull,
-            sideEffects: pages[0].items[0].sideEffects.all.toList(),
-          ),
-          passwordInputData: PasswordInputData(
-            validatePassword: _credentialsPageArgs.passwordInputData.validatePassword,
-            onSubmitPassword: _credentialsPageArgs.passwordInputData.onSubmitPassword,
-            isOptional: pages[0].items[1].isOptional,
-            hint: pages[0].items[1].hint,
-            initialValue: (pages[0].items[1] as InputData<String, String>).valueOrNull,
-            initialInput: (pages[0].items[1] as InputData<String, String>).inputOrNull,
-            operation: pages[0].items[1].operationOrNull,
-            failure: pages[0].items[1].failureOrNull,
-            sideEffects: pages[0].items[1].sideEffects.all.toList(),
-          ),
-          onSubmitPage: _credentialsPageArgs.onSubmitPage,
-        ),
-        verificationPage: VerificationPage(
-          codeInputData: CodeInputData(
-            validateCode: _verificationPageArgs.codeInputData.validateCode,
-            onSubmitCode: _verificationPageArgs.codeInputData.onSubmitCode,
-            isOptional: pages[1].items[0].isOptional,
-            hint: pages[1].items[0].hint,
-            initialValue: (pages[1].items[0] as InputData<String, int>).valueOrNull,
-            initialInput: (pages[1].items[0] as InputData<String, int>).inputOrNull,
-            operation: pages[1].items[0].operationOrNull,
-            failure: pages[1].items[0].failureOrNull,
-            sideEffects: pages[1].items[0].sideEffects.all.toList(),
-          ),
-          onSubmitPage: _verificationPageArgs.onSubmitPage,
-        ),
-        operation: operationOrNull,
-        failure: failureOrNull,
-        sideEffects: sideEffects.all.toList(),
-      );
+    credentialsPage: CredentialsPage(
+      emailInputData: EmailInputData(
+        validateEmail: _credentialsPageArgs.emailInputData.validateEmail,
+        onSubmitEmail: _credentialsPageArgs.emailInputData.onSubmitEmail,
+        isOptional: pages[0].items[0].isOptional,
+        hint: pages[0].items[0].hint,
+        initialValue:
+            (pages[0].items[0] as InputData<String, String>).valueOrNull,
+        initialInput:
+            (pages[0].items[0] as InputData<String, String>).inputOrNull,
+        operation: pages[0].items[0].operationOrNull,
+        failure: pages[0].items[0].failureOrNull,
+        sideEffects: pages[0].items[0].sideEffects.all.toList(),
+      ),
+      passwordInputData: PasswordInputData(
+        validatePassword:
+            _credentialsPageArgs.passwordInputData.validatePassword,
+        onSubmitPassword:
+            _credentialsPageArgs.passwordInputData.onSubmitPassword,
+        isOptional: pages[0].items[1].isOptional,
+        hint: pages[0].items[1].hint,
+        initialValue:
+            (pages[0].items[1] as InputData<String, String>).valueOrNull,
+        initialInput:
+            (pages[0].items[1] as InputData<String, String>).inputOrNull,
+        operation: pages[0].items[1].operationOrNull,
+        failure: pages[0].items[1].failureOrNull,
+        sideEffects: pages[0].items[1].sideEffects.all.toList(),
+      ),
+      onSubmitPage: _credentialsPageArgs.onSubmitPage,
+    ),
+    verificationPage: VerificationPage(
+      codeInputData: CodeInputData(
+        validateCode: _verificationPageArgs.codeInputData.validateCode,
+        onSubmitCode: _verificationPageArgs.codeInputData.onSubmitCode,
+        isOptional: pages[1].items[0].isOptional,
+        hint: pages[1].items[0].hint,
+        initialValue: (pages[1].items[0] as InputData<String, int>).valueOrNull,
+        initialInput: (pages[1].items[0] as InputData<String, int>).inputOrNull,
+        operation: pages[1].items[0].operationOrNull,
+        failure: pages[1].items[0].failureOrNull,
+        sideEffects: pages[1].items[0].sideEffects.all.toList(),
+      ),
+      onSubmitPage: _verificationPageArgs.onSubmitPage,
+    ),
+
+    operation: operationOrNull,
+    failure: failureOrNull,
+    sideEffects: sideEffects.all.toList(),
+  );
 
   // Satisfies [Data]'s @mustBeOverridden; behavior is [FormData.updateFrom].
   @override
@@ -181,8 +195,11 @@ class LoginForm extends _LoginForm {
 
     if (formContext.credentialsPage.submitResult.hasFailure &&
         formContext.credentialsPage.submitResult.failure.type == null) {
-      formContext.credentialsPage.submitResult.failure =
-          formContext.credentialsPage.submitResult.failure.copyWith(type: FailureType.error);
+      formContext.credentialsPage.submitResult.failure = formContext
+          .credentialsPage
+          .submitResult
+          .failure
+          .copyWith(type: FailureType.error);
     } else if (formContext.credentialsPage.submitResult.hasNoValue &&
         !formContext.credentialsPage.submitResult.hasFailure) {
       final message =
@@ -219,8 +236,11 @@ class LoginForm extends _LoginForm {
 
     if (formContext.verificationPage.submitResult.hasFailure &&
         formContext.verificationPage.submitResult.failure.type == null) {
-      formContext.verificationPage.submitResult.failure =
-          formContext.verificationPage.submitResult.failure.copyWith(type: FailureType.error);
+      formContext.verificationPage.submitResult.failure = formContext
+          .verificationPage
+          .submitResult
+          .failure
+          .copyWith(type: FailureType.error);
     } else if (formContext.verificationPage.submitResult.hasNoValue &&
         !formContext.verificationPage.submitResult.hasFailure) {
       final message =
@@ -240,14 +260,16 @@ class LoginForm extends _LoginForm {
     bool reSubmitCredentialsPage = false,
     bool reSubmitVerificationPage = false,
   }) async {
-    if (formContext.credentialsPage.submitResult.hasNoValue || reSubmitCredentialsPage) {
+    if (formContext.credentialsPage.submitResult.hasNoValue ||
+        reSubmitCredentialsPage) {
       await submitCredentialsPage();
       if (formContext.credentialsPage.submitResult.hasFailure) {
         return;
       }
     }
 
-    if (formContext.verificationPage.submitResult.hasNoValue || reSubmitVerificationPage) {
+    if (formContext.verificationPage.submitResult.hasNoValue ||
+        reSubmitVerificationPage) {
       await submitVerificationPage();
       if (formContext.verificationPage.submitResult.hasFailure) {
         return;
@@ -269,13 +291,13 @@ class LoginForm extends _LoginForm {
 
   @override
   int get hashCode => Object.hashAll([
-        pages,
-        runtimeType,
-        items,
-        operationOrNull,
-        failureOrNull,
-        sideEffects.all,
-      ]);
+    pages,
+    runtimeType,
+    items,
+    operationOrNull,
+    failureOrNull,
+    sideEffects.all,
+  ]);
 }
 
 // custom class code for CredentialsPage
@@ -293,7 +315,8 @@ class CredentialsPage {
     LoginFormContext formContext,
     Data<bool> submitResult,
     CredentialsPageSubmitValueArgs args,
-  ) onSubmitPage;
+  )
+  onSubmitPage;
 }
 
 class EmailInputData {
@@ -319,11 +342,13 @@ class EmailInputData {
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
-  ) validateEmail;
+  )
+  validateEmail;
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, String> data,
-  ) onSubmitEmail;
+  )
+  onSubmitEmail;
 }
 
 class PasswordInputData {
@@ -349,11 +374,13 @@ class PasswordInputData {
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
-  ) validatePassword;
+  )
+  validatePassword;
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, String> data,
-  ) onSubmitPassword;
+  )
+  onSubmitPassword;
 }
 
 // custom class code for VerificationPage
@@ -366,7 +393,8 @@ class VerificationPage {
     LoginFormContext formContext,
     Data<bool> submitResult,
     VerificationPageSubmitValueArgs args,
-  ) onSubmitPage;
+  )
+  onSubmitPage;
 }
 
 class CodeInputData {
@@ -392,11 +420,13 @@ class CodeInputData {
   final InputValidationResult Function(
     LoginFormContext formContext,
     String? input,
-  ) validateCode;
+  )
+  validateCode;
   final Future<void> Function(
     LoginFormContext formContext,
     InputData<String, int> data,
-  ) onSubmitCode;
+  )
+  onSubmitCode;
 }
 
 class CredentialsContext {
@@ -406,8 +436,10 @@ class CredentialsContext {
 
   final submitResult = Data<bool>();
 
-  InputData<String, String> get email => _pages[index].items[0] as InputData<String, String>;
-  InputData<String, String> get password => _pages[index].items[1] as InputData<String, String>;
+  InputData<String, String> get email =>
+      _pages[index].items[0] as InputData<String, String>;
+  InputData<String, String> get password =>
+      _pages[index].items[1] as InputData<String, String>;
 }
 
 class VerificationContext {
@@ -417,7 +449,8 @@ class VerificationContext {
 
   final submitResult = Data<bool>();
 
-  InputData<String, int> get code => _pages[index].items[0] as InputData<String, int>;
+  InputData<String, int> get code =>
+      _pages[index].items[0] as InputData<String, int>;
 }
 
 class CredentialsPageSubmitValueArgs {
@@ -461,7 +494,8 @@ class EditProfileForm extends _EditProfileForm {
 
   late final EditProfileFormContext formContext = EditProfileFormContext(pages);
 
-  InputData<String, String> get displayName => formContext.profilePage.displayName;
+  InputData<String, String> get displayName =>
+      formContext.profilePage.displayName;
   InputData<String, String> get bio => formContext.profilePage.bio;
   Data<bool> get submitResult => formContext.profilePage.submitResult;
 
@@ -479,9 +513,11 @@ class EditProfileForm extends _EditProfileForm {
           operation: _profilePageArgs.displayNameInputData.operation,
           failure: _profilePageArgs.displayNameInputData.failure,
           sideEffects: _profilePageArgs.displayNameInputData.sideEffects,
-          validator: (String? input) => _profilePageArgs.displayNameInputData.validateDisplayName(formContext, input),
-          onSubmit: (InputData<String, String> data) =>
-              _profilePageArgs.displayNameInputData.onSubmitDisplayName(formContext, data),
+          validator: (String? input) => _profilePageArgs.displayNameInputData
+              .validateDisplayName(formContext, input),
+          onSubmit: (InputData<String, String> data) => _profilePageArgs
+              .displayNameInputData
+              .onSubmitDisplayName(formContext, data),
         ),
         InputData<String, String>(
           name: "bio",
@@ -492,8 +528,10 @@ class EditProfileForm extends _EditProfileForm {
           operation: _profilePageArgs.bioInputData.operation,
           failure: _profilePageArgs.bioInputData.failure,
           sideEffects: _profilePageArgs.bioInputData.sideEffects,
-          validator: (String? input) => _profilePageArgs.bioInputData.validateBio(formContext, input),
-          onSubmit: (InputData<String, String> data) => _profilePageArgs.bioInputData.onSubmitBio(formContext, data),
+          validator: (String? input) =>
+              _profilePageArgs.bioInputData.validateBio(formContext, input),
+          onSubmit: (InputData<String, String> data) =>
+              _profilePageArgs.bioInputData.onSubmitBio(formContext, data),
         ),
       ],
     ),
@@ -503,39 +541,47 @@ class EditProfileForm extends _EditProfileForm {
   String get name => 'edit-profile-form';
 
   @override
-  Stream<EditProfileForm> get stream => streamController.stream.map((e) => this);
+  Stream<EditProfileForm> get stream =>
+      streamController.stream.map((e) => this);
 
   @override
   EditProfileForm copy() => EditProfileForm(
-        profilePage: ProfilePage(
-          displayNameInputData: DisplayNameInputData(
-            validateDisplayName: _profilePageArgs.displayNameInputData.validateDisplayName,
-            onSubmitDisplayName: _profilePageArgs.displayNameInputData.onSubmitDisplayName,
-            isOptional: pages[0].items[0].isOptional,
-            hint: pages[0].items[0].hint,
-            initialValue: (pages[0].items[0] as InputData<String, String>).valueOrNull,
-            initialInput: (pages[0].items[0] as InputData<String, String>).inputOrNull,
-            operation: pages[0].items[0].operationOrNull,
-            failure: pages[0].items[0].failureOrNull,
-            sideEffects: pages[0].items[0].sideEffects.all.toList(),
-          ),
-          bioInputData: BioInputData(
-            validateBio: _profilePageArgs.bioInputData.validateBio,
-            onSubmitBio: _profilePageArgs.bioInputData.onSubmitBio,
-            isOptional: pages[0].items[1].isOptional,
-            hint: pages[0].items[1].hint,
-            initialValue: (pages[0].items[1] as InputData<String, String>).valueOrNull,
-            initialInput: (pages[0].items[1] as InputData<String, String>).inputOrNull,
-            operation: pages[0].items[1].operationOrNull,
-            failure: pages[0].items[1].failureOrNull,
-            sideEffects: pages[0].items[1].sideEffects.all.toList(),
-          ),
-          onSubmitPage: _profilePageArgs.onSubmitPage,
-        ),
-        operation: operationOrNull,
-        failure: failureOrNull,
-        sideEffects: sideEffects.all.toList(),
-      );
+    profilePage: ProfilePage(
+      displayNameInputData: DisplayNameInputData(
+        validateDisplayName:
+            _profilePageArgs.displayNameInputData.validateDisplayName,
+        onSubmitDisplayName:
+            _profilePageArgs.displayNameInputData.onSubmitDisplayName,
+        isOptional: pages[0].items[0].isOptional,
+        hint: pages[0].items[0].hint,
+        initialValue:
+            (pages[0].items[0] as InputData<String, String>).valueOrNull,
+        initialInput:
+            (pages[0].items[0] as InputData<String, String>).inputOrNull,
+        operation: pages[0].items[0].operationOrNull,
+        failure: pages[0].items[0].failureOrNull,
+        sideEffects: pages[0].items[0].sideEffects.all.toList(),
+      ),
+      bioInputData: BioInputData(
+        validateBio: _profilePageArgs.bioInputData.validateBio,
+        onSubmitBio: _profilePageArgs.bioInputData.onSubmitBio,
+        isOptional: pages[0].items[1].isOptional,
+        hint: pages[0].items[1].hint,
+        initialValue:
+            (pages[0].items[1] as InputData<String, String>).valueOrNull,
+        initialInput:
+            (pages[0].items[1] as InputData<String, String>).inputOrNull,
+        operation: pages[0].items[1].operationOrNull,
+        failure: pages[0].items[1].failureOrNull,
+        sideEffects: pages[0].items[1].sideEffects.all.toList(),
+      ),
+      onSubmitPage: _profilePageArgs.onSubmitPage,
+    ),
+
+    operation: operationOrNull,
+    failure: failureOrNull,
+    sideEffects: sideEffects.all.toList(),
+  );
 
   // Satisfies [Data]'s @mustBeOverridden; behavior is [FormData.updateFrom].
   @override
@@ -564,10 +610,15 @@ class EditProfileForm extends _EditProfileForm {
       ProfilePageSubmitValueArgs(page.items[0].value, page.items[1].value),
     );
 
-    if (formContext.profilePage.submitResult.hasFailure && formContext.profilePage.submitResult.failure.type == null) {
-      formContext.profilePage.submitResult.failure =
-          formContext.profilePage.submitResult.failure.copyWith(type: FailureType.error);
-    } else if (formContext.profilePage.submitResult.hasNoValue && !formContext.profilePage.submitResult.hasFailure) {
+    if (formContext.profilePage.submitResult.hasFailure &&
+        formContext.profilePage.submitResult.failure.type == null) {
+      formContext.profilePage.submitResult.failure = formContext
+          .profilePage
+          .submitResult
+          .failure
+          .copyWith(type: FailureType.error);
+    } else if (formContext.profilePage.submitResult.hasNoValue &&
+        !formContext.profilePage.submitResult.hasFailure) {
       final message =
           '! No value or failure was set on submitResult data inside onSubmitPage argument callback for profile page when it was called.';
       formContext.profilePage.submitResult.failure = Failure(
@@ -599,13 +650,13 @@ class EditProfileForm extends _EditProfileForm {
 
   @override
   int get hashCode => Object.hashAll([
-        pages,
-        runtimeType,
-        items,
-        operationOrNull,
-        failureOrNull,
-        sideEffects.all,
-      ]);
+    pages,
+    runtimeType,
+    items,
+    operationOrNull,
+    failureOrNull,
+    sideEffects.all,
+  ]);
 }
 
 // custom class code for ProfilePage
@@ -623,7 +674,8 @@ class ProfilePage {
     EditProfileFormContext formContext,
     Data<bool> submitResult,
     ProfilePageSubmitValueArgs args,
-  ) onSubmitPage;
+  )
+  onSubmitPage;
 }
 
 class DisplayNameInputData {
@@ -649,11 +701,13 @@ class DisplayNameInputData {
   final InputValidationResult Function(
     EditProfileFormContext formContext,
     String? input,
-  ) validateDisplayName;
+  )
+  validateDisplayName;
   final Future<void> Function(
     EditProfileFormContext formContext,
     InputData<String, String> data,
-  ) onSubmitDisplayName;
+  )
+  onSubmitDisplayName;
 }
 
 class BioInputData {
@@ -679,11 +733,13 @@ class BioInputData {
   final InputValidationResult Function(
     EditProfileFormContext formContext,
     String? input,
-  ) validateBio;
+  )
+  validateBio;
   final Future<void> Function(
     EditProfileFormContext formContext,
     InputData<String, String> data,
-  ) onSubmitBio;
+  )
+  onSubmitBio;
 }
 
 class ProfileContext {
@@ -693,8 +749,10 @@ class ProfileContext {
 
   final submitResult = Data<bool>();
 
-  InputData<String, String> get displayName => _pages[index].items[0] as InputData<String, String>;
-  InputData<String, String> get bio => _pages[index].items[1] as InputData<String, String>;
+  InputData<String, String> get displayName =>
+      _pages[index].items[0] as InputData<String, String>;
+  InputData<String, String> get bio =>
+      _pages[index].items[1] as InputData<String, String>;
 }
 
 class ProfilePageSubmitValueArgs {
