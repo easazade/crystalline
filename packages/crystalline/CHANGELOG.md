@@ -1,3 +1,14 @@
+## 0.9.0
+
+- Add custom form data class generation with @FormClass() annotation
+- Add InputData, FormData
+- Make sure generated store is on top in the generated file
+- Add tests for submit method in form_data_test.dart
+- Fix updateFrom not being overridden in some classes
+- Fix copy not being overridden in some classes
+- Improve hashCode overrides
+- Fix stream not emitting for some data types
+
 ## 0.8.0
 
 - Remove operation.none

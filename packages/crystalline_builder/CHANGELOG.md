@@ -1,3 +1,9 @@
+## 0.9.0
+
+- Bump [crystalline](https://pub.dev/packages/crystalline) to 0.9.0
+- Fix copy() & updateFrom() is not being overridden for generated data classes
+- Add custom form data class generation using @FormClass() annotation
+
 ## 0.8.0
 
 - Add feature to generate custom side effect extensions

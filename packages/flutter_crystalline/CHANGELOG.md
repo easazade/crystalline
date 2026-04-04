@@ -1,3 +1,8 @@
+## 0.9.0
+
+- Bump [crystalline](https://pub.dev/packages/crystalline) to 0.9.0
+- Add asListenable() extension on stream objects usable for data classes
+
 ## 0.8.0
 
 - Bump [crystalline](https://pub.dev/packages/crystalline) to 0.8.0
