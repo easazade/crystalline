@@ -44,18 +44,18 @@
 
 ## 0.6.0
 
-- **REFACTOR**(crystalline): Rename clearAllSideEffects to removeAllSideEffects.
-- **REFACTOR**: Rename Operation.fetch to Operation.read to match associate with term CRUD.
-- **REFACTOR**(crystalline): Remove Operation.operating state to make Operation class cleaner.
-- **REFACTOR**(crystalline): Restructure Data class base interfaces.
-- **FIX**(crystalline): Update code doc on mutators.
-- **FIX**(crystalline): Remove listening to events of original data in mirror mutator function since updateFrom method already listens to events.
-- **FIX**(crystalline): Fix mirrored data objects not getting notified for events.
-- **FIX**(crystalline): Fix mutators incorrect generic type mapping.
-- **FIX**(crystalline): Fix ContextData not copying sideEffects when copy method was called.
-- **FEAT**(flutter_crystalline): Update tests.
-- **FEAT**(crystalline): Add global logging for all data objects changes.
-- **FEAT**: Add CrystallineGlobalConfig and CrystallineLogger.
+- Rename clearAllSideEffects to removeAllSideEffects.
+- Rename Operation.fetch to Operation.read to match associate with term CRUD.
+- Remove Operation.operating state to make Operation class cleaner.
+- Restructure Data class base interfaces.
+- Update code doc on mutators.
+- Remove listening to events of original data in mirror mutator function since updateFrom method already listens to events.
+- Fix mirrored data objects not getting notified for events.
+- Fix mutators incorrect generic type mapping.
+- Fix ContextData not copying sideEffects when copy method was called.
+- Update tests.
+- Add global logging for all data objects changes.
+- Add CrystallineGlobalConfig and CrystallineLogger.
 
 ## 0.5.1
 
