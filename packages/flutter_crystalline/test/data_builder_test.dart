@@ -177,4 +177,33 @@ void main() {
       expect(find.text(failure.message), matchers.findsOneWidget);
     },
   );
+
+  testWidgets(
+    'DataBuilder should recognize the subclasses of Data<T> as well like Context<T,C> and should not treat '
+    'passed data objects as the base type. It must preserve the sub-type of data object passed',
+    (tester) async {
+      final user = ContextData<String, int>();
+      user.value = 'Ali';
+      user.context = 33;
+
+      await tester.pumpWidget(
+        Testable(
+          child: DataBuilder(
+            data: user,
+            builder: (context, data) {
+              if (data.hasValue && data.hasContext) {
+                return Text('${data.value} is ${data.context} years old');
+              } else {
+                return SizedBox();
+              }
+            },
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ali is 33 years old'), findsOneWidget);
+    },
+  );
 }
