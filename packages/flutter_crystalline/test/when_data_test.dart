@@ -32,7 +32,7 @@ void main() {
                 data: getData(),
                 builder: (context, data) {
                   return WhenData<String, Data<String>>(
-                    data: getData(),
+                    data: data,
                     onValue: (context, data) => Text(data.value),
                   );
                 },
