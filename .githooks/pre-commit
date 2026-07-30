@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run from the repository root, regardless of where git invoked the hook.
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+if command -v fvm >/dev/null 2>&1; then
+  dart_cmd=(fvm dart)
+else
+  dart_cmd=(dart)
+fi
+
+run_melos() {
+  "${dart_cmd[@]}" run melos "$@"
+}
+
+stage_changed_files() {
+  if ! git diff --quiet; then
+    echo "pre-commit: staging changed files:"
+    git diff --name-only
+    git diff --name-only -z | xargs -0 git add --
+  fi
+}
+
+echo "pre-commit: formatting packages..."
+run_melos run format
+stage_changed_files
+
+echo "pre-commit: analyzing packages..."
+run_melos run check
+stage_changed_files
+
+echo "pre-commit: running tests..."
+run_melos run test
+
+echo "pre-commit: all checks passed."
