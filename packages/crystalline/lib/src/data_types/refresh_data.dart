@@ -19,14 +19,10 @@ class RefreshData<T> extends Data<T> {
 
   Completer<void>? _refreshCompleter;
 
-  late final _refreshDataEvents = RefreshDataEvents(this);
   late final _refreshObservers = RefreshDataObservers(this);
 
   @override
   RefreshDataObservers get observers => _refreshObservers;
-
-  @override
-  RefreshDataEvents get events => _refreshDataEvents;
 
   Future<void> refresh({bool allowRetry = true}) async {
     Future<RefreshStatus> tryRefreshCallback() async {

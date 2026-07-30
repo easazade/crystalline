@@ -2,33 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
-import 'package:crystalline/src/semantics/events.dart';
 import 'package:crystalline/src/semantics/observers.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 
 typedef DataPredicate<T> = bool Function(List<Data<T>> value, Operation? operation, Failure? failure)?;
-
-class AddItemEvent<T> extends Event {
-  AddItemEvent(this.newItem, this.items)
-      : super(CrystallineGlobalConfig.logger.ellipsize(newItem.toString(), maxSize: 20));
-
-  final Data<T> newItem;
-  final Iterable<Data<T>> items;
-}
-
-class RemoveItemEvent<T> extends Event {
-  RemoveItemEvent(this.removedItem, this.items)
-      : super(CrystallineGlobalConfig.logger.ellipsize(removedItem.toString(), maxSize: 20));
-
-  final Data<T> removedItem;
-  final Iterable<Data<T>> items;
-}
-
-class ItemsUpdatedEvent<T> extends Event {
-  ItemsUpdatedEvent(this.items) : super('${items.runtimeType} = ${items.length}');
-
-  final Iterable<Data<T>> items;
-}
 
 abstract class BaseCollectionData<T, K extends Data<T>> extends Data<List<K>> with Iterable<K> {}
 
@@ -65,16 +42,12 @@ abstract class CollectionData<T, K extends Data<T>> extends BaseCollectionData<T
   void operator []=(int index, K value) {
     items[index] = value;
     _addObserversToItem(value);
-    events.dispatch(AddItemEvent(value, items));
-    events.dispatch(ItemsUpdatedEvent(items));
     notifyObserversAndStreamListeners();
   }
 
   K removeAt(int index) {
     final removedItem = items.removeAt(index);
     _removeObserversFromItem(removedItem);
-    events.dispatch(RemoveItemEvent(removedItem, items));
-    events.dispatch(ItemsUpdatedEvent(items));
     notifyObserversAndStreamListeners();
     return removedItem;
   }
@@ -84,23 +57,18 @@ abstract class CollectionData<T, K extends Data<T>> extends BaseCollectionData<T
       _removeObserversFromItem(e);
     }
     items.clear();
-    events.dispatch(ItemsUpdatedEvent(items));
     notifyObserversAndStreamListeners();
   }
 
   void add(K data) {
     items.add(data);
     _addObserversToItem(data);
-    events.dispatch(AddItemEvent(data, items));
-    events.dispatch(ItemsUpdatedEvent(items));
     notifyObserversAndStreamListeners();
   }
 
   void insert(int index, K data) {
     items.insert(index, data);
     _addObserversToItem(data);
-    events.dispatch(AddItemEvent(data, items));
-    events.dispatch(ItemsUpdatedEvent(items));
     notifyObserversAndStreamListeners();
   }
 
@@ -109,7 +77,6 @@ abstract class CollectionData<T, K extends Data<T>> extends BaseCollectionData<T
     for (var item in list) {
       _addObserversToItem(item);
     }
-    events.dispatch(ItemsUpdatedEvent(items));
     notifyObserversAndStreamListeners();
   }
 
@@ -118,13 +85,11 @@ abstract class CollectionData<T, K extends Data<T>> extends BaseCollectionData<T
       _removeObserversFromItem(item);
     }
     items.removeWhere(test);
-    events.dispatch(ItemsUpdatedEvent(items));
     notifyObserversAndStreamListeners();
   }
 
   void modifyItems(Iterable<K> Function(List<K> items) modifier) {
     disallowNotify();
-    final oldItems = items.toList();
     final newItems = modifier(items).toList();
     for (var e in items) {
       _removeObserversFromItem(e);
@@ -135,15 +100,11 @@ abstract class CollectionData<T, K extends Data<T>> extends BaseCollectionData<T
       _addObserversToItem(e);
     }
     allowNotify();
-    if (oldItems != items) {
-      events.dispatch(ItemsUpdatedEvent(items));
-    }
     notifyObserversAndStreamListeners();
   }
 
   Future<void> modifyItemsAsync(Future<Iterable<K>> Function(List<K> items) modifier) async {
     disallowNotify();
-    final oldItems = items.toList();
     final newItems = await modifier(items).then((e) => e.toList());
     for (var e in items) {
       _removeObserversFromItem(e);
@@ -154,30 +115,14 @@ abstract class CollectionData<T, K extends Data<T>> extends BaseCollectionData<T
       _addObserversToItem(e);
     }
     allowNotify();
-    if (oldItems != items) {
-      events.dispatch(ItemsUpdatedEvent(items));
-    }
     notifyObserversAndStreamListeners();
   }
 
   @override
   void modify(void Function(CollectionData<T, K> data) fn) {
     disallowNotify();
-    final old = copy();
     fn(this);
     allowNotify();
-    if (old.items != items) {
-      events.dispatch(ItemsUpdatedEvent(items));
-    }
-    if (old.operationOrNull != operationOrNull) {
-      events.dispatch(OperationEvent(operationOrNull));
-    }
-    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
-      events.dispatch(FailureEvent(failure));
-    }
-    if (!ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
-    }
     notifyObserversAndStreamListeners();
   }
 
@@ -186,28 +131,14 @@ abstract class CollectionData<T, K extends Data<T>> extends BaseCollectionData<T
     Future<void> Function(CollectionData<T, K> data) fn,
   ) async {
     disallowNotify();
-    final old = copy();
     await fn(this);
     allowNotify();
-    if (old.items != items) {
-      events.dispatch(ItemsUpdatedEvent(items));
-    }
-    if (old.operationOrNull != operationOrNull) {
-      events.dispatch(OperationEvent(operationOrNull));
-    }
-    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
-      events.dispatch(FailureEvent(failure));
-    }
-    if (!ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
-    }
     notifyObserversAndStreamListeners();
   }
 
   @override
   void updateFrom(Data<List<K>> data) {
     disallowNotify();
-    final old = copy();
     for (var e in items) {
       _removeObserversFromItem(e);
     }
@@ -221,18 +152,6 @@ abstract class CollectionData<T, K extends Data<T>> extends BaseCollectionData<T
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);
     allowNotify();
-    if (old.items != items) {
-      events.dispatch(ItemsUpdatedEvent(items));
-    }
-    if (old.operationOrNull != operationOrNull) {
-      events.dispatch(OperationEvent(operationOrNull));
-    }
-    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
-      events.dispatch(FailureEvent(failure));
-    }
-    if (!ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
-    }
     notifyObserversAndStreamListeners();
   }
 

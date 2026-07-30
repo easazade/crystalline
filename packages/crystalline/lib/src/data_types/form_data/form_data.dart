@@ -4,7 +4,6 @@ import 'package:crystalline/src/data_types/collection_data.dart';
 import 'package:crystalline/src/data_types/data.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
-import 'package:crystalline/src/semantics/events.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 import 'package:meta/meta.dart';
 
@@ -69,10 +68,6 @@ abstract class FormData extends CollectionData<dynamic, InputData<dynamic, dynam
   @override
   void updateFrom(Data<List<InputData<dynamic, dynamic>>> data) {
     disallowNotify();
-    final oldItems = items.toList();
-    final oldOperationOrNull = operationOrNull;
-    final oldFailureOrNull = failureOrNull;
-    final oldSideEffectsList = sideEffects.all.toList();
     final newItems = data.value.toList();
     final newItemsIterator = newItems.iterator;
     for (final page in pages) {
@@ -105,18 +100,6 @@ abstract class FormData extends CollectionData<dynamic, InputData<dynamic, dynam
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);
     allowNotify();
-    if (!ListEquality<InputData>().equals(oldItems, items)) {
-      events.dispatch(ItemsUpdatedEvent(items));
-    }
-    if (oldOperationOrNull != operationOrNull) {
-      events.dispatch(OperationEvent(operationOrNull));
-    }
-    if (oldFailureOrNull != failureOrNull && failureOrNull != null) {
-      events.dispatch(FailureEvent(failure));
-    }
-    if (!ListEquality<dynamic>().equals(oldSideEffectsList, sideEffects.all.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
-    }
     notifyObserversAndStreamListeners();
   }
 

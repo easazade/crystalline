@@ -16,7 +16,6 @@ export 'src/data_types/form_data/form_data.dart';
 export 'src/data_types/operation_data.dart';
 export 'src/exceptions.dart';
 export 'src/mutators/mutators.dart';
-export 'src/semantics/events.dart';
 export 'src/semantics/observers.dart';
 export 'src/semantics/operation.dart';
 export 'src/semantics/side_effects.dart';

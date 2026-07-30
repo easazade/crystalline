@@ -108,11 +108,11 @@ abstract class Store extends Data<void> {
 
   /// Returns a stream with configurable behavior.
   ///
-  /// [skipUntilInitialized] When true, events emitted before [onInitialize]
+  /// [skipUntilInitialized] When true, stream emissions before [onInitialize]
   /// completes are not forwarded. When initialization completes, the stream
   /// emits once only if at least one [publish] was skipped during init.
   ///
-  /// [skipOperations] When true, events emitted when there is an operation set
+  /// [skipOperations] When true, stream emissions when there is an operation set
   /// will be skipped.
   Stream<Store> streamWith({
     bool skipUntilInitialized = false,

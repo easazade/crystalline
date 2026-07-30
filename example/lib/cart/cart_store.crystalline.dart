@@ -120,7 +120,6 @@ class CartStore extends _CartStore {
   @override
   void updateFrom(Data<void> data) {
     // no need for calling disallowNotify(); since notifying is by default disallowed for all stores
-    final old = copy();
     if (data is CartStore) {
       for (var i = 0; i < states.length; i++) {
         // ignore: avoid_dynamic_calls
@@ -132,19 +131,6 @@ class CartStore extends _CartStore {
     failure = data.failureOrNull;
     sideEffects.clear();
     sideEffects.addAll(data.sideEffects.all);
-
-    if (old.operationOrNull != operationOrNull) {
-      events.dispatch(OperationEvent(operationOrNull));
-    }
-    if (old.failureOrNull != failureOrNull && failureOrNull != null) {
-      events.dispatch(FailureEvent(failure));
-    }
-    if (!const ListEquality<dynamic>().equals(
-      old.sideEffects.all.toList(),
-      sideEffects.all.toList(),
-    )) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
-    }
 
     publish();
   }

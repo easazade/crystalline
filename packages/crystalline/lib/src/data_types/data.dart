@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:crystalline/src/config/global_config.dart';
 import 'package:crystalline/src/data_types/failure.dart';
 import 'package:crystalline/src/exceptions.dart';
-import 'package:crystalline/src/semantics/events.dart';
 import 'package:crystalline/src/semantics/observers.dart';
 import 'package:crystalline/src/semantics/operation.dart';
 import 'package:crystalline/src/semantics/side_effects.dart';
@@ -35,7 +34,6 @@ class Data<T> {
 
   late final sideEffects = SideEffects(this, () => notifyObserversAndStreamListeners());
   late final observers = DataObservers(this);
-  final events = Events();
 
   final String? name;
 
@@ -96,15 +94,11 @@ class Data<T> {
 
   set failure(final Failure? failure) {
     _failure = failure;
-    if (failure != null) {
-      events.dispatch(FailureEvent(failure));
-    }
     notifyObserversAndStreamListeners();
   }
 
   set operation(final Operation? operation) {
     _operation = operation;
-    events.dispatch(OperationEvent(operation));
     notifyObserversAndStreamListeners();
   }
 
@@ -120,52 +114,21 @@ class Data<T> {
 
   set value(final T? value) {
     _value = value;
-    if (value != null) {
-      events.dispatch(ValueEvent(value));
-    }
     notifyObserversAndStreamListeners();
   }
 
   void modify(void Function(Data<T> data) fn) {
     disallowNotify();
-    final old = copy();
     fn(this);
     allowNotify();
-
-    if (old._value != _value && hasValue) {
-      events.dispatch(ValueEvent(value));
-    }
-    if (old.operationOrNull != _operation) {
-      events.dispatch(OperationEvent(_operation));
-    }
-    if (old._failure != _failure && _failure != null) {
-      events.dispatch(FailureEvent(_failure!));
-    }
-    if (!const ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
-    }
 
     notifyObserversAndStreamListeners();
   }
 
   Future<void> modifyAsync(Future<void> Function(Data<T> data) fn) async {
     disallowNotify();
-    final old = copy();
     await fn(this);
     allowNotify();
-
-    if (old._value != _value && hasValue) {
-      events.dispatch(ValueEvent(value));
-    }
-    if (old.operationOrNull != _operation) {
-      events.dispatch(OperationEvent(operation));
-    }
-    if (old._failure != _failure && _failure != null) {
-      events.dispatch(FailureEvent(_failure!));
-    }
-    if (!const ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
-    }
 
     notifyObserversAndStreamListeners();
   }
@@ -173,7 +136,6 @@ class Data<T> {
   @mustBeOverridden
   void updateFrom(Data<T> data) {
     disallowNotify();
-    final old = copy();
     value = data.valueOrNull;
     operation = data.operationOrNull;
     failure = data.failureOrNull;
@@ -181,24 +143,11 @@ class Data<T> {
     sideEffects.addAll(data.sideEffects.all);
     allowNotify();
 
-    if (old._value != _value && hasValue) {
-      events.dispatch(ValueEvent(value));
-    }
-    if (old.operationOrNull != _operation) {
-      events.dispatch(OperationEvent(_operation));
-    }
-    if (old._failure != _failure && _failure != null) {
-      events.dispatch(FailureEvent(_failure!));
-    }
-    if (!const ListEquality<dynamic>().equals(old.sideEffects.all.toList(), sideEffects.all.toList())) {
-      events.dispatch(SideEffectsUpdatedEvent(sideEffects.all));
-    }
-
     notifyObserversAndStreamListeners();
   }
 
   /// Resets the Data by setting value & failure to null, sets operation to Operation.none and removes all side-effects
-  /// It doesn't remove any observer or event-listener
+  /// It doesn't remove any observer
   void reset() {
     modify((data) {
       data.value = null;
@@ -245,13 +194,11 @@ class Data<T> {
   void allowNotify() {
     _allowedToNotify = true;
     observers.allowNotify();
-    events.allowNotify();
   }
 
   void disallowNotify() {
     _allowedToNotify = false;
     observers.disallowNotify();
-    events.disallowNotify();
   }
 
   bool get isAllowedToNotify => _allowedToNotify;
